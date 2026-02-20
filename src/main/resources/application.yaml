@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: recipebook
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recipebook
+    username: postgres
+    password: 1111
+
+server:
+  port: 8080
