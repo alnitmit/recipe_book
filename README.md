@@ -1,25 +1,3 @@
-<p align="center"> <img src="https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=java&logoColor=white" /> <img src="https://img.shields.io/badge/Spring_Boot-4-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" /> <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" /> <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" /> </p>
-
-🚀 О проекте
-Приложение позволяет пользователям:
-
-Просматривать список всех рецептов.
-
-Получать детальную информацию о конкретном рецепте.
-
-Добавлять новые рецепты в книгу.
-
-Редактировать существующие рецепты.
-
-Удалять рецепты.
-
-Искать рецепты по названию или ингредиентам.
-
-🛠 Стек технологий
-Язык: Java 25
-
-Фреймворк: Spring Boot 4
-
-Сборщик: Maven
-
-База данных: PostgreSQL
+<h1 align="center"> 🍳 Recipe Book App </h1><p align="center"> <i>Ваша персональная цифровая книга рецептов</i> </p><p align="center"> <img src="https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=java&logoColor=white" alt="Java 25"> <img src="https://img.shields.io/badge/Spring_Boot-4-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot 4"> <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" alt="Maven"> <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"> </p><hr><p> <strong>Recipe Book App</strong> — это веб-приложение для хранения и управления кулинарными рецептами. Проект создан с использованием современного стека технологий Java и демонстрирует лучшие практики разработки бэкенда: многослойную архитектуру, работу с базами данных, обработку исключений и написание REST API. </p><hr><h2>🚀 О проекте</h2><p>Приложение позволяет пользователям:</p><table> <thead> <tr> <th width="50">#</th> <th width="200">Возможность</th> <th>Описание</th> </tr> </thead> <tbody> <tr> <td>1️⃣</td> <td><b>Просмотр списка</b></td> <td>Все рецепты в одном месте</td> </tr> <tr> <td>2️⃣</td> <td><b>Детальная информация</b></td> <td>Ингредиенты, инструкции, время готовки</td> </tr> <tr> <td>3️⃣</td> <td><b>Добавление</b></td> <td>Новые кулинарные шедевры в коллекцию</td> </tr> <tr> <td>4️⃣</td> <td><b>Редактирование</b></td> <td>Изменение существующих рецептов</td> </tr> <tr> <td>5️⃣</td> <td><b>Удаление</b></td> <td>Очистка от ненужного</td> </tr> <tr> <td>6️⃣</td> <td><b>Поиск</b></td> <td>По названию или ингредиентам</td> </tr> </tbody> </table><hr><h2>🛠 Стек технологий</h2>
+<table align="center"> <tr> <td align="right"><b>Язык:</b></td> <td> <img src="https://img.shields.io/badge/Java-25-ED8B00?style=flat-square&logo=java&logoColor=white"> Java 25 </td> </tr> <tr> <td align="right"><b>Фреймворк:</b></td> <td> <img src="https://img.shields.io/badge/Spring_Boot-4-6DB33F?style=flat-square&logo=spring-boot&logoColor=white"> Spring Boot 4 </td> </tr> <tr> <td align="right"><b>Сборщик:</b></td> <td> <img src="https://img.shields.io/badge/Maven-C71A36?style=flat-square&logo=apache-maven&logoColor=white"> Maven </td> </tr> <tr> <td align="right"><b>База данных:</b></td> <td> <img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white"> PostgreSQL </td> </tr> </table>
+<h3>📦 Дополнительные технологии</h3><ul> <li><b>ORM:</b> Spring Data JPA + Hibernate</li> <li><b>Миграции БД:</b> Liquibase / Flyway (опционально)</li> <li><b>Тестирование:</b> JUnit 5, Mockito, AssertJ</li> <li><b>Документация API:</b> SpringDoc OpenAPI (Swagger UI)</li> <li><b>Логирование:</b> SLF4J + Logback</li> <li><b>Маппинг:</b> MapStruct / ModelMapper</li> </ul><hr>
