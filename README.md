@@ -1,4 +1,4 @@
-Recipe Book App — это веб-приложение для хранения и управления кулинарными рецептами. Проект создан с использованием современного стека технологий Java и демонстрирует лучшие практики разработки бэкенда: многослойную архитектуру, работу с базами данных, обработку исключений и написание REST API.
+<p align="center"> <img src="https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=java&logoColor=white" /> <img src="https://img.shields.io/badge/Spring_Boot-4-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" /> <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" /> <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" /> </p>
 
 🚀 О проекте
 Приложение позволяет пользователям:
