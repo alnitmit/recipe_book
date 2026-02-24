@@ -1,5 +1,5 @@
 package by.nikita.recipebook.entity.DTO;
-/*67*/
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
