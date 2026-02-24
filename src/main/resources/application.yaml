@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: application.properties
+
   application:
     name: recipebook
 
@@ -9,7 +12,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/recipebook
     username: postgres
-    password: 1111
+    password: ${DB_PASSWORD}
 
 server:
   port: 8080

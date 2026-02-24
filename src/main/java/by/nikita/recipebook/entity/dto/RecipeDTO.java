@@ -1,4 +1,4 @@
-package by.nikita.recipebook.entity.DTO;
+package by.nikita.recipebook.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

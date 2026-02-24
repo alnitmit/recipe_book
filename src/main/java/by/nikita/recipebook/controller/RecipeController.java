@@ -1,6 +1,6 @@
 package by.nikita.recipebook.controller;
 
-import by.nikita.recipebook.entity.DTO.RecipeDTO;
+import by.nikita.recipebook.entity.dto.RecipeDTO;
 import by.nikita.recipebook.service.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

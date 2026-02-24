@@ -1,7 +1,7 @@
 package by.nikita.recipebook.utils;
 
 import by.nikita.recipebook.entity.Recipe;
-import by.nikita.recipebook.entity.DTO.RecipeDTO;
+import by.nikita.recipebook.entity.dto.RecipeDTO;
 import org.springframework.stereotype.Component;
 
 @Component

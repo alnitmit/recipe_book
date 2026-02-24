@@ -1,6 +1,6 @@
 package by.nikita.recipebook.service;
 
-import by.nikita.recipebook.entity.DTO.RecipeDTO;
+import by.nikita.recipebook.entity.dto.RecipeDTO;
 import by.nikita.recipebook.utils.RecipeMapper;
 import by.nikita.recipebook.repository.RecipeRepository;
 import lombok.AllArgsConstructor;
@@ -24,6 +24,6 @@ public class RecipeService {
     public List<RecipeDTO> searchRecipesByTitle(String title) {
         return recipeRepository.findByTitleContainingIgnoreCase(title).stream()
                 .map(recipeMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

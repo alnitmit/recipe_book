@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### BD ###
+.env
+application-local.yaml
+application-dev.yaml
+application.properties
