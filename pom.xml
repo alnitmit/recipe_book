@@ -101,7 +101,7 @@
                     <configLocation>config/checkstyle/checkstyle.xml</configLocation>
                     <violationSeverity>warning</violationSeverity>
                     <failsOnError>true</failsOnError>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <failOnViolation>true</failOnViolation>
                 </configuration>
                 <executions>
                     <execution>
