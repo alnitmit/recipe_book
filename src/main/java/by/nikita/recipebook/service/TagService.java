@@ -1,0 +1,72 @@
+package by.nikita.recipebook.service;
+
+import by.nikita.recipebook.entity.Tag;
+import by.nikita.recipebook.entity.dto.TagDTO;
+import by.nikita.recipebook.utils.TagMapper;
+import by.nikita.recipebook.repository.TagRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@AllArgsConstructor
+public class TagService {
+
+    private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
+
+    @Transactional
+    public TagDTO createTag(TagDTO tagDTO) {
+        if (tagRepository.findByName(tagDTO.getName()).isPresent()) {
+            throw new RuntimeException("Tag with name '" + tagDTO.getName() + "' already exists");
+        }
+
+        Tag tag = tagMapper.toEntity(tagDTO);
+        Tag savedTag = tagRepository.save(tag);
+        return tagMapper.toDto(savedTag);
+    }
+
+    public List<TagDTO> getAllTags() {
+        return tagRepository.findAll().stream()
+                .map(tagMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<TagDTO> getTagById(Long id) {
+        return tagRepository.findById(id)
+                .map(tagMapper::toDto);
+    }
+
+    public Optional<TagDTO> getTagByName(String name) {
+        return tagRepository.findByName(name)
+                .map(tagMapper::toDto);
+    }
+
+    @Transactional
+    public TagDTO updateTag(Long id, TagDTO tagDTO) {
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tag not found with id: " + id));
+
+        if (!tag.getName().equals(tagDTO.getName()) &&
+                tagRepository.findByName(tagDTO.getName()).isPresent()) {
+            throw new RuntimeException("Tag with name '" + tagDTO.getName() + "' already exists");
+        }
+
+        tag.setName(tagDTO.getName());
+
+        Tag updatedTag = tagRepository.save(tag);
+        return tagMapper.toDto(updatedTag);
+    }
+
+    @Transactional
+    public void deleteTag(Long id) {
+        if (!tagRepository.existsById(id)) {
+            throw new RuntimeException("Tag not found with id: " + id);
+        }
+        tagRepository.deleteById(id);
+    }
+}

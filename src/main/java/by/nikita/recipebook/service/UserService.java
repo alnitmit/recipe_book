@@ -1,0 +1,92 @@
+package by.nikita.recipebook.service;
+
+import by.nikita.recipebook.entity.User;
+import by.nikita.recipebook.entity.dto.UserDTO;
+import by.nikita.recipebook.utils.UserMapper;
+import by.nikita.recipebook.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@AllArgsConstructor
+public class UserService {
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    @Transactional
+    public UserDTO createUser(UserDTO userDTO) {
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+            throw new RuntimeException("User with username '" + userDTO.getUsername() + "' already exists");
+        }
+
+        if (userDTO.getEmail() != null && userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("User with email '" + userDTO.getEmail() + "' already exists");
+        }
+
+        User user = userMapper.toEntity(userDTO);
+        User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
+    }
+
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<UserDTO> getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(userMapper::toDto);
+    }
+
+    public Optional<UserDTO> getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(userMapper::toDto);
+    }
+
+    public Optional<UserDTO> getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::toDto);
+    }
+
+    @Transactional
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        if (!user.getUsername().equals(userDTO.getUsername()) &&
+                userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+            throw new RuntimeException("User with username '" + userDTO.getUsername() + "' already exists");
+        }
+
+        if (userDTO.getEmail() != null &&
+                !userDTO.getEmail().equals(user.getEmail()) &&
+                userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("User with email '" + userDTO.getEmail() + "' already exists");
+        }
+
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        if (user.getRecipes() != null && !user.getRecipes().isEmpty()) {
+            throw new RuntimeException("Cannot delete user with existing recipes");
+        }
+
+        userRepository.deleteById(id);
+    }
+}

@@ -11,3 +11,50 @@ Maven — автоматизация сборки и управление зав
 База данных
 PostgreSQL — надежная и производительная реляционная база данных
 <hr>
+
+## 📊 ER-диаграмма (Модель данных)
+
+Ниже представлена ER-диаграмма, описывающая структуру базы данных приложения, включая первичные (PK) и внешние (FK) ключи, а также связи между таблицами (OneToMany, ManyToMany).
+
+```mermaid
+erDiagram
+    users {
+        BIGINT id PK
+        VARCHAR username
+        VARCHAR email
+    }
+    categories {
+        BIGINT id PK
+        VARCHAR name
+        VARCHAR description
+    }
+    recipes {
+        BIGINT id PK
+        VARCHAR title
+        VARCHAR description
+        TEXT instructions
+        BIGINT category_id FK
+        BIGINT author_id FK
+    }
+    ingredients {
+        BIGINT id PK
+        VARCHAR name
+        DOUBLE quantity
+        VARCHAR unit
+        BIGINT recipe_id FK
+    }
+    tags {
+        BIGINT id PK
+        VARCHAR name
+    }
+    recipe_tags {
+        BIGINT recipe_id FK
+        BIGINT tag_id FK
+    }
+
+    users ||--o{ recipes : "1:N (Author)"
+    categories ||--o{ recipes : "1:N (Category)"
+    recipes ||--o{ ingredients : "1:N (Ingredients)"
+    recipes ||--o{ recipe_tags : "1:N"
+    tags ||--o{ recipe_tags : "1:N"
+```
