@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -50,7 +50,7 @@ public class RecipeService {
 
     @Transactional
     public RecipeDTO createRecipeWithNewAuthorAndCategory(RecipeDTO recipeDTO,
-            by.nikita.recipebook.entity.User newAuthor, by.nikita.recipebook.entity.Category newCategory) {
+                                                          by.nikita.recipebook.entity.User newAuthor, by.nikita.recipebook.entity.Category newCategory) {
         by.nikita.recipebook.entity.User savedAuthor = userRepository.save(newAuthor);
         by.nikita.recipebook.entity.Category savedCategory = categoryRepository.save(newCategory);
 
@@ -65,7 +65,7 @@ public class RecipeService {
     public List<RecipeDTO> getAllRecipes() {
         return recipeRepository.findAll().stream()
                 .map(recipeMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Optional<RecipeDTO> getRecipeById(Long id) {
@@ -76,31 +76,31 @@ public class RecipeService {
     public List<RecipeDTO> searchRecipesByTitle(String title) {
         return recipeRepository.findByTitleContainingIgnoreCase(title).stream()
                 .map(recipeMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<RecipeDTO> getRecipesByCategory(Long categoryId) {
         return recipeRepository.findByCategoryId(categoryId).stream()
                 .map(recipeMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<RecipeDTO> getRecipesByAuthor(Long authorId) {
         return recipeRepository.findByAuthorId(authorId).stream()
                 .map(recipeMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<RecipeDTO> getRecipesByTag(Long tagId) {
         return recipeRepository.findByTagsId(tagId).stream()
                 .map(recipeMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
     public RecipeDTO updateRecipe(Long id, RecipeDTO recipeDTO) {
         Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recipe not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Recipe not found with id: " + id));
 
         recipe.setTitle(recipeDTO.getTitle());
         recipe.setDescription(recipeDTO.getDescription());
@@ -124,7 +124,7 @@ public class RecipeService {
     @Transactional
     public void deleteRecipe(Long id) {
         if (!recipeRepository.existsById(id)) {
-            throw new RuntimeException("Recipe not found with id: " + id);
+            throw new NoSuchElementException("Recipe not found with id: " + id);
         }
         recipeRepository.deleteById(id);
     }

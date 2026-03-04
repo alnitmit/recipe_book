@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +22,7 @@ public class CategoryService {
     @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         if (categoryRepository.findByName(categoryDTO.getName()).isPresent()) {
-            throw new RuntimeException("Category with name '" + categoryDTO.getName() + "' already exists");
+            throw new IllegalArgumentException("Category with name '" + categoryDTO.getName() + "' already exists");
         }
 
         Category category = categoryMapper.toEntity(categoryDTO);
@@ -33,7 +33,7 @@ public class CategoryService {
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Optional<CategoryDTO> getCategoryById(Long id) {
@@ -49,11 +49,11 @@ public class CategoryService {
     @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
 
         if (!category.getName().equals(categoryDTO.getName()) &&
                 categoryRepository.findByName(categoryDTO.getName()).isPresent()) {
-            throw new RuntimeException("Category with name '" + categoryDTO.getName() + "' already exists");
+            throw new IllegalArgumentException("Category with name '" + categoryDTO.getName() + "' already exists");
         }
 
         category.setName(categoryDTO.getName());
@@ -66,10 +66,10 @@ public class CategoryService {
     @Transactional
     public void deleteCategory(Long id) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
 
         if (category.getRecipes() != null && !category.getRecipes().isEmpty()) {
-            throw new RuntimeException("Cannot delete category with existing recipes");
+            throw new IllegalStateException("Cannot delete category with existing recipes");
         }
 
         categoryRepository.deleteById(id);

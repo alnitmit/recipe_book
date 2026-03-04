@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,11 +22,11 @@ public class UserService {
     @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
-            throw new RuntimeException("User with username '" + userDTO.getUsername() + "' already exists");
+            throw new IllegalArgumentException("User with username '" + userDTO.getUsername() + "' already exists");
         }
 
         if (userDTO.getEmail() != null && userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            throw new RuntimeException("User with email '" + userDTO.getEmail() + "' already exists");
+            throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
         }
 
         User user = userMapper.toEntity(userDTO);
@@ -37,7 +37,7 @@ public class UserService {
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(userMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Optional<UserDTO> getUserById(Long id) {
@@ -58,17 +58,17 @@ public class UserService {
     @Transactional
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
 
         if (!user.getUsername().equals(userDTO.getUsername()) &&
                 userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
-            throw new RuntimeException("User with username '" + userDTO.getUsername() + "' already exists");
+            throw new IllegalArgumentException("User with username '" + userDTO.getUsername() + "' already exists");
         }
 
         if (userDTO.getEmail() != null &&
                 !userDTO.getEmail().equals(user.getEmail()) &&
                 userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            throw new RuntimeException("User with email '" + userDTO.getEmail() + "' already exists");
+            throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
         }
 
         user.setUsername(userDTO.getUsername());
@@ -81,10 +81,10 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
 
         if (user.getRecipes() != null && !user.getRecipes().isEmpty()) {
-            throw new RuntimeException("Cannot delete user with existing recipes");
+            throw new IllegalStateException("Cannot delete user with existing recipes");
         }
 
         userRepository.deleteById(id);

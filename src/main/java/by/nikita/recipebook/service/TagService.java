@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +22,7 @@ public class TagService {
     @Transactional
     public TagDTO createTag(TagDTO tagDTO) {
         if (tagRepository.findByName(tagDTO.getName()).isPresent()) {
-            throw new RuntimeException("Tag with name '" + tagDTO.getName() + "' already exists");
+            throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
         }
 
         Tag tag = tagMapper.toEntity(tagDTO);
@@ -33,7 +33,7 @@ public class TagService {
     public List<TagDTO> getAllTags() {
         return tagRepository.findAll().stream()
                 .map(tagMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Optional<TagDTO> getTagById(Long id) {
@@ -49,11 +49,11 @@ public class TagService {
     @Transactional
     public TagDTO updateTag(Long id, TagDTO tagDTO) {
         Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tag not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
 
         if (!tag.getName().equals(tagDTO.getName()) &&
                 tagRepository.findByName(tagDTO.getName()).isPresent()) {
-            throw new RuntimeException("Tag with name '" + tagDTO.getName() + "' already exists");
+            throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
         }
 
         tag.setName(tagDTO.getName());
@@ -65,7 +65,7 @@ public class TagService {
     @Transactional
     public void deleteTag(Long id) {
         if (!tagRepository.existsById(id)) {
-            throw new RuntimeException("Tag not found with id: " + id);
+            throw new NoSuchElementException("Tag not found with id: " + id);
         }
         tagRepository.deleteById(id);
     }
