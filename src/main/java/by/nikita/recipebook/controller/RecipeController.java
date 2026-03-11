@@ -80,4 +80,12 @@ public class RecipeController {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/crash-test")
+    public ResponseEntity<String> crashTest(@RequestBody RecipeDTO recipeDTO) {
+        try {
+            recipeService.saveRecipeAndCrash(recipeDTO);
+            return ResponseEntity.ok("Recipe crashed");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
 }

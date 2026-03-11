@@ -114,4 +114,30 @@ public class RecipeService {
         }
         recipeRepository.deleteById(id);
     }
+
+    public RecipeDTO saveRecipeAndCrash(RecipeDTO recipeDTO) {
+
+        Recipe recipe = recipeMapper.toEntity(recipeDTO);
+
+        if (recipeDTO.getCategory() != null && recipeDTO.getCategory().getId() != null) {
+            categoryRepository.findById(recipeDTO.getCategory().getId())
+                    .ifPresent(recipe::setCategory);
+        }
+
+        if (recipeDTO.getAuthor() != null && recipeDTO.getAuthor().getId() != null) {
+            userRepository.findById(recipeDTO.getAuthor().getId())
+                    .ifPresent(recipe::setAuthor);
+        }
+
+        Recipe savedRecipe = recipeRepository.save(recipe);
+
+        if (recipeDTO.getTags() != null && !recipeDTO.getTags().isEmpty()) {
+            recipeDTO.getTags().forEach(tagDTO ->
+                    tagRepository.findById(tagDTO.getId()).ifPresent(savedRecipe.getTags()::add));
+            recipeRepository.save(savedRecipe);
+        }
+
+        throw new RuntimeException("метод упал, но рецепт уже в БД");
+
+    }
 }
