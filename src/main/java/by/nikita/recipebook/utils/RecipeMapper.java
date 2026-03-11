@@ -7,7 +7,6 @@ import by.nikita.recipebook.entity.dto.RecipeDTO;
 import by.nikita.recipebook.entity.dto.TagDTO;
 import by.nikita.recipebook.entity.dto.UserDTO;
 import org.springframework.stereotype.Component;
-
 import java.util.stream.Collectors;
 
 @Component
@@ -31,8 +30,16 @@ public class RecipeMapper {
                         ingredientDTO.setId(ingredient.getId());
                         ingredientDTO.setName(ingredient.getName());
                         ingredientDTO.setQuantity(ingredient.getQuantity());
-                        ingredientDTO.setUnit(ingredient.getUnit());
-                        ingredientDTO.setRecipeId(ingredient.getRecipe().getId());
+
+                        if (ingredient.getUnit() != null) {
+                            ingredientDTO.setUnitId(ingredient.getUnit().getId());
+                            ingredientDTO.setUnitName(ingredient.getUnit().getName());
+                        }
+
+                        if (ingredient.getRecipe() != null) {
+                            ingredientDTO.setRecipeId(ingredient.getRecipe().getId());
+                        }
+
                         return ingredientDTO;
                     })
                     .collect(Collectors.toList()));
