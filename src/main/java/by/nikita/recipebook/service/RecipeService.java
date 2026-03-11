@@ -48,20 +48,6 @@ public class RecipeService {
         return recipeMapper.toDto(savedRecipe);
     }
 
-    @Transactional
-    public RecipeDTO createRecipeWithNewAuthorAndCategory(RecipeDTO recipeDTO,
-                                                          by.nikita.recipebook.entity.User newAuthor, by.nikita.recipebook.entity.Category newCategory) {
-        by.nikita.recipebook.entity.User savedAuthor = userRepository.save(newAuthor);
-        by.nikita.recipebook.entity.Category savedCategory = categoryRepository.save(newCategory);
-
-        Recipe recipe = recipeMapper.toEntity(recipeDTO);
-        recipe.setAuthor(savedAuthor);
-        recipe.setCategory(savedCategory);
-
-        Recipe savedRecipe = recipeRepository.save(recipe);
-        return recipeMapper.toDto(savedRecipe);
-    }
-
     public List<RecipeDTO> getAllRecipes() {
         return recipeRepository.findAll().stream()
                 .map(recipeMapper::toDto)
