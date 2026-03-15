@@ -3,10 +3,12 @@ package by.nikita.recipebook.controller;
 import by.nikita.recipebook.entity.dto.UnitDTO;
 import by.nikita.recipebook.service.UnitService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/units")
@@ -15,20 +17,14 @@ public class UnitController {
     private final UnitService unitService;
 
     @GetMapping
-    public ResponseEntity<List<UnitDTO>> getAllUnits() {
-        return ResponseEntity.ok(unitService.getAllUnits());
+    public ResponseEntity<Page<UnitDTO>> getAllUnits(
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(unitService.getAllUnits(pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UnitDTO> getUnitById(@PathVariable Long id) {
         return unitService.getUnitById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/name/{name}")
-    public ResponseEntity<UnitDTO> getUnitByName(@PathVariable String name) {
-        return unitService.getUnitByName(name)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

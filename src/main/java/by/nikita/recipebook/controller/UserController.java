@@ -2,18 +2,12 @@ package by.nikita.recipebook.controller;
 
 import by.nikita.recipebook.entity.dto.UserDTO;
 import by.nikita.recipebook.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -32,28 +26,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<Page<UserDTO>> getAllUsers(
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllUsers(pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/username/{username}")
-    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
-        return userService.getUserByUsername(username)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/email/{email}")
-    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
-        return userService.getUserByEmail(email)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

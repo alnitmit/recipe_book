@@ -5,10 +5,11 @@ import by.nikita.recipebook.entity.dto.UserDTO;
 import by.nikita.recipebook.utils.UserMapper;
 import by.nikita.recipebook.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -34,24 +35,13 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
-    public List<UserDTO> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(userMapper::toDto)
-                .toList();
+    public Page<UserDTO> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toDto);
     }
 
     public Optional<UserDTO> getUserById(Long id) {
         return userRepository.findById(id)
-                .map(userMapper::toDto);
-    }
-
-    public Optional<UserDTO> getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .map(userMapper::toDto);
-    }
-
-    public Optional<UserDTO> getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
                 .map(userMapper::toDto);
     }
 

@@ -19,8 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "recipes")
@@ -52,7 +52,7 @@ public class Recipe {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)
-    private List<Ingredient> ingredients = new ArrayList<>();
+    private Set<Ingredient> ingredients = new HashSet<>();  // List → Set
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -68,7 +68,7 @@ public class Recipe {
             joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<Tag> tags = new ArrayList<>();
+    private Set<Tag> tags = new HashSet<>();  // List → Set
 
     public void addIngredient(Ingredient ingredient) {
         ingredients.add(ingredient);

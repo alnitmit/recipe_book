@@ -5,9 +5,11 @@ import by.nikita.recipebook.entity.dto.UnitDTO;
 import by.nikita.recipebook.utils.UnitMapper;
 import by.nikita.recipebook.repository.UnitRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -27,19 +29,13 @@ public class UnitService {
         return unitMapper.toDto(savedUnit);
     }
 
-    public List<UnitDTO> getAllUnits() {
-        return unitRepository.findAll().stream()
-                .map(unitMapper::toDto)
-                .toList();
+    public Page<UnitDTO> getAllUnits(Pageable pageable) {
+        return unitRepository.findAll(pageable)
+                .map(unitMapper::toDto);
     }
 
     public Optional<UnitDTO> getUnitById(Long id) {
         return unitRepository.findById(id)
-                .map(unitMapper::toDto);
-    }
-
-    public Optional<UnitDTO> getUnitByName(String name) {
-        return unitRepository.findByName(name)
                 .map(unitMapper::toDto);
     }
 

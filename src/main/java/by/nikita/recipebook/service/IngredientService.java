@@ -9,9 +9,11 @@ import by.nikita.recipebook.repository.IngredientRepository;
 import by.nikita.recipebook.repository.RecipeRepository;
 import by.nikita.recipebook.repository.UnitRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -39,10 +41,9 @@ public class IngredientService {
         return ingredientMapper.toDto(savedIngredient);
     }
 
-    public List<IngredientDTO> getAllIngredients() {
-        return ingredientRepository.findAll().stream()
-                .map(ingredientMapper::toDto)
-                .toList();
+    public Page<IngredientDTO> getAllIngredients(Pageable pageable) {
+        return ingredientRepository.findAll(pageable)
+                .map(ingredientMapper::toDto);
     }
 
     public Optional<IngredientDTO> getIngredientById(Long id) {
@@ -50,16 +51,9 @@ public class IngredientService {
                 .map(ingredientMapper::toDto);
     }
 
-    public List<IngredientDTO> getIngredientsByRecipe(Long recipeId) {
-        return ingredientRepository.findByRecipeId(recipeId).stream()
-                .map(ingredientMapper::toDto)
-                .toList();
-    }
-
-    public List<IngredientDTO> searchIngredientsByName(String name) {
-        return ingredientRepository.findByNameContainingIgnoreCase(name).stream()
-                .map(ingredientMapper::toDto)
-                .toList();
+    public Page<IngredientDTO> getIngredientsByRecipe(Long recipeId, Pageable pageable) {
+        return ingredientRepository.findByRecipeId(recipeId, pageable)
+                .map(ingredientMapper::toDto);
     }
 
     @Transactional

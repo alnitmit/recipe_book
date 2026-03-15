@@ -5,10 +5,11 @@ import by.nikita.recipebook.entity.dto.CategoryDTO;
 import by.nikita.recipebook.utils.CategoryMapper;
 import by.nikita.recipebook.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -30,19 +31,13 @@ public class CategoryService {
         return categoryMapper.toDto(savedCategory);
     }
 
-    public List<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll().stream()
-                .map(categoryMapper::toDto)
-                .toList();
+    public Page<CategoryDTO> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable)
+                .map(categoryMapper::toDto);
     }
 
     public Optional<CategoryDTO> getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .map(categoryMapper::toDto);
-    }
-
-    public Optional<CategoryDTO> getCategoryByName(String name) {
-        return categoryRepository.findByName(name)
                 .map(categoryMapper::toDto);
     }
 

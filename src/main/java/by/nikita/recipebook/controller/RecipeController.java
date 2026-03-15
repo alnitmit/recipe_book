@@ -2,6 +2,9 @@ package by.nikita.recipebook.controller;
 
 import by.nikita.recipebook.entity.dto.RecipeDTO;
 import by.nikita.recipebook.service.RecipeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -28,14 +29,31 @@ public class RecipeController {
 
     @PostMapping
     public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) {
-        RecipeDTO createdRecipe = recipeService.createRecipe(recipeDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdRecipe);
+        return ResponseEntity.status(HttpStatus.CREATED).body(recipeService.createRecipe(recipeDTO));
     }
 
     @GetMapping
-    public ResponseEntity<List<RecipeDTO>> getAllRecipes() {
-        List<RecipeDTO> recipes = recipeService.getAllRecipes();
-        return ResponseEntity.ok(recipes);
+    public ResponseEntity<Page<RecipeDTO>> getAllRecipes(
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(recipeService.getAllRecipes(pageable));
+    }
+
+    @GetMapping("/filter/jpql")
+    public ResponseEntity<Page<RecipeDTO>> filterRecipesJPQL(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Long minIngredients,
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(recipeService.searchRecipesJPQL(title, author, minIngredients, pageable));
+    }
+
+    @GetMapping("/filter/native")
+    public ResponseEntity<Page<RecipeDTO>> filterRecipesNative(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Long minIngredients,
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(recipeService.searchRecipesNative(title, author, minIngredients, pageable));
     }
 
     @GetMapping("/{id}")
@@ -45,48 +63,15 @@ public class RecipeController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<RecipeDTO>> searchRecipes(@RequestParam String title) {
-        List<RecipeDTO> recipes = recipeService.searchRecipesByTitle(title);
-        return ResponseEntity.ok(recipes);
-    }
-
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<RecipeDTO>> getRecipesByCategory(@PathVariable Long categoryId) {
-        List<RecipeDTO> recipes = recipeService.getRecipesByCategory(categoryId);
-        return ResponseEntity.ok(recipes);
-    }
-
-    @GetMapping("/author/{authorId}")
-    public ResponseEntity<List<RecipeDTO>> getRecipesByAuthor(@PathVariable Long authorId) {
-        List<RecipeDTO> recipes = recipeService.getRecipesByAuthor(authorId);
-        return ResponseEntity.ok(recipes);
-    }
-
-    @GetMapping("/tag/{tagId}")
-    public ResponseEntity<List<RecipeDTO>> getRecipesByTag(@PathVariable Long tagId) {
-        List<RecipeDTO> recipes = recipeService.getRecipesByTag(tagId);
-        return ResponseEntity.ok(recipes);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {
-        RecipeDTO updatedRecipe = recipeService.updateRecipe(id, recipeDTO);
-        return ResponseEntity.ok(updatedRecipe);
+        return ResponseEntity.ok(recipeService.updateRecipe(id, recipeDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
-        recipeService.deleteRecipe(id);
-        return ResponseEntity.noContent().build();
-    }
-    @PostMapping("/crash-test")
-    public ResponseEntity<String> crashTest(@RequestBody RecipeDTO recipeDTO) {
-        try {
-            recipeService.saveRecipeAndCrash(recipeDTO);
-            return ResponseEntity.ok("Recipe crashed");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
-        }
+        return recipeService.deleteRecipe(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }

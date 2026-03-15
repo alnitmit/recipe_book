@@ -5,10 +5,11 @@ import by.nikita.recipebook.entity.dto.TagDTO;
 import by.nikita.recipebook.utils.TagMapper;
 import by.nikita.recipebook.repository.TagRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -30,19 +31,13 @@ public class TagService {
         return tagMapper.toDto(savedTag);
     }
 
-    public List<TagDTO> getAllTags() {
-        return tagRepository.findAll().stream()
-                .map(tagMapper::toDto)
-                .toList();
+    public Page<TagDTO> getAllTags(Pageable pageable) {
+        return tagRepository.findAll(pageable)
+                .map(tagMapper::toDto);
     }
 
     public Optional<TagDTO> getTagById(Long id) {
         return tagRepository.findById(id)
-                .map(tagMapper::toDto);
-    }
-
-    public Optional<TagDTO> getTagByName(String name) {
-        return tagRepository.findByName(name)
                 .map(tagMapper::toDto);
     }
 
