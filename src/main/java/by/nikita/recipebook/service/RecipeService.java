@@ -149,10 +149,11 @@ public class RecipeService {
     }
 
     @Transactional
-    public boolean deleteRecipe(Long id) {
-        if (!recipeRepository.existsById(id)) return false;
+    public void deleteRecipe(Long id) {
+        if (!recipeRepository.existsById(id)) {
+            throw new NoSuchElementException("Recipe not found with id: " + id);
+        }
         recipeRepository.deleteById(id);
         clearCache();
-        return true;
     }
 }
