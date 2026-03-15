@@ -2,6 +2,7 @@ package by.nikita.recipebook.controller;
 
 import by.nikita.recipebook.entity.dto.CategoryDTO;
 import by.nikita.recipebook.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -29,7 +30,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
@@ -48,7 +49,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDTO categoryDTO) {
         CategoryDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
         return ResponseEntity.ok(updatedCategory);
     }

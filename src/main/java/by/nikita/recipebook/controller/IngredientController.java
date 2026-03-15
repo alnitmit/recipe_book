@@ -2,6 +2,7 @@ package by.nikita.recipebook.controller;
 
 import by.nikita.recipebook.entity.dto.IngredientDTO;
 import by.nikita.recipebook.service.IngredientService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +31,7 @@ public class IngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<IngredientDTO> createIngredient(@RequestBody IngredientDTO ingredientDTO) {
+    public ResponseEntity<IngredientDTO> createIngredient(@Valid @RequestBody IngredientDTO ingredientDTO) {
         IngredientDTO createdIngredient = ingredientService.createIngredient(ingredientDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdIngredient);
     }
@@ -56,7 +57,7 @@ public class IngredientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<IngredientDTO> updateIngredient(@PathVariable Long id, @RequestBody IngredientDTO ingredientDTO) {
+    public ResponseEntity<IngredientDTO> updateIngredient(@PathVariable Long id, @Valid @RequestBody IngredientDTO ingredientDTO) {
         IngredientDTO updatedIngredient = ingredientService.updateIngredient(id, ingredientDTO);
         return ResponseEntity.ok(updatedIngredient);
     }
