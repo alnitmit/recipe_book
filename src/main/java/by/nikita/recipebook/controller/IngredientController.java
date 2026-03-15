@@ -7,7 +7,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/ingredients")
@@ -33,9 +43,9 @@ public class IngredientController {
 
     @GetMapping("/{id}")
     public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long id) {
-        return ingredientService.getIngredientById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        IngredientDTO ingredient = ingredientService.getIngredientById(id)
+                .orElseThrow(() -> new NoSuchElementException("Ingredient not found with id: " + id));
+        return ResponseEntity.ok(ingredient);
     }
 
     @GetMapping("/by-recipe")

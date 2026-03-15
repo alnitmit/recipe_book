@@ -7,15 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -58,9 +52,9 @@ public class RecipeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable Long id) {
-        return recipeService.getRecipeById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        RecipeDTO recipe = recipeService.getRecipeById(id)
+                .orElseThrow(() -> new NoSuchElementException("Recipe not found with id: " + id));
+        return ResponseEntity.ok(recipe);
     }
 
     @PutMapping("/{id}")
@@ -70,8 +64,7 @@ public class RecipeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
-        return recipeService.deleteRecipe(id)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+        recipeService.deleteRecipe(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/api/units")
 @AllArgsConstructor
@@ -24,9 +26,9 @@ public class UnitController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UnitDTO> getUnitById(@PathVariable Long id) {
-        return unitService.getUnitById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        UnitDTO unit = unitService.getUnitById(id)
+                .orElseThrow(() -> new NoSuchElementException("Unit not found with id: " + id));
+        return ResponseEntity.ok(unit);
     }
 
     @PostMapping

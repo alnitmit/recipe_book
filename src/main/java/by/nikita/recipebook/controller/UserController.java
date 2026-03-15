@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -33,9 +35,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        UserDTO user = userService.getUserById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{id}")

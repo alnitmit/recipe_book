@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
@@ -33,9 +35,9 @@ public class TagController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TagDTO> getTagById(@PathVariable Long id) {
-        return tagService.getTagById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        TagDTO tag = tagService.getTagById(id)
+                .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
+        return ResponseEntity.ok(tag);
     }
 
     @PutMapping("/{id}")
