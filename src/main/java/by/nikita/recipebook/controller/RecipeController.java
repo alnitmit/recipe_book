@@ -41,6 +41,8 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.getAllRecipes(pageable));
     }
 
+
+
     @GetMapping("/filter/jpql")
     public ResponseEntity<Page<RecipeDTO>> filterRecipesJPQL(
             @RequestParam(required = false) String title,
