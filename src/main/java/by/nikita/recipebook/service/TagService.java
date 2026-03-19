@@ -32,13 +32,11 @@ public class TagService {
     }
 
     public Page<TagDTO> getAllTags(Pageable pageable) {
-        return tagRepository.findAll(pageable)
-                .map(tagMapper::toDto);
+        return tagRepository.findAll(pageable).map(tagMapper::toDto);
     }
 
     public Optional<TagDTO> getTagById(Long id) {
-        return tagRepository.findById(id)
-                .map(tagMapper::toDto);
+        return tagRepository.findById(id).map(tagMapper::toDto);
     }
 
     @Transactional
@@ -46,8 +44,7 @@ public class TagService {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
 
-        if (!tag.getName().equals(tagDTO.getName()) &&
-                tagRepository.findByName(tagDTO.getName()).isPresent()) {
+        if (!tag.getName().equals(tagDTO.getName()) && tagRepository.findByName(tagDTO.getName()).isPresent()) {
             throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
         }
 

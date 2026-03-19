@@ -19,10 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(
-        name = "Ingredient.withRecipe",
-        attributeNodes = @NamedAttributeNode("recipe")
-)
+@NamedEntityGraph(name = "Ingredient.withRecipe", attributeNodes = @NamedAttributeNode("recipe"))
 public class Ingredient {
 
     @Id
@@ -42,8 +39,12 @@ public class Ingredient {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Ingredient)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Ingredient)) {
+            return false;
+        }
         Ingredient that = (Ingredient) o;
         return id != null && id.equals(that.getId());
     }

@@ -27,15 +27,8 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(
-        name = "Recipe.withAllDetails",
-        attributeNodes = {
-                @NamedAttributeNode("category"),
-                @NamedAttributeNode("author"),
-                @NamedAttributeNode("tags"),
-                @NamedAttributeNode("ingredients")
-        }
-)
+@NamedEntityGraph(name = "Recipe.withAllDetails", attributeNodes = {@NamedAttributeNode("category"),
+        @NamedAttributeNode("author"), @NamedAttributeNode("tags"), @NamedAttributeNode("ingredients")})
 public class Recipe {
 
     @Id
@@ -48,11 +41,8 @@ public class Recipe {
     @Column(columnDefinition = "TEXT")
     private String instructions;
 
-    @OneToMany(mappedBy = "recipe",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private Set<Ingredient> ingredients = new HashSet<>();  // List → Set
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Ingredient> ingredients = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -63,20 +53,6 @@ public class Recipe {
     private User author;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "recipe_tags",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<Tag> tags = new HashSet<>();  // List → Set
-
-    public void addIngredient(Ingredient ingredient) {
-        ingredients.add(ingredient);
-        ingredient.setRecipe(this);
-    }
-
-    public void removeIngredient(Ingredient ingredient) {
-        ingredients.remove(ingredient);
-        ingredient.setRecipe(null);
-    }
+    @JoinTable(name = "recipe_tags", joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
 }

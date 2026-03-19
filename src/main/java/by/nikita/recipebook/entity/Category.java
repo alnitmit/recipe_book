@@ -22,10 +22,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(
-        name = "Category.withRecipes",
-        attributeNodes = @NamedAttributeNode("recipes")
-)
+@NamedEntityGraph(name = "Category.withRecipes", attributeNodes = @NamedAttributeNode("recipes"))
 public class Category {
 
     @Id

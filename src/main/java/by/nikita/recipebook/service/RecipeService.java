@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
-
 @Service
 @AllArgsConstructor
 public class RecipeService {
@@ -51,15 +50,16 @@ public class RecipeService {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof RecipeFilterKey)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof RecipeFilterKey)) {
+                return false;
+            }
             RecipeFilterKey that = (RecipeFilterKey) o;
-            return page == that.page &&
-                    size == that.size &&
-                    Objects.equals(title, that.title) &&
-                    Objects.equals(authorName, that.authorName) &&
-                    Objects.equals(minIngredients, that.minIngredients) &&
-                    Objects.equals(sort, that.sort);
+            return page == that.page && size == that.size && Objects.equals(title, that.title)
+                    && Objects.equals(authorName, that.authorName)
+                    && Objects.equals(minIngredients, that.minIngredients) && Objects.equals(sort, that.sort);
         }
 
         @Override
@@ -81,19 +81,20 @@ public class RecipeService {
         if (cache.containsKey(key)) {
             return cache.get(key);
         }
-        Page<RecipeDTO> result = recipeRepository.findRecipesByComplexFilter(title, authorName, minIngredients, pageable)
-                .map(recipeMapper::toDto);
+        Page<RecipeDTO> result = recipeRepository
+                .findRecipesByComplexFilter(title, authorName, minIngredients, pageable).map(recipeMapper::toDto);
         cache.put(key, result);
         return result;
     }
 
-    public Page<RecipeDTO> searchRecipesNative(String title, String authorName, Long minIngredients, Pageable pageable) {
+    public Page<RecipeDTO> searchRecipesNative(String title, String authorName, Long minIngredients,
+            Pageable pageable) {
         RecipeFilterKey key = buildFilterKey(title, authorName, minIngredients, pageable);
         if (cache.containsKey(key)) {
             return cache.get(key);
         }
-        Page<RecipeDTO> result = recipeRepository.findRecipesByComplexFilterNative(title, authorName, minIngredients, pageable)
-                .map(recipeMapper::toDto);
+        Page<RecipeDTO> result = recipeRepository
+                .findRecipesByComplexFilterNative(title, authorName, minIngredients, pageable).map(recipeMapper::toDto);
         cache.put(key, result);
         return result;
     }
@@ -116,8 +117,7 @@ public class RecipeService {
     }
 
     public Page<RecipeDTO> getAllRecipes(Pageable pageable) {
-        return recipeRepository.findAll(pageable)
-                .map(recipeMapper::toDto);
+        return recipeRepository.findAll(pageable).map(recipeMapper::toDto);
     }
 
     public Optional<RecipeDTO> getRecipeById(Long id) {
@@ -139,8 +139,8 @@ public class RecipeService {
 
         if (recipeDTO.getTags() != null) {
             recipe.getTags().clear();
-            recipeDTO.getTags().forEach(tagDTO ->
-                    tagRepository.findById(tagDTO.getId()).ifPresent(recipe.getTags()::add));
+            recipeDTO.getTags()
+                    .forEach(tagDTO -> tagRepository.findById(tagDTO.getId()).ifPresent(recipe.getTags()::add));
         }
 
         Recipe updatedRecipe = recipeRepository.save(recipe);

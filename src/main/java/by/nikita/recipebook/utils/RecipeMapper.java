@@ -24,25 +24,23 @@ public class RecipeMapper {
         dto.setInstructions(recipe.getInstructions());
 
         if (recipe.getIngredients() != null) {
-            dto.setIngredients(recipe.getIngredients().stream()
-                    .map(ingredient -> {
-                        IngredientDTO ingredientDTO = new IngredientDTO();
-                        ingredientDTO.setId(ingredient.getId());
-                        ingredientDTO.setName(ingredient.getName());
-                        ingredientDTO.setQuantity(ingredient.getQuantity());
+            dto.setIngredients(recipe.getIngredients().stream().map(ingredient -> {
+                IngredientDTO ingredientDTO = new IngredientDTO();
+                ingredientDTO.setId(ingredient.getId());
+                ingredientDTO.setName(ingredient.getName());
+                ingredientDTO.setQuantity(ingredient.getQuantity());
 
-                        if (ingredient.getUnit() != null) {
-                            ingredientDTO.setUnitId(ingredient.getUnit().getId());
-                            ingredientDTO.setUnitName(ingredient.getUnit().getName());
-                        }
+                if (ingredient.getUnit() != null) {
+                    ingredientDTO.setUnitId(ingredient.getUnit().getId());
+                    ingredientDTO.setUnitName(ingredient.getUnit().getName());
+                }
 
-                        if (ingredient.getRecipe() != null) {
-                            ingredientDTO.setRecipeId(ingredient.getRecipe().getId());
-                        }
+                if (ingredient.getRecipe() != null) {
+                    ingredientDTO.setRecipeId(ingredient.getRecipe().getId());
+                }
 
-                        return ingredientDTO;
-                    })
-                    .collect(Collectors.toList()));
+                return ingredientDTO;
+            }).collect(Collectors.toList()));
         }
 
         if (recipe.getCategory() != null) {
@@ -63,14 +61,12 @@ public class RecipeMapper {
         }
 
         if (recipe.getTags() != null) {
-            dto.setTags(recipe.getTags().stream()
-                    .map(tag -> {
-                        TagDTO tagDTO = new TagDTO();
-                        tagDTO.setId(tag.getId());
-                        tagDTO.setName(tag.getName());
-                        return tagDTO;
-                    })
-                    .collect(Collectors.toList()));
+            dto.setTags(recipe.getTags().stream().map(tag -> {
+                TagDTO tagDTO = new TagDTO();
+                tagDTO.setId(tag.getId());
+                tagDTO.setName(tag.getName());
+                return tagDTO;
+            }).collect(Collectors.toList()));
         }
 
         return dto;

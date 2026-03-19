@@ -30,22 +30,18 @@ public class UnitService {
     }
 
     public Page<UnitDTO> getAllUnits(Pageable pageable) {
-        return unitRepository.findAll(pageable)
-                .map(unitMapper::toDto);
+        return unitRepository.findAll(pageable).map(unitMapper::toDto);
     }
 
     public Optional<UnitDTO> getUnitById(Long id) {
-        return unitRepository.findById(id)
-                .map(unitMapper::toDto);
+        return unitRepository.findById(id).map(unitMapper::toDto);
     }
 
     @Transactional
     public UnitDTO updateUnit(Long id, UnitDTO unitDTO) {
-        Unit unit = unitRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Unit not found"));
+        Unit unit = unitRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Unit not found"));
 
-        if (!unit.getName().equals(unitDTO.getName()) &&
-                unitRepository.findByName(unitDTO.getName()).isPresent()) {
+        if (!unit.getName().equals(unitDTO.getName()) && unitRepository.findByName(unitDTO.getName()).isPresent()) {
             throw new IllegalArgumentException("Unit with name '" + unitDTO.getName() + "' already exists");
         }
 

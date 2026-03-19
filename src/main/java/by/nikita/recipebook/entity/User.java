@@ -24,10 +24,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(
-        name = "User.withRecipes",
-        attributeNodes = @NamedAttributeNode("recipes")
-)
+@NamedEntityGraph(name = "User.withRecipes", attributeNodes = @NamedAttributeNode("recipes"))
 public class User {
 
     @Id

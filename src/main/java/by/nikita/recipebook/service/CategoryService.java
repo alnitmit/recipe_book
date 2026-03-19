@@ -32,13 +32,11 @@ public class CategoryService {
     }
 
     public Page<CategoryDTO> getAllCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable)
-                .map(categoryMapper::toDto);
+        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }
 
     public Optional<CategoryDTO> getCategoryById(Long id) {
-        return categoryRepository.findById(id)
-                .map(categoryMapper::toDto);
+        return categoryRepository.findById(id).map(categoryMapper::toDto);
     }
 
     @Transactional
@@ -46,8 +44,8 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
 
-        if (!category.getName().equals(categoryDTO.getName()) &&
-                categoryRepository.findByName(categoryDTO.getName()).isPresent()) {
+        if (!category.getName().equals(categoryDTO.getName())
+                && categoryRepository.findByName(categoryDTO.getName()).isPresent()) {
             throw new IllegalArgumentException("Category with name '" + categoryDTO.getName() + "' already exists");
         }
 

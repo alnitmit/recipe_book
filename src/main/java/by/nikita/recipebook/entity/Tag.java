@@ -22,10 +22,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(
-        name = "Tag.withRecipes",
-        attributeNodes = @NamedAttributeNode("recipes")
-)
+@NamedEntityGraph(name = "Tag.withRecipes", attributeNodes = @NamedAttributeNode("recipes"))
 public class Tag {
 
     @Id
@@ -40,8 +37,12 @@ public class Tag {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Tag)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Tag)) {
+            return false;
+        }
         Tag that = (Tag) o;
         return id != null && id.equals(that.getId());
     }

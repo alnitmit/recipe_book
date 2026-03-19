@@ -42,18 +42,15 @@ public class IngredientService {
     }
 
     public Page<IngredientDTO> getAllIngredients(Pageable pageable) {
-        return ingredientRepository.findAll(pageable)
-                .map(ingredientMapper::toDto);
+        return ingredientRepository.findAll(pageable).map(ingredientMapper::toDto);
     }
 
     public Optional<IngredientDTO> getIngredientById(Long id) {
-        return ingredientRepository.findById(id)
-                .map(ingredientMapper::toDto);
+        return ingredientRepository.findById(id).map(ingredientMapper::toDto);
     }
 
     public Page<IngredientDTO> getIngredientsByRecipe(Long recipeId, Pageable pageable) {
-        return ingredientRepository.findByRecipeId(recipeId, pageable)
-                .map(ingredientMapper::toDto);
+        return ingredientRepository.findByRecipeId(recipeId, pageable).map(ingredientMapper::toDto);
     }
 
     @Transactional
@@ -70,8 +67,8 @@ public class IngredientService {
             ingredient.setUnit(unit);
         }
 
-        if (ingredientDTO.getRecipeId() != null &&
-                !ingredientDTO.getRecipeId().equals(ingredient.getRecipe().getId())) {
+        if (ingredientDTO.getRecipeId() != null
+                && !ingredientDTO.getRecipeId().equals(ingredient.getRecipe().getId())) {
             Recipe newRecipe = recipeRepository.findById(ingredientDTO.getRecipeId())
                     .orElseThrow(() -> new NoSuchElementException("Recipe not found"));
             ingredient.setRecipe(newRecipe);

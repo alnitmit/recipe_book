@@ -36,13 +36,11 @@ public class UserService {
     }
 
     public Page<UserDTO> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable)
-                .map(userMapper::toDto);
+        return userRepository.findAll(pageable).map(userMapper::toDto);
     }
 
     public Optional<UserDTO> getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(userMapper::toDto);
+        return userRepository.findById(id).map(userMapper::toDto);
     }
 
     @Transactional
@@ -50,14 +48,13 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
 
-        if (!user.getUsername().equals(userDTO.getUsername()) &&
-                userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+        if (!user.getUsername().equals(userDTO.getUsername())
+                && userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
             throw new IllegalArgumentException("User with username '" + userDTO.getUsername() + "' already exists");
         }
 
-        if (userDTO.getEmail() != null &&
-                !userDTO.getEmail().equals(user.getEmail()) &&
-                userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+        if (userDTO.getEmail() != null && !userDTO.getEmail().equals(user.getEmail())
+                && userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
         }
 
