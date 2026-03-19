@@ -27,8 +27,15 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(name = "Recipe.withAllDetails", attributeNodes = {@NamedAttributeNode("category"),
-        @NamedAttributeNode("author"), @NamedAttributeNode("tags"), @NamedAttributeNode("ingredients")})
+@NamedEntityGraph(
+        name = "Recipe.withAllDetails",
+        attributeNodes = {
+            @NamedAttributeNode("category"),
+            @NamedAttributeNode("author"),
+            @NamedAttributeNode("tags"),
+            @NamedAttributeNode("ingredients")
+        }
+)
 public class Recipe {
 
     @Id
@@ -53,6 +60,10 @@ public class Recipe {
     private User author;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "recipe_tags", joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @JoinTable(
+            name = "recipe_tags",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private Set<Tag> tags = new HashSet<>();
 }

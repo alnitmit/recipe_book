@@ -36,9 +36,12 @@ public class IngredientController {
     }
 
     @PostMapping
-    @Operation(summary = "Create a new ingredient", description = "Creates an ingredient and returns the created object")
+@Operation(
+        summary = "Get ingredients by recipe ID",
+        description = "Returns a paginated list of ingredients for a specific recipe"
+    )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Ingredient successfully created"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data")})
+        @ApiResponse(responseCode = "400", description = "Invalid input data")})
     public ResponseEntity<IngredientDTO> createIngredient(@Valid @RequestBody IngredientDTO ingredientDTO) {
         IngredientDTO createdIngredient = ingredientService.createIngredient(ingredientDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdIngredient);
@@ -54,7 +57,7 @@ public class IngredientController {
     @GetMapping("/{id}")
     @Operation(summary = "Get ingredient by ID", description = "Returns a single ingredient")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully retrieved"),
-            @ApiResponse(responseCode = "404", description = "Ingredient not found")})
+        @ApiResponse(responseCode = "404", description = "Ingredient not found")})
     public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long id) {
         IngredientDTO ingredient = ingredientService.getIngredientById(id)
                 .orElseThrow(() -> new NoSuchElementException("Ingredient not found with id: " + id));
@@ -62,9 +65,13 @@ public class IngredientController {
     }
 
     @GetMapping("/by-recipe")
-    @Operation(summary = "Get ingredients by recipe ID", description = "Returns a paginated list of ingredients for a specific recipe")
+    @Operation(
+            summary = "Get ingredients by recipe ID",
+            description = "Returns a paginated list of ingredients for a specific recipe"
+    )
     @ApiResponse(responseCode = "200", description = "Successful operation")
-    public ResponseEntity<Page<IngredientDTO>> getIngredientsByRecipe(@RequestParam Long recipeId,
+    public ResponseEntity<Page<IngredientDTO>> getIngredientsByRecipe(
+            @RequestParam Long recipeId,
             @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(ingredientService.getIngredientsByRecipe(recipeId, pageable));
     }
@@ -72,8 +79,8 @@ public class IngredientController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing ingredient", description = "Updates ingredient data")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated"),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "404", description = "Ingredient not found")})
+        @ApiResponse(responseCode = "400", description = "Invalid input"),
+        @ApiResponse(responseCode = "404", description = "Ingredient not found")})
     public ResponseEntity<IngredientDTO> updateIngredient(@PathVariable Long id,
             @Valid @RequestBody IngredientDTO ingredientDTO) {
         IngredientDTO updatedIngredient = ingredientService.updateIngredient(id, ingredientDTO);
@@ -83,7 +90,7 @@ public class IngredientController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete an ingredient", description = "Deletes an ingredient by ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Successfully deleted"),
-            @ApiResponse(responseCode = "404", description = "Ingredient not found")})
+        @ApiResponse(responseCode = "404", description = "Ingredient not found")})
     public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
         ingredientService.deleteIngredient(id);
         return ResponseEntity.noContent().build();

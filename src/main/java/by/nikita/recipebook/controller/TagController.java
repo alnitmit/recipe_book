@@ -37,7 +37,7 @@ public class TagController {
     @PostMapping
     @Operation(summary = "Create a new tag", description = "Creates a tag and returns the created object")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Tag successfully created"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data")})
+        @ApiResponse(responseCode = "400", description = "Invalid input data")})
     public ResponseEntity<TagDTO> createTag(@Valid @RequestBody TagDTO tagDTO) {
         TagDTO createdTag = tagService.createTag(tagDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTag);
@@ -53,7 +53,7 @@ public class TagController {
     @GetMapping("/{id}")
     @Operation(summary = "Get tag by ID", description = "Returns a single tag")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully retrieved"),
-            @ApiResponse(responseCode = "404", description = "Tag not found")})
+        @ApiResponse(responseCode = "404", description = "Tag not found")})
     public ResponseEntity<TagDTO> getTagById(@PathVariable Long id) {
         TagDTO tag = tagService.getTagById(id)
                 .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
@@ -63,8 +63,8 @@ public class TagController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing tag", description = "Updates tag data")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated"),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "404", description = "Tag not found")})
+        @ApiResponse(responseCode = "400", description = "Invalid input"),
+        @ApiResponse(responseCode = "404", description = "Tag not found")})
     public ResponseEntity<TagDTO> updateTag(@PathVariable Long id, @Valid @RequestBody TagDTO tagDTO) {
         TagDTO updatedTag = tagService.updateTag(id, tagDTO);
         return ResponseEntity.ok(updatedTag);
@@ -73,7 +73,7 @@ public class TagController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a tag", description = "Deletes a tag by ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Successfully deleted"),
-            @ApiResponse(responseCode = "404", description = "Tag not found")})
+        @ApiResponse(responseCode = "404", description = "Tag not found")})
     public ResponseEntity<Void> deleteTag(@PathVariable Long id) {
         tagService.deleteTag(id);
         return ResponseEntity.noContent().build();
