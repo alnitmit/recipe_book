@@ -14,7 +14,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,39 +34,6 @@ public class RecipeService {
     private final RecipeMapper recipeMapper;
 
     private final Map<RecipeFilterKey, Page<RecipeDTO>> cache = new HashMap<>();
-
-    private static class RecipeFilterKey {
-        private final String categoryName;
-        private final Long minIngredients;
-        private final int page;
-        private final int size;
-        private final String sort;
-
-        public RecipeFilterKey(String categoryName, Long minIngredients, Pageable pageable) {
-            this.categoryName = categoryName;
-            this.minIngredients = minIngredients;
-            this.page = pageable.getPageNumber();
-            this.size = pageable.getPageSize();
-            this.sort = pageable.getSort().toString();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof RecipeFilterKey)) return false;
-            RecipeFilterKey that = (RecipeFilterKey) o;
-            return page == that.page &&
-                size == that.size &&
-                Objects.equals(categoryName, that.categoryName) &&
-                Objects.equals(minIngredients, that.minIngredients) &&
-                Objects.equals(sort, that.sort);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(categoryName, minIngredients, page, size, sort);
-        }
-    }
 
     private RecipeFilterKey buildFilterKey(String categoryName, Long minIngredients, Pageable pageable) {
         return new RecipeFilterKey(categoryName, minIngredients, pageable);
@@ -145,5 +118,41 @@ public class RecipeService {
         }
         recipeRepository.deleteById(id);
         clearCache();
+    }
+
+    private static class RecipeFilterKey {
+        private final String categoryName;
+        private final Long minIngredients;
+        private final int page;
+        private final int size;
+        private final String sort;
+
+        public RecipeFilterKey(String categoryName, Long minIngredients, Pageable pageable) {
+            this.categoryName = categoryName;
+            this.minIngredients = minIngredients;
+            this.page = pageable.getPageNumber();
+            this.size = pageable.getPageSize();
+            this.sort = pageable.getSort().toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof RecipeFilterKey that)) {
+                return false;
+            }
+            return page == that.page &&
+                size == that.size &&
+                Objects.equals(categoryName, that.categoryName) &&
+                Objects.equals(minIngredients, that.minIngredients) &&
+                Objects.equals(sort, that.sort);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(categoryName, minIngredients, page, size, sort);
+        }
     }
 }
