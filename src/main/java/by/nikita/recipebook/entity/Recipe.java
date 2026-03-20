@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,13 @@ import java.util.Set;
             @NamedAttributeNode("category"),
             @NamedAttributeNode("author"),
             @NamedAttributeNode("tags"),
-            @NamedAttributeNode("ingredients")
+            @NamedAttributeNode(value = "ingredients", subgraph = "ingredients-subgraph")
+        },
+        subgraphs = {
+            @NamedSubgraph(
+                name = "ingredients-subgraph",
+                    attributeNodes = @NamedAttributeNode("unit")
+                )
         }
 )
 public class Recipe {
@@ -48,7 +55,10 @@ public class Recipe {
     @Column(columnDefinition = "TEXT")
     private String instructions;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private Set<Ingredient> ingredients = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -66,4 +76,14 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
+
+    public void addIngredient(Ingredient ingredient) {
+        ingredients.add(ingredient);
+        ingredient.setRecipe(this);
+    }
+
+    public void removeIngredient(Ingredient ingredient) {
+        ingredients.remove(ingredient);
+        ingredient.setRecipe(null);
+    }
 }
