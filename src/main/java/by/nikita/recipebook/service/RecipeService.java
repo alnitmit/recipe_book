@@ -19,9 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -32,36 +31,33 @@ public class RecipeService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final RecipeMapper recipeMapper;
-
-    private final Map<RecipeFilterKey, Page<RecipeDTO>> cache = new HashMap<>();
-
-    private RecipeFilterKey buildFilterKey(String categoryName, Long minIngredients, Pageable pageable) {
-        return new RecipeFilterKey(categoryName, minIngredients, pageable);
-    }
-
-    private void clearCache() {
-        cache.clear();
-    }
+    private final Map<RecipeFilterKey, Page<RecipeDTO>> cache = Collections.synchronizedMap(new HashMap<>());
 
     @Transactional(readOnly = true)
     public Page<RecipeDTO> searchRecipesJPQL(String categoryName, Long minIngredients, Pageable pageable) {
         RecipeFilterKey key = buildFilterKey(categoryName, minIngredients, pageable);
-        if (cache.containsKey(key)) {
-            return cache.get(key);
-        }
+        return cache.computeIfAbsent(key, ignored -> loadRecipesByFilter(categoryName, minIngredients, pageable));
+    }
 
-        Page<Long> idsPage = recipeRepository.findRecipeIdsByComplexFilter(categoryName, minIngredients, pageable);
+    private RecipeFilterKey buildFilterKey(String categoryName, Long minIngredients, Pageable pageable) {
+        return new RecipeFilterKey(
+            categoryName,
+            minIngredients,
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            pageable.getSort().toString()
+        );
+    }
+
+    private Page<RecipeDTO> loadRecipesByFilter(String categoryName, Long minIngredients, Pageable pageable) {
+        Page<Long> idsPage = recipeRepository.findRecipeIdsByComplexFilter(categoryName, minIngredients,
+            pageable);
         if (!idsPage.hasContent()) {
-            Page<RecipeDTO> empty = new PageImpl<>(Collections.emptyList(), pageable, 0);
-            cache.put(key, empty);
-            return empty;
+            return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }
-
         List<Recipe> recipes = recipeRepository.findByIdIn(idsPage.getContent(), pageable.getSort());
-        List<RecipeDTO> dtos = recipes.stream().map(recipeMapper::toDto).collect(Collectors.toList());
-        Page<RecipeDTO> result = new PageImpl<>(dtos, pageable, idsPage.getTotalElements());
-        cache.put(key, result);
-        return result;
+        List<RecipeDTO> dtos = recipes.stream().map(recipeMapper::toDto).toList();
+        return new PageImpl<>(dtos, pageable, idsPage.getTotalElements());
     }
 
     public Page<RecipeDTO> searchRecipesNative(String categoryName, Long minIngredients, Pageable pageable) {
@@ -120,39 +116,16 @@ public class RecipeService {
         clearCache();
     }
 
-    private static class RecipeFilterKey {
-        private final String categoryName;
-        private final Long minIngredients;
-        private final int page;
-        private final int size;
-        private final String sort;
+    private void clearCache() {
+        cache.clear();
+    }
 
-        public RecipeFilterKey(String categoryName, Long minIngredients, Pageable pageable) {
-            this.categoryName = categoryName;
-            this.minIngredients = minIngredients;
-            this.page = pageable.getPageNumber();
-            this.size = pageable.getPageSize();
-            this.sort = pageable.getSort().toString();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof RecipeFilterKey that)) {
-                return false;
-            }
-            return page == that.page &&
-                size == that.size &&
-                Objects.equals(categoryName, that.categoryName) &&
-                Objects.equals(minIngredients, that.minIngredients) &&
-                Objects.equals(sort, that.sort);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(categoryName, minIngredients, page, size, sort);
-        }
+    private record RecipeFilterKey(
+        String categoryName,
+        Long minIngredients,
+        int page,
+        int size,
+        String sort
+    ) {
     }
 }
