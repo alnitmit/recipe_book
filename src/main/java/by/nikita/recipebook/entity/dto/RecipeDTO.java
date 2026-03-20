@@ -1,8 +1,5 @@
 package by.nikita.recipebook.entity.dto;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,26 +11,26 @@ import java.util.List;
 @AllArgsConstructor
 public class RecipeDTO {
     private Long id;
-
-    @NotBlank(message = "Title is required")
-    @Size(max = 200, message = "Title must not exceed 200 characters")
     private String title;
-
-    @Size(max = 1000, message = "Description must not exceed 1000 characters")
     private String description;
-
-    @NotBlank(message = "Instructions are required")
-    @Size(max = 5000, message = "Instructions must not exceed 5000 characters")
     private String instructions;
-
-    @Valid
+    private Long categoryId;
+    private String categoryName;
+    private Long authorId;
+    private String authorUsername;
+    private List<TagDTO> tags;
     private List<IngredientDTO> ingredients;
 
-    @Valid
-    private CategoryDTO category;
+    public RecipeDTO(Long id, String title, String description, String instructions,
+                     Long categoryId, String categoryName, Long authorId, String authorUsername) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.instructions = instructions;
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.authorId = authorId;
+        this.authorUsername = authorUsername;
+    }
 
-    @Valid
-    private UserDTO author;
-
-    private List<TagDTO> tags;
 }

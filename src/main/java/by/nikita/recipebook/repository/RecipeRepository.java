@@ -1,6 +1,7 @@
 package by.nikita.recipebook.repository;
 
 import by.nikita.recipebook.entity.Recipe;
+import by.nikita.recipebook.entity.dto.RecipeDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,32 +25,39 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Override
     Optional<Recipe> findById(Long id);
 
-    @Query("SELECT r.id FROM Recipe r "
-        + "LEFT JOIN r.category c "
-        + "LEFT JOIN r.ingredients i "
-        + "WHERE (:categoryName IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :categoryName, '%'))) "
-        + "GROUP BY r.id, c.id "
-        + "HAVING (:minIngredients IS NULL OR COUNT(i) >= :minIngredients)")
-    Page<Long> findRecipeIdsByComplexFilter(
-        @Param("categoryName") String categoryName,
-        @Param("minIngredients") Long minIngredients,
-        Pageable pageable);
-
     @EntityGraph(value = "Recipe.withAllDetails", type = EntityGraph.EntityGraphType.FETCH)
     List<Recipe> findByIdIn(List<Long> ids, Sort sort);
 
-    @Query(value = "SELECT r.* FROM recipes r "
-        + "LEFT JOIN categories c ON r.category_id = c.id "
-        + "LEFT JOIN ingredients i ON r.id = i.recipe_id "
-        + "WHERE (:categoryName IS NULL OR c.name ILIKE %:categoryName%) "
-        + "GROUP BY r.id "
-        + "HAVING (:minIngredients IS NULL OR COUNT(i.id) >= :minIngredients)",
-        countQuery = "SELECT COUNT(DISTINCT r.id) FROM recipes r "
-            + "LEFT JOIN categories c ON r.category_id = c.id "
-            + "WHERE (:categoryName IS NULL OR c.name ILIKE %:categoryName%)",
+    @Query("SELECT new by.nikita.recipebook.entity.dto.RecipeDTO(" +
+        "r.id, r.title, r.description, r.instructions, " +
+        "c.id, c.name, u.id, u.username) " +
+        "FROM Recipe r " +
+        "LEFT JOIN r.category c " +
+        "LEFT JOIN r.author u " +
+        "WHERE (:categoryName IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :categoryName, '%'))) " +
+        "AND (:minIngredients IS NULL OR SIZE(r.ingredients) >= :minIngredients)")
+    Page<RecipeDTO> findRecipeDTOsByFiltersJPQL(@Param("categoryName") String categoryName,
+                                                @Param("minIngredients") Long minIngredients,
+                                                Pageable pageable);
+
+    @Query(value = "SELECT r.id, r.title, r.description, r.instructions, " +
+        "c.id AS category_id, c.name AS category_name, " +
+        "u.id AS author_id, u.username AS author_username " +
+        "FROM recipes r " +
+        "LEFT JOIN categories c ON r.category_id = c.id " +
+        "LEFT JOIN users u ON r.author_id = u.id " +
+        "LEFT JOIN ingredients i ON r.id = i.recipe_id " +
+        "WHERE (:categoryName IS NULL OR c.name ILIKE %:categoryName%) " +
+        "GROUP BY r.id, c.id, u.id " +
+        "HAVING (:minIngredients IS NULL OR COUNT(i.id) >= :minIngredients)",
+        countQuery = "SELECT COUNT(*) FROM (SELECT r.id FROM recipes r " +
+            "LEFT JOIN categories c ON r.category_id = c.id " +
+            "LEFT JOIN ingredients i ON r.id = i.recipe_id " +
+            "WHERE (:categoryName IS NULL OR c.name ILIKE %:categoryName%) " +
+            "GROUP BY r.id " +
+            "HAVING (:minIngredients IS NULL OR COUNT(i.id) >= :minIngredients)) filtered",
         nativeQuery = true)
-    Page<Recipe> findRecipesByComplexFilterNative(
-        @Param("categoryName") String categoryName,
-        @Param("minIngredients") Long minIngredients,
-        Pageable pageable);
+    Page<RecipeDTO> findRecipeDTOsByFiltersNative(@Param("categoryName") String categoryName,
+                                                  @Param("minIngredients") Long minIngredients,
+                                                  Pageable pageable);
 }
