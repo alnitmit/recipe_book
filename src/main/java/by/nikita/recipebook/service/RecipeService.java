@@ -30,7 +30,7 @@ public class RecipeService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final RecipeMapper recipeMapper;
-    private final Map<RecipeFilterKey, Page<RecipeDTO>> cache = Collections.synchronizedMap(new HashMap<>());
+    private final Map<RecipeFilterKey, Page<RecipeDTO>> cache = new HashMap<>();
 
     @Transactional(readOnly = true)
     public Page<RecipeDTO> searchRecipesJPQL(String categoryName, Long minIngredients, Pageable pageable) {
