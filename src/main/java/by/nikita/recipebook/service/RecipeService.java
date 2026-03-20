@@ -43,7 +43,7 @@ public class RecipeService {
 
     public Page<RecipeDTO> searchRecipesNative(String categoryName, Long minIngredients, Pageable pageable) {
         return recipeRepository.findRecipesByComplexFilterNative(categoryName, minIngredients, pageable)
-                .map(recipeMapper::toDto);
+            .map(recipeMapper::toDto);
     }
 
     @Transactional
@@ -70,7 +70,7 @@ public class RecipeService {
     @Transactional
     public RecipeDTO updateRecipe(Long id, RecipeDTO recipeDTO) {
         Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found with id: " + id));
+            .orElseThrow(() -> new NoSuchElementException("Recipe not found with id: " + id));
         recipe.setTitle(recipeDTO.getTitle());
         recipe.setDescription(recipeDTO.getDescription());
         recipe.setInstructions(recipeDTO.getInstructions());
@@ -80,7 +80,7 @@ public class RecipeService {
         if (recipeDTO.getTags() != null) {
             recipe.getTags().clear();
             recipeDTO.getTags().forEach(tagDTO ->
-                    tagRepository.findById(tagDTO.getId()).ifPresent(recipe.getTags()::add));
+                tagRepository.findById(tagDTO.getId()).ifPresent(recipe.getTags()::add));
         }
         Recipe updatedRecipe = recipeRepository.save(recipe);
         return recipeMapper.toDto(updatedRecipe);

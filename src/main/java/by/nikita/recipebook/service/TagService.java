@@ -2,8 +2,8 @@ package by.nikita.recipebook.service;
 
 import by.nikita.recipebook.entity.Tag;
 import by.nikita.recipebook.entity.dto.TagDTO;
-import by.nikita.recipebook.utils.TagMapper;
 import by.nikita.recipebook.repository.TagRepository;
+import by.nikita.recipebook.utils.TagMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +42,7 @@ public class TagService {
     @Transactional
     public TagDTO updateTag(Long id, TagDTO tagDTO) {
         Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
+            .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
 
         if (!tag.getName().equals(tagDTO.getName()) && tagRepository.findByName(tagDTO.getName()).isPresent()) {
             throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");

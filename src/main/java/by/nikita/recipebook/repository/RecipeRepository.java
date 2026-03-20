@@ -25,31 +25,31 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Optional<Recipe> findById(Long id);
 
     @Query("SELECT r.id FROM Recipe r "
-            + "LEFT JOIN r.category c "
-            + "LEFT JOIN r.ingredients i "
-            + "WHERE (:categoryName IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :categoryName, '%'))) "
-            + "GROUP BY r.id, c.id "
-            + "HAVING (:minIngredients IS NULL OR COUNT(i) >= :minIngredients)")
+        + "LEFT JOIN r.category c "
+        + "LEFT JOIN r.ingredients i "
+        + "WHERE (:categoryName IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :categoryName, '%'))) "
+        + "GROUP BY r.id, c.id "
+        + "HAVING (:minIngredients IS NULL OR COUNT(i) >= :minIngredients)")
     Page<Long> findRecipeIdsByComplexFilter(
-            @Param("categoryName") String categoryName,
-            @Param("minIngredients") Long minIngredients,
-            Pageable pageable);
+        @Param("categoryName") String categoryName,
+        @Param("minIngredients") Long minIngredients,
+        Pageable pageable);
 
     @EntityGraph(value = "Recipe.withAllDetails", type = EntityGraph.EntityGraphType.FETCH)
     List<Recipe> findByIdIn(List<Long> ids, Sort sort);
 
     @Query(value = "SELECT r.* FROM recipes r "
+        + "LEFT JOIN categories c ON r.category_id = c.id "
+        + "LEFT JOIN ingredients i ON r.id = i.recipe_id "
+        + "WHERE (:categoryName IS NULL OR c.name ILIKE %:categoryName%) "
+        + "GROUP BY r.id "
+        + "HAVING (:minIngredients IS NULL OR COUNT(i.id) >= :minIngredients)",
+        countQuery = "SELECT COUNT(DISTINCT r.id) FROM recipes r "
             + "LEFT JOIN categories c ON r.category_id = c.id "
-            + "LEFT JOIN ingredients i ON r.id = i.recipe_id "
-            + "WHERE (:categoryName IS NULL OR c.name ILIKE %:categoryName%) "
-            + "GROUP BY r.id "
-            + "HAVING (:minIngredients IS NULL OR COUNT(i.id) >= :minIngredients)",
-            countQuery = "SELECT COUNT(DISTINCT r.id) FROM recipes r "
-                    + "LEFT JOIN categories c ON r.category_id = c.id "
-                    + "WHERE (:categoryName IS NULL OR c.name ILIKE %:categoryName%)",
-            nativeQuery = true)
+            + "WHERE (:categoryName IS NULL OR c.name ILIKE %:categoryName%)",
+        nativeQuery = true)
     Page<Recipe> findRecipesByComplexFilterNative(
-            @Param("categoryName") String categoryName,
-            @Param("minIngredients") Long minIngredients,
-            Pageable pageable);
+        @Param("categoryName") String categoryName,
+        @Param("minIngredients") Long minIngredients,
+        Pageable pageable);
 }

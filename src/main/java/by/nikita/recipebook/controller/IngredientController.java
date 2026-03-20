@@ -36,7 +36,7 @@ public class IngredientController {
     }
 
     @PostMapping
-@Operation(
+    @Operation(
         summary = "Get ingredients by recipe ID",
         description = "Returns a paginated list of ingredients for a specific recipe"
     )
@@ -60,19 +60,19 @@ public class IngredientController {
         @ApiResponse(responseCode = "404", description = "Ingredient not found")})
     public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long id) {
         IngredientDTO ingredient = ingredientService.getIngredientById(id)
-                .orElseThrow(() -> new NoSuchElementException("Ingredient not found with id: " + id));
+            .orElseThrow(() -> new NoSuchElementException("Ingredient not found with id: " + id));
         return ResponseEntity.ok(ingredient);
     }
 
     @GetMapping("/by-recipe")
     @Operation(
-            summary = "Get ingredients by recipe ID",
-            description = "Returns a paginated list of ingredients for a specific recipe"
+        summary = "Get ingredients by recipe ID",
+        description = "Returns a paginated list of ingredients for a specific recipe"
     )
     @ApiResponse(responseCode = "200", description = "Successful operation")
     public ResponseEntity<Page<IngredientDTO>> getIngredientsByRecipe(
-            @RequestParam Long recipeId,
-            @PageableDefault(size = 20) Pageable pageable) {
+        @RequestParam Long recipeId,
+        @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(ingredientService.getIngredientsByRecipe(recipeId, pageable));
     }
 
@@ -82,7 +82,7 @@ public class IngredientController {
         @ApiResponse(responseCode = "400", description = "Invalid input"),
         @ApiResponse(responseCode = "404", description = "Ingredient not found")})
     public ResponseEntity<IngredientDTO> updateIngredient(@PathVariable Long id,
-            @Valid @RequestBody IngredientDTO ingredientDTO) {
+                                                          @Valid @RequestBody IngredientDTO ingredientDTO) {
         IngredientDTO updatedIngredient = ingredientService.updateIngredient(id, ingredientDTO);
         return ResponseEntity.ok(updatedIngredient);
     }

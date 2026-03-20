@@ -4,10 +4,10 @@ import by.nikita.recipebook.entity.Ingredient;
 import by.nikita.recipebook.entity.Recipe;
 import by.nikita.recipebook.entity.Unit;
 import by.nikita.recipebook.entity.dto.IngredientDTO;
-import by.nikita.recipebook.utils.IngredientMapper;
 import by.nikita.recipebook.repository.IngredientRepository;
 import by.nikita.recipebook.repository.RecipeRepository;
 import by.nikita.recipebook.repository.UnitRepository;
+import by.nikita.recipebook.utils.IngredientMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,12 +28,12 @@ public class IngredientService {
     @Transactional
     public IngredientDTO createIngredient(IngredientDTO ingredientDTO) {
         Recipe recipe = recipeRepository.findById(ingredientDTO.getRecipeId())
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found"));
+            .orElseThrow(() -> new NoSuchElementException("Recipe not found"));
 
         Unit unit = null;
         if (ingredientDTO.getUnitId() != null) {
             unit = unitRepository.findById(ingredientDTO.getUnitId())
-                    .orElseThrow(() -> new NoSuchElementException("Unit not found"));
+                .orElseThrow(() -> new NoSuchElementException("Unit not found"));
         }
 
         Ingredient ingredient = ingredientMapper.toEntity(ingredientDTO, recipe, unit);
@@ -56,21 +56,21 @@ public class IngredientService {
     @Transactional
     public IngredientDTO updateIngredient(Long id, IngredientDTO ingredientDTO) {
         Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Ingredient not found"));
+            .orElseThrow(() -> new NoSuchElementException("Ingredient not found"));
 
         ingredient.setName(ingredientDTO.getName());
         ingredient.setQuantity(ingredientDTO.getQuantity());
 
         if (ingredientDTO.getUnitId() != null) {
             Unit unit = unitRepository.findById(ingredientDTO.getUnitId())
-                    .orElseThrow(() -> new NoSuchElementException("Unit not found"));
+                .orElseThrow(() -> new NoSuchElementException("Unit not found"));
             ingredient.setUnit(unit);
         }
 
         if (ingredientDTO.getRecipeId() != null
-                && !ingredientDTO.getRecipeId().equals(ingredient.getRecipe().getId())) {
+            && !ingredientDTO.getRecipeId().equals(ingredient.getRecipe().getId())) {
             Recipe newRecipe = recipeRepository.findById(ingredientDTO.getRecipeId())
-                    .orElseThrow(() -> new NoSuchElementException("Recipe not found"));
+                .orElseThrow(() -> new NoSuchElementException("Recipe not found"));
             ingredient.setRecipe(newRecipe);
         }
 

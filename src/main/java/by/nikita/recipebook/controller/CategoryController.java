@@ -56,7 +56,7 @@ public class CategoryController {
         @ApiResponse(responseCode = "404", description = "Category not found")})
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         CategoryDTO category = categoryService.getCategoryById(id)
-                .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
+            .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
         return ResponseEntity.ok(category);
     }
 
@@ -66,7 +66,7 @@ public class CategoryController {
         @ApiResponse(responseCode = "400", description = "Invalid input"),
         @ApiResponse(responseCode = "404", description = "Category not found")})
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id,
-            @Valid @RequestBody CategoryDTO categoryDTO) {
+                                                      @Valid @RequestBody CategoryDTO categoryDTO) {
         CategoryDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
         return ResponseEntity.ok(updatedCategory);
     }

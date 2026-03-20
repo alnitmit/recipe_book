@@ -7,6 +7,7 @@ import by.nikita.recipebook.entity.dto.RecipeDTO;
 import by.nikita.recipebook.entity.dto.TagDTO;
 import by.nikita.recipebook.entity.dto.UserDTO;
 import org.springframework.stereotype.Component;
+
 import java.util.stream.Collectors;
 
 @Component

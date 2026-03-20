@@ -29,19 +29,19 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(
-        name = "Recipe.withAllDetails",
-        attributeNodes = {
-            @NamedAttributeNode("category"),
-            @NamedAttributeNode("author"),
-            @NamedAttributeNode("tags"),
-            @NamedAttributeNode(value = "ingredients", subgraph = "ingredients-subgraph")
-        },
-        subgraphs = {
-            @NamedSubgraph(
-                name = "ingredients-subgraph",
-                    attributeNodes = @NamedAttributeNode("unit")
-                )
-        }
+    name = "Recipe.withAllDetails",
+    attributeNodes = {
+        @NamedAttributeNode("category"),
+        @NamedAttributeNode("author"),
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode(value = "ingredients", subgraph = "ingredients-subgraph")
+    },
+    subgraphs = {
+        @NamedSubgraph(
+            name = "ingredients-subgraph",
+            attributeNodes = @NamedAttributeNode("unit")
+        )
+    }
 )
 public class Recipe {
 
@@ -56,9 +56,9 @@ public class Recipe {
     private String instructions;
 
     @OneToMany(mappedBy = "recipe",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY)
     private Set<Ingredient> ingredients = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -71,9 +71,9 @@ public class Recipe {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
-            name = "recipe_tags",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
+        name = "recipe_tags",
+        joinColumns = @JoinColumn(name = "recipe_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
 
