@@ -86,7 +86,7 @@ public class RecipeService {
             userRepository.findById(recipeDTO.getAuthor().getId()).ifPresent(recipe::setAuthor);
         }
         Recipe savedRecipe = recipeRepository.save(recipe);
-        +        clearCache();
+                 clearCache();
         return recipeMapper.toDto(savedRecipe);
     }
 
