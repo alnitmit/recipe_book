@@ -14,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,15 +27,68 @@ public class RecipeService {
     private final TagRepository tagRepository;
     private final RecipeMapper recipeMapper;
 
+    private final Map<RecipeFilterKey, Page<RecipeDTO>> cache = new HashMap<>();
+
+    private static class RecipeFilterKey {
+        private final String categoryName;
+        private final Long minIngredients;
+        private final int page;
+        private final int size;
+        private final String sort;
+
+        public RecipeFilterKey(String categoryName, Long minIngredients, Pageable pageable) {
+            this.categoryName = categoryName;
+            this.minIngredients = minIngredients;
+            this.page = pageable.getPageNumber();
+            this.size = pageable.getPageSize();
+            this.sort = pageable.getSort().toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof RecipeFilterKey)) return false;
+            RecipeFilterKey that = (RecipeFilterKey) o;
+            return page == that.page &&
+                size == that.size &&
+                Objects.equals(categoryName, that.categoryName) &&
+                Objects.equals(minIngredients, that.minIngredients) &&
+                Objects.equals(sort, that.sort);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(categoryName, minIngredients, page, size, sort);
+        }
+    }
+
+    private RecipeFilterKey buildFilterKey(String categoryName, Long minIngredients, Pageable pageable) {
+        return new RecipeFilterKey(categoryName, minIngredients, pageable);
+    }
+
+    private void clearCache() {
+        cache.clear();
+    }
+
     @Transactional(readOnly = true)
     public Page<RecipeDTO> searchRecipesJPQL(String categoryName, Long minIngredients, Pageable pageable) {
+        RecipeFilterKey key = buildFilterKey(categoryName, minIngredients, pageable);
+        if (cache.containsKey(key)) {
+            return cache.get(key);
+        }
+
         Page<Long> idsPage = recipeRepository.findRecipeIdsByComplexFilter(categoryName, minIngredients, pageable);
         if (!idsPage.hasContent()) {
-            return new PageImpl<>(Collections.emptyList(), pageable, 0);
+            Page<RecipeDTO> empty = new PageImpl<>(Collections.emptyList(), pageable, 0);
+            cache.put(key, empty);
+            return empty;
         }
+
         List<Recipe> recipes = recipeRepository.findByIdIn(idsPage.getContent(), pageable.getSort());
-        List<RecipeDTO> dtos = recipes.stream().map(recipeMapper::toDto).toList();
-        return new PageImpl<>(dtos, pageable, idsPage.getTotalElements());
+        List<RecipeDTO> dtos = recipes.stream().map(recipeMapper::toDto).collect(Collectors.toList());
+        Page<RecipeDTO> result = new PageImpl<>(dtos, pageable, idsPage.getTotalElements());
+        cache.put(key, result);
+        return result;
     }
 
     public Page<RecipeDTO> searchRecipesNative(String categoryName, Long minIngredients, Pageable pageable) {
@@ -56,6 +106,7 @@ public class RecipeService {
             userRepository.findById(recipeDTO.getAuthor().getId()).ifPresent(recipe::setAuthor);
         }
         Recipe savedRecipe = recipeRepository.save(recipe);
+        clearCache();
         return recipeMapper.toDto(savedRecipe);
     }
 
@@ -83,6 +134,7 @@ public class RecipeService {
                 tagRepository.findById(tagDTO.getId()).ifPresent(recipe.getTags()::add));
         }
         Recipe updatedRecipe = recipeRepository.save(recipe);
+        clearCache();
         return recipeMapper.toDto(updatedRecipe);
     }
 
@@ -92,5 +144,6 @@ public class RecipeService {
             throw new NoSuchElementException("Recipe not found with id: " + id);
         }
         recipeRepository.deleteById(id);
+        clearCache();
     }
 }
