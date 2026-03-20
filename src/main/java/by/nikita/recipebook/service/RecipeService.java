@@ -37,7 +37,7 @@ public class RecipeService {
             return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }
         List<Recipe> recipes = recipeRepository.findByIdIn(idsPage.getContent(), pageable.getSort());
-        List<RecipeDTO> dtos = recipes.stream().map(recipeMapper::toDto).collect(Collectors.toList());
+        List<RecipeDTO> dtos = recipes.stream().map(recipeMapper::toDto).toList();
         return new PageImpl<>(dtos, pageable, idsPage.getTotalElements());
     }
 
