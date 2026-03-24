@@ -3,6 +3,7 @@ package by.nikita.recipebook.service;
 import by.nikita.recipebook.entity.Category;
 import by.nikita.recipebook.entity.dto.CategoryDTO;
 import by.nikita.recipebook.repository.CategoryRepository;
+import by.nikita.recipebook.repository.RecipeRepository;
 import by.nikita.recipebook.utils.CategoryMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final RecipeRepository recipeRepository;
     private final CategoryMapper categoryMapper;
 
     @Transactional
@@ -60,10 +62,11 @@ public class CategoryService {
 
     @Transactional
     public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
+        if (!categoryRepository.existsById(id)) {
+            throw new NoSuchElementException("Category not found with id: " + id);
+        }
 
-        if (category.getRecipes() != null && !category.getRecipes().isEmpty()) {
+        if (recipeRepository.existsByCategoryId(id)) {
             throw new IllegalStateException("Cannot delete category with existing recipes");
         }
 

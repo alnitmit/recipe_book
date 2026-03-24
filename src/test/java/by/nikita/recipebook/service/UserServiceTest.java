@@ -1,8 +1,8 @@
 package by.nikita.recipebook.service;
 
-import by.nikita.recipebook.entity.Recipe;
 import by.nikita.recipebook.entity.User;
 import by.nikita.recipebook.entity.dto.UserDTO;
+import by.nikita.recipebook.repository.RecipeRepository;
 import by.nikita.recipebook.repository.UserRepository;
 import by.nikita.recipebook.utils.UserMapper;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -23,6 +22,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private RecipeRepository recipeRepository;
 
     @Mock
     private UserMapper userMapper;
@@ -44,11 +46,8 @@ class UserServiceTest {
 
     @Test
     void deleteUserShouldFailWhenUserHasRecipes() {
-        User user = new User();
-        user.setId(1L);
-        user.setRecipes(List.of(new Recipe()));
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.existsById(1L)).thenReturn(true);
+        when(recipeRepository.existsByAuthorId(1L)).thenReturn(true);
 
         assertThatThrownBy(() -> userService.deleteUser(1L))
             .isInstanceOf(IllegalStateException.class)
@@ -57,7 +56,7 @@ class UserServiceTest {
 
     @Test
     void deleteUserShouldFailWhenUserDoesNotExist() {
-        when(userRepository.findById(4L)).thenReturn(Optional.empty());
+        when(userRepository.existsById(4L)).thenReturn(false);
 
         assertThatThrownBy(() -> userService.deleteUser(4L))
             .isInstanceOf(NoSuchElementException.class)

@@ -48,7 +48,6 @@ public class RecipeDTO {
     @Schema(description = "Recipe author username", example = "nikita")
     private String authorUsername;
 
-    @Valid
     @ArraySchema(schema = @Schema(implementation = TagDTO.class))
     private List<TagDTO> tags;
 

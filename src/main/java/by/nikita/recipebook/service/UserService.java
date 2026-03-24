@@ -2,6 +2,7 @@ package by.nikita.recipebook.service;
 
 import by.nikita.recipebook.entity.User;
 import by.nikita.recipebook.entity.dto.UserDTO;
+import by.nikita.recipebook.repository.RecipeRepository;
 import by.nikita.recipebook.repository.UserRepository;
 import by.nikita.recipebook.utils.UserMapper;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RecipeRepository recipeRepository;
     private final UserMapper userMapper;
 
     @Transactional
@@ -69,10 +71,11 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long id) {
-        User user = userRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
+        if (!userRepository.existsById(id)) {
+            throw new NoSuchElementException("User not found with id: " + id);
+        }
 
-        if (user.getRecipes() != null && !user.getRecipes().isEmpty()) {
+        if (recipeRepository.existsByAuthorId(id)) {
             throw new IllegalStateException("Cannot delete user with existing recipes");
         }
 

@@ -3,8 +3,12 @@ spring:
     name: recipebook
 
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50
     show-sql: true
 
   datasource:

@@ -27,6 +27,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @EntityGraph(value = "Recipe.withAllDetails", type = EntityGraph.EntityGraphType.FETCH)
     List<Recipe> findByIdIn(List<Long> ids, Sort sort);
 
+    boolean existsByAuthorId(Long authorId);
+
+    boolean existsByCategoryId(Long categoryId);
+
     @Query(
         value = "SELECT DISTINCT r.id " +
         "FROM Recipe r " +
