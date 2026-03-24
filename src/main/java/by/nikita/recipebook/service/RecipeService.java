@@ -1,22 +1,32 @@
 package by.nikita.recipebook.service;
 
+import by.nikita.recipebook.entity.Category;
 import by.nikita.recipebook.entity.Recipe;
+import by.nikita.recipebook.entity.Tag;
+import by.nikita.recipebook.entity.User;
 import by.nikita.recipebook.entity.dto.RecipeDTO;
+import by.nikita.recipebook.entity.dto.TagDTO;
 import by.nikita.recipebook.repository.CategoryRepository;
 import by.nikita.recipebook.repository.RecipeRepository;
 import by.nikita.recipebook.repository.TagRepository;
 import by.nikita.recipebook.repository.UserRepository;
 import by.nikita.recipebook.utils.RecipeMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -33,17 +43,7 @@ public class RecipeService {
     public Page<RecipeDTO> searchRecipesJPQL(String categoryName, Long minIngredients, Pageable pageable) {
         RecipeFilterKey key = buildFilterKey("jpql", categoryName, minIngredients, pageable);
         synchronized (cache) {
-            return cache.computeIfAbsent(key, k ->
-                recipeRepository.findRecipeDTOsByFiltersJPQL(categoryName, minIngredients, pageable));
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public Page<RecipeDTO> searchRecipesNative(String categoryName, Long minIngredients, Pageable pageable) {
-        RecipeFilterKey key = buildFilterKey("native", categoryName, minIngredients, pageable);
-        synchronized (cache) {
-            return cache.computeIfAbsent(key, k ->
-                recipeRepository.findRecipeDTOsByFiltersNative(categoryName, minIngredients, pageable));
+            return cache.computeIfAbsent(key, k -> getFilteredRecipes(categoryName, minIngredients, pageable));
         }
     }
 
@@ -51,20 +51,25 @@ public class RecipeService {
     public RecipeDTO createRecipe(RecipeDTO recipeDTO) {
         Recipe recipe = recipeMapper.toEntity(recipeDTO);
         if (recipeDTO.getCategoryId() != null) {
-            categoryRepository.findById(recipeDTO.getCategoryId()).ifPresent(recipe::setCategory);
+            recipe.setCategory(getCategoryById(recipeDTO.getCategoryId()));
         }
         if (recipeDTO.getAuthorId() != null) {
-            userRepository.findById(recipeDTO.getAuthorId()).ifPresent(recipe::setAuthor);
+            recipe.setAuthor(getAuthorById(recipeDTO.getAuthorId()));
+        }
+        if (recipeDTO.getTags() != null) {
+            recipe.getTags().addAll(getTagsByIds(recipeDTO.getTags()));
         }
         Recipe savedRecipe = recipeRepository.save(recipe);
         clearCache();
         return recipeMapper.toDto(savedRecipe);
     }
 
+    @Transactional(readOnly = true)
     public Page<RecipeDTO> getAllRecipes(Pageable pageable) {
         return recipeRepository.findAll(pageable).map(recipeMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     public Optional<RecipeDTO> getRecipeById(Long id) {
         return recipeRepository.findById(id).map(recipeMapper::toDto);
     }
@@ -77,12 +82,14 @@ public class RecipeService {
         recipe.setDescription(recipeDTO.getDescription());
         recipe.setInstructions(recipeDTO.getInstructions());
         if (recipeDTO.getCategoryId() != null) {
-            categoryRepository.findById(recipeDTO.getCategoryId()).ifPresent(recipe::setCategory);
+            recipe.setCategory(getCategoryById(recipeDTO.getCategoryId()));
+        }
+        if (recipeDTO.getAuthorId() != null) {
+            recipe.setAuthor(getAuthorById(recipeDTO.getAuthorId()));
         }
         if (recipeDTO.getTags() != null) {
             recipe.getTags().clear();
-            recipeDTO.getTags().forEach(tagDTO ->
-                tagRepository.findById(tagDTO.getId()).ifPresent(recipe.getTags()::add));
+            recipe.getTags().addAll(getTagsByIds(recipeDTO.getTags()));
         }
         Recipe updatedRecipe = recipeRepository.save(recipe);
         clearCache();
@@ -102,6 +109,50 @@ public class RecipeService {
         synchronized (cache) {
             cache.clear();
         }
+    }
+
+    private Page<RecipeDTO> getFilteredRecipes(String categoryName, Long minIngredients, Pageable pageable) {
+        Page<Long> recipeIdPage = recipeRepository.findRecipeIdsByFiltersJPQL(categoryName, minIngredients, pageable);
+        if (recipeIdPage.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        Sort sort = pageable.getSort().isSorted() ? pageable.getSort() : Sort.by(Sort.Direction.ASC, "id");
+        List<Long> orderedIds = recipeIdPage.getContent();
+        Map<Long, Integer> positionsById = new HashMap<>();
+        for (int index = 0; index < orderedIds.size(); index++) {
+            positionsById.put(orderedIds.get(index), index);
+        }
+
+        List<RecipeDTO> content = recipeRepository.findByIdIn(orderedIds, sort).stream()
+            .sorted(Comparator.comparingInt(recipe -> positionsById.getOrDefault(recipe.getId(), Integer.MAX_VALUE)))
+            .map(recipeMapper::toDto)
+            .toList();
+
+        return new PageImpl<>(content, pageable, recipeIdPage.getTotalElements());
+    }
+
+    private Category getCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+            .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + categoryId));
+    }
+
+    private User getAuthorById(Long authorId) {
+        return userRepository.findById(authorId)
+            .orElseThrow(() -> new NoSuchElementException("User not found with id: " + authorId));
+    }
+
+    private Set<Tag> getTagsByIds(List<TagDTO> tagDtos) {
+        Set<Tag> tags = new HashSet<>();
+        for (TagDTO tagDto : tagDtos) {
+            if (tagDto == null || tagDto.getId() == null) {
+                throw new IllegalArgumentException("Each tag must contain an id");
+            }
+            Tag tag = tagRepository.findById(tagDto.getId())
+                .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + tagDto.getId()));
+            tags.add(tag);
+        }
+        return tags;
     }
 
     private RecipeFilterKey buildFilterKey(String queryType, String categoryName, Long minIngredients,

@@ -35,10 +35,12 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
+    @Transactional(readOnly = true)
     public Page<UserDTO> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable).map(userMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     public Optional<UserDTO> getUserById(Long id) {
         return userRepository.findById(id).map(userMapper::toDto);
     }

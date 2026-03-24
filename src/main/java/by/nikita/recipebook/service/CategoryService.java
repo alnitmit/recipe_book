@@ -31,10 +31,12 @@ public class CategoryService {
         return categoryMapper.toDto(savedCategory);
     }
 
+    @Transactional(readOnly = true)
     public Page<CategoryDTO> getAllCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     public Optional<CategoryDTO> getCategoryById(Long id) {
         return categoryRepository.findById(id).map(categoryMapper::toDto);
     }

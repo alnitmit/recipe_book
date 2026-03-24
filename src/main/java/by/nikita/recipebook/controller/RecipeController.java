@@ -37,10 +37,10 @@ public class RecipeController {
 
     @PostMapping
     @Operation(summary = "Create a new recipe", description = "Creates a recipe and returns the created object")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Recipe successfully created"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data")
-    })
+     @ApiResponses(value = {
+         @ApiResponse(responseCode = "201", description = "Recipe successfully created"),
+         @ApiResponse(responseCode = "400", description = "Invalid input data")
+     })
     public ResponseEntity<RecipeDTO> createRecipe(@Valid @RequestBody RecipeDTO recipeDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(recipeService.createRecipe(recipeDTO));
     }
@@ -64,19 +64,6 @@ public class RecipeController {
         @RequestParam(required = false) Long minIngredients,
         @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(recipeService.searchRecipesJPQL(category, minIngredients, pageable));
-    }
-
-    @GetMapping("/filter/native")
-    @Operation(
-        summary = "Filter recipes using native SQL",
-        description = "Advanced filtering by category name and minimum ingredients using native SQL"
-    )
-    @ApiResponse(responseCode = "200", description = "Successful operation")
-    public ResponseEntity<Page<RecipeDTO>> filterRecipesNative(
-        @RequestParam(required = false) String category,
-        @RequestParam(required = false) Long minIngredients,
-        @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(recipeService.searchRecipesNative(category, minIngredients, pageable));
     }
 
     @GetMapping("/{id}")

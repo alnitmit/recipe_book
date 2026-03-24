@@ -17,15 +17,20 @@ import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "recipes")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"ingredients", "category", "author", "tags"})
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(
@@ -40,7 +45,7 @@ import java.util.Set;
         @NamedSubgraph(
             name = "ingredients-subgraph",
             attributeNodes = @NamedAttributeNode("unit")
-        )
+            )
     }
 )
 public class Recipe {
@@ -85,5 +90,29 @@ public class Recipe {
     public void removeIngredient(Ingredient ingredient) {
         ingredients.remove(ingredient);
         ingredient.setRecipe(null);
+    }
+
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients.clear();
+        if (ingredients == null) {
+            return;
+        }
+        ingredients.forEach(this::addIngredient);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Recipe recipe)) {
+            return false;
+        }
+        return id != null && Objects.equals(id, recipe.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

@@ -2,10 +2,18 @@ package by.nikita.recipebook.utils;
 
 import by.nikita.recipebook.entity.Recipe;
 import by.nikita.recipebook.entity.dto.RecipeDTO;
+import by.nikita.recipebook.entity.dto.TagDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
+@RequiredArgsConstructor
 public class RecipeMapper {
+
+    private final TagMapper tagMapper;
+    private final IngredientMapper ingredientMapper;
 
     public RecipeDTO toDto(Recipe recipe) {
         if (recipe == null) {
@@ -26,7 +34,14 @@ public class RecipeMapper {
             dto.setAuthorId(recipe.getAuthor().getId());
             dto.setAuthorUsername(recipe.getAuthor().getUsername());
         }
-        
+
+        dto.setTags(recipe.getTags().stream()
+            .map(tagMapper::toDto)
+            .toList());
+        dto.setIngredients(recipe.getIngredients().stream()
+            .map(ingredientMapper::toDto)
+            .toList());
+
         return dto;
     }
 
@@ -41,5 +56,14 @@ public class RecipeMapper {
         recipe.setInstructions(dto.getInstructions());
 
         return recipe;
+    }
+
+    public List<TagDTO> toTagDtos(Recipe recipe) {
+        if (recipe == null) {
+            return List.of();
+        }
+        return recipe.getTags().stream()
+            .map(tagMapper::toDto)
+            .toList();
     }
 }

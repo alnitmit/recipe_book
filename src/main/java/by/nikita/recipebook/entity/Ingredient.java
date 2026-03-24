@@ -11,15 +11,25 @@ import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "ingredients")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"unit", "recipe"})
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(name = "Ingredient.withRecipe", attributeNodes = @NamedAttributeNode("recipe"))
+@NamedEntityGraph(
+    name = "Ingredient.withDetails",
+    attributeNodes = {
+        @NamedAttributeNode("recipe"),
+        @NamedAttributeNode("unit")
+    }
+)
 public class Ingredient {
 
     @Id

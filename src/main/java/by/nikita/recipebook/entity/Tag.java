@@ -11,15 +11,20 @@ import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "tags")
-@Data
+@Getter
+@Setter
+@ToString(exclude = "recipes")
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(name = "Tag.withRecipes", attributeNodes = @NamedAttributeNode("recipes"))
@@ -43,7 +48,7 @@ public class Tag {
         if (!(o instanceof Tag that)) {
             return false;
         }
-        return id != null && id.equals(that.getId());
+        return id != null && Objects.equals(id, that.getId());
     }
 
     @Override

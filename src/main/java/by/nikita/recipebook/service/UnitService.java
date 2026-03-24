@@ -29,10 +29,12 @@ public class UnitService {
         return unitMapper.toDto(savedUnit);
     }
 
+    @Transactional(readOnly = true)
     public Page<UnitDTO> getAllUnits(Pageable pageable) {
         return unitRepository.findAll(pageable).map(unitMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     public Optional<UnitDTO> getUnitById(Long id) {
         return unitRepository.findById(id).map(unitMapper::toDto);
     }

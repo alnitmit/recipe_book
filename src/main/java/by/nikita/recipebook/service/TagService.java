@@ -31,10 +31,12 @@ public class TagService {
         return tagMapper.toDto(savedTag);
     }
 
+    @Transactional(readOnly = true)
     public Page<TagDTO> getAllTags(Pageable pageable) {
         return tagRepository.findAll(pageable).map(tagMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     public Optional<TagDTO> getTagById(Long id) {
         return tagRepository.findById(id).map(tagMapper::toDto);
     }

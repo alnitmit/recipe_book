@@ -11,15 +11,20 @@ import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "categories")
-@Data
+@Getter
+@Setter
+@ToString(exclude = "recipes")
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(name = "Category.withRecipes", attributeNodes = @NamedAttributeNode("recipes"))
@@ -36,4 +41,20 @@ public class Category {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Category category)) {
+            return false;
+        }
+        return id != null && Objects.equals(id, category.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
