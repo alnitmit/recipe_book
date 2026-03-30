@@ -3,6 +3,7 @@ package by.nikita.recipebook.controller;
 import by.nikita.recipebook.entity.dto.IngredientDTO;
 import by.nikita.recipebook.service.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -37,14 +39,29 @@ public class IngredientController {
 
     @PostMapping
     @Operation(
-        summary = "Get ingredients by recipe ID",
-        description = "Returns a paginated list of ingredients for a specific recipe"
+        summary = "Create a new ingredient",
+        description = "Creates a single ingredient and returns the created object"
     )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Ingredient successfully created"),
         @ApiResponse(responseCode = "400", description = "Invalid input data")})
     public ResponseEntity<IngredientDTO> createIngredient(@Valid @RequestBody IngredientDTO ingredientDTO) {
         IngredientDTO createdIngredient = ingredientService.createIngredient(ingredientDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdIngredient);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(
+        summary = "Create multiple ingredients",
+        description = "Creates several ingredients in a single request, for example when adding a recipe's full "
+            + "ingredient list"
+    )
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Ingredients successfully created"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data")})
+    public ResponseEntity<List<IngredientDTO>> createIngredientsBulk(
+        @ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = IngredientDTO.class))
+        @Valid @RequestBody List<@Valid IngredientDTO> ingredientDtos) {
+        List<IngredientDTO> createdIngredients = ingredientService.createIngredientsBulk(ingredientDtos);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdIngredients);
     }
 
     @GetMapping

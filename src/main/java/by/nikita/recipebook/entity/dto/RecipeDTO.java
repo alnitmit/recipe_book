@@ -55,16 +55,4 @@ public class RecipeDTO {
     @ArraySchema(schema = @Schema(implementation = IngredientDTO.class))
     private List<IngredientDTO> ingredients;
 
-    public RecipeDTO(Long id, String title, String description, String instructions,
-                     Long categoryId, String categoryName, Long authorId, String authorUsername) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.instructions = instructions;
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.authorId = authorId;
-        this.authorUsername = authorUsername;
-    }
-
 }

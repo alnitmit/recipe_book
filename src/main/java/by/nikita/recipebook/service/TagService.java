@@ -22,9 +22,10 @@ public class TagService {
 
     @Transactional
     public TagDTO createTag(TagDTO tagDTO) {
-        if (tagRepository.findByName(tagDTO.getName()).isPresent()) {
-            throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
-        }
+        tagRepository.findByName(tagDTO.getName())
+            .ifPresent(tag -> {
+                throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
+            });
 
         Tag tag = tagMapper.toEntity(tagDTO);
         Tag savedTag = tagRepository.save(tag);
@@ -46,9 +47,12 @@ public class TagService {
         Tag tag = tagRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
 
-        if (!tag.getName().equals(tagDTO.getName()) && tagRepository.findByName(tagDTO.getName()).isPresent()) {
-            throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
-        }
+        Optional.ofNullable(tagDTO.getName())
+            .filter(name -> !name.equals(tag.getName()))
+            .flatMap(tagRepository::findByName)
+            .ifPresent(existingTag -> {
+                throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
+            });
 
         tag.setName(tagDTO.getName());
 

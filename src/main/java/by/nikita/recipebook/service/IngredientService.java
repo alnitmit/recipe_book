@@ -14,12 +14,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class IngredientService {
+    private static final String RECIPE_NOT_FOUND_BY_ID = "Recipe not found with id: ";
+    private static final String UNIT_NOT_FOUND_BY_ID = "Unit not found with id: ";
+
     private final IngredientRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
     private final UnitRepository unitRepository;
@@ -29,18 +36,47 @@ public class IngredientService {
     public IngredientDTO createIngredient(IngredientDTO ingredientDTO) {
         Recipe recipe = recipeRepository.findById(ingredientDTO.getRecipeId())
             .orElseThrow(() ->
-                new NoSuchElementException("Recipe not found with id: " + ingredientDTO.getRecipeId()));
+                new NoSuchElementException(RECIPE_NOT_FOUND_BY_ID + ingredientDTO.getRecipeId()));
 
         Unit unit = null;
         if (ingredientDTO.getUnitId() != null) {
             unit = unitRepository.findById(ingredientDTO.getUnitId())
                 .orElseThrow(() ->
-                    new NoSuchElementException("Unit not found with id: " + ingredientDTO.getUnitId()));
+                    new NoSuchElementException(UNIT_NOT_FOUND_BY_ID + ingredientDTO.getUnitId()));
         }
 
         Ingredient ingredient = ingredientMapper.toEntity(ingredientDTO, recipe, unit);
         Ingredient savedIngredient = ingredientRepository.save(ingredient);
         return ingredientMapper.toDto(savedIngredient);
+    }
+
+    @Transactional
+    public List<IngredientDTO> createIngredientsBulk(List<IngredientDTO> ingredientDtos) {
+        if (ingredientDtos == null || ingredientDtos.isEmpty()) {
+            throw new IllegalArgumentException("Ingredient list must not be empty");
+        }
+
+        Map<Long, Recipe> recipesById = new HashMap<>();
+        Map<Long, Unit> unitsById = new HashMap<>();
+        List<Ingredient> ingredientsToSave = new ArrayList<>();
+
+        for (IngredientDTO ingredientDto : ingredientDtos) {
+            Recipe recipe = recipesById.computeIfAbsent(
+                ingredientDto.getRecipeId(),
+                this::getRecipeById
+            );
+
+            Unit unit = null;
+            if (ingredientDto.getUnitId() != null) {
+                unit = unitsById.computeIfAbsent(ingredientDto.getUnitId(), this::getUnitById);
+            }
+
+            ingredientsToSave.add(ingredientMapper.toEntity(ingredientDto, recipe, unit));
+        }
+
+        return ingredientRepository.saveAll(ingredientsToSave).stream()
+            .map(ingredientMapper::toDto)
+            .toList();
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +105,7 @@ public class IngredientService {
         if (ingredientDTO.getUnitId() != null) {
             Unit unit = unitRepository.findById(ingredientDTO.getUnitId())
                 .orElseThrow(() ->
-                    new NoSuchElementException("Unit not found with id: " + ingredientDTO.getUnitId()));
+                    new NoSuchElementException(UNIT_NOT_FOUND_BY_ID + ingredientDTO.getUnitId()));
             ingredient.setUnit(unit);
         }
 
@@ -77,7 +113,7 @@ public class IngredientService {
             && !ingredientDTO.getRecipeId().equals(ingredient.getRecipe().getId())) {
             Recipe newRecipe = recipeRepository.findById(ingredientDTO.getRecipeId())
                 .orElseThrow(() ->
-                    new NoSuchElementException("Recipe not found with id: " + ingredientDTO.getRecipeId()));
+                    new NoSuchElementException(RECIPE_NOT_FOUND_BY_ID + ingredientDTO.getRecipeId()));
             ingredient.setRecipe(newRecipe);
         }
 
@@ -91,5 +127,15 @@ public class IngredientService {
             throw new NoSuchElementException("Ingredient not found");
         }
         ingredientRepository.deleteById(id);
+    }
+
+    private Recipe getRecipeById(Long recipeId) {
+        return recipeRepository.findById(recipeId)
+            .orElseThrow(() -> new NoSuchElementException(RECIPE_NOT_FOUND_BY_ID + recipeId));
+    }
+
+    private Unit getUnitById(Long unitId) {
+        return unitRepository.findById(unitId)
+            .orElseThrow(() -> new NoSuchElementException(UNIT_NOT_FOUND_BY_ID + unitId));
     }
 }

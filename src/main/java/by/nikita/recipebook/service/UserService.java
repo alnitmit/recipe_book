@@ -24,13 +24,18 @@ public class UserService {
 
     @Transactional
     public UserDTO createUser(UserDTO userDTO) {
-        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("User with username '" + userDTO.getUsername() + "' already exists");
-        }
+        userRepository.findByUsername(userDTO.getUsername())
+            .ifPresent(user -> {
+                throw new IllegalArgumentException(
+                    "User with username '" + userDTO.getUsername() + "' already exists"
+                );
+            });
 
-        if (userDTO.getEmail() != null && userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
-        }
+        Optional.ofNullable(userDTO.getEmail())
+            .flatMap(userRepository::findByEmail)
+            .ifPresent(user -> {
+                throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
+            });
 
         User user = userMapper.toEntity(userDTO);
         User savedUser = userRepository.save(user);
@@ -52,15 +57,21 @@ public class UserService {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
 
-        if (!user.getUsername().equals(userDTO.getUsername())
-            && userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("User with username '" + userDTO.getUsername() + "' already exists");
-        }
+        Optional.ofNullable(userDTO.getUsername())
+            .filter(username -> !username.equals(user.getUsername()))
+            .flatMap(userRepository::findByUsername)
+            .ifPresent(existingUser -> {
+                throw new IllegalArgumentException(
+                    "User with username '" + userDTO.getUsername() + "' already exists"
+                );
+            });
 
-        if (userDTO.getEmail() != null && !userDTO.getEmail().equals(user.getEmail())
-            && userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
-        }
+        Optional.ofNullable(userDTO.getEmail())
+            .filter(email -> !email.equals(user.getEmail()))
+            .flatMap(userRepository::findByEmail)
+            .ifPresent(existingUser -> {
+                throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
+            });
 
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());

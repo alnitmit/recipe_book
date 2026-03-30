@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -143,16 +142,13 @@ public class RecipeService {
     }
 
     private Set<Tag> getTagsByIds(List<TagDTO> tagDtos) {
-        Set<Tag> tags = new HashSet<>();
-        for (TagDTO tagDto : tagDtos) {
-            if (tagDto == null || tagDto.getId() == null) {
-                throw new IllegalArgumentException("Each tag must contain an id");
-            }
-            Tag tag = tagRepository.findById(tagDto.getId())
-                .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + tagDto.getId()));
-            tags.add(tag);
-        }
-        return tags;
+        return tagDtos.stream()
+            .map(tagDto -> Optional.ofNullable(tagDto)
+                .map(TagDTO::getId)
+                .orElseThrow(() -> new IllegalArgumentException("Each tag must contain an id")))
+            .map(tagId -> tagRepository.findById(tagId)
+                .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + tagId)))
+            .collect(java.util.stream.Collectors.toSet());
     }
 
     private RecipeFilterKey buildFilterKey(String queryType, String categoryName, Long minIngredients,

@@ -14,10 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,5 +97,48 @@ class IngredientServiceTest {
         assertThatThrownBy(() -> ingredientService.updateIngredient(5L, ingredientDto))
             .isInstanceOf(NoSuchElementException.class)
             .hasMessage("Recipe not found with id: 99");
+    }
+
+    @Test
+    void createIngredientsBulkShouldCreateAllIngredients() {
+        Recipe recipe = new Recipe();
+        recipe.setId(12L);
+        Unit unit = new Unit();
+        unit.setId(3L);
+
+        IngredientDTO firstDto = new IngredientDTO(null, "Salt", "1 tsp", 3L, null, 12L);
+        IngredientDTO secondDto = new IngredientDTO(null, "Pepper", "1/2 tsp", 3L, null, 12L);
+
+        Ingredient firstIngredient = new Ingredient();
+        firstIngredient.setName("Salt");
+        Ingredient secondIngredient = new Ingredient();
+        secondIngredient.setName("Pepper");
+
+        IngredientDTO firstSavedDto = new IngredientDTO(1L, "Salt", "1 tsp", 3L, "gram", 12L);
+        IngredientDTO secondSavedDto = new IngredientDTO(2L, "Pepper", "1/2 tsp", 3L, "gram", 12L);
+
+        when(recipeRepository.findById(12L)).thenReturn(Optional.of(recipe));
+        when(unitRepository.findById(3L)).thenReturn(Optional.of(unit));
+        when(ingredientMapper.toEntity(firstDto, recipe, unit)).thenReturn(firstIngredient);
+        when(ingredientMapper.toEntity(secondDto, recipe, unit)).thenReturn(secondIngredient);
+        when(ingredientRepository.saveAll(anyList())).thenReturn(List.of(firstIngredient, secondIngredient));
+        when(ingredientMapper.toDto(firstIngredient)).thenReturn(firstSavedDto);
+        when(ingredientMapper.toDto(secondIngredient)).thenReturn(secondSavedDto);
+
+        List<IngredientDTO> result = ingredientService.createIngredientsBulk(List.of(firstDto, secondDto));
+
+        assertThat(result).containsExactly(firstSavedDto, secondSavedDto);
+        verify(recipeRepository).findById(12L);
+        verify(unitRepository).findById(3L);
+        verify(ingredientRepository).saveAll(anyList());
+    }
+
+    @Test
+    void createIngredientsBulkShouldFailWhenListIsEmpty() {
+        List<IngredientDTO> ingredientDtos = List.of();
+
+        assertThatThrownBy(() -> ingredientService.createIngredientsBulk(ingredientDtos))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Ingredient list must not be empty");
     }
 }

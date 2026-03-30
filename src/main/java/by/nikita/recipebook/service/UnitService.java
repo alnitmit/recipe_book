@@ -21,9 +21,10 @@ public class UnitService {
 
     @Transactional
     public UnitDTO createUnit(UnitDTO unitDTO) {
-        if (unitRepository.findByName(unitDTO.getName()).isPresent()) {
-            throw new IllegalArgumentException("Unit with name '" + unitDTO.getName() + "' already exists");
-        }
+        unitRepository.findByName(unitDTO.getName())
+            .ifPresent(unit -> {
+                throw new IllegalArgumentException("Unit with name '" + unitDTO.getName() + "' already exists");
+            });
         Unit unit = unitMapper.toEntity(unitDTO);
         Unit savedUnit = unitRepository.save(unit);
         return unitMapper.toDto(savedUnit);
@@ -43,9 +44,12 @@ public class UnitService {
     public UnitDTO updateUnit(Long id, UnitDTO unitDTO) {
         Unit unit = unitRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Unit not found"));
 
-        if (!unit.getName().equals(unitDTO.getName()) && unitRepository.findByName(unitDTO.getName()).isPresent()) {
-            throw new IllegalArgumentException("Unit with name '" + unitDTO.getName() + "' already exists");
-        }
+        Optional.ofNullable(unitDTO.getName())
+            .filter(name -> !name.equals(unit.getName()))
+            .flatMap(unitRepository::findByName)
+            .ifPresent(existingUnit -> {
+                throw new IllegalArgumentException("Unit with name '" + unitDTO.getName() + "' already exists");
+            });
 
         unit.setName(unitDTO.getName());
         unit.setAbbreviation(unitDTO.getAbbreviation());

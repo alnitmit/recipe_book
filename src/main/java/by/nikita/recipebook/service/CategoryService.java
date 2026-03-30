@@ -24,9 +24,12 @@ public class CategoryService {
 
     @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        if (categoryRepository.findByName(categoryDTO.getName()).isPresent()) {
-            throw new IllegalArgumentException("Category with name '" + categoryDTO.getName() + "' already exists");
-        }
+        categoryRepository.findByName(categoryDTO.getName())
+            .ifPresent(category -> {
+                throw new IllegalArgumentException(
+                    "Category with name '" + categoryDTO.getName() + "' already exists"
+                );
+            });
 
         Category category = categoryMapper.toEntity(categoryDTO);
         Category savedCategory = categoryRepository.save(category);
@@ -48,10 +51,14 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
 
-        if (!category.getName().equals(categoryDTO.getName())
-            && categoryRepository.findByName(categoryDTO.getName()).isPresent()) {
-            throw new IllegalArgumentException("Category with name '" + categoryDTO.getName() + "' already exists");
-        }
+        Optional.ofNullable(categoryDTO.getName())
+            .filter(name -> !name.equals(category.getName()))
+            .flatMap(categoryRepository::findByName)
+            .ifPresent(existingCategory -> {
+                throw new IllegalArgumentException(
+                    "Category with name '" + categoryDTO.getName() + "' already exists"
+                );
+            });
 
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
