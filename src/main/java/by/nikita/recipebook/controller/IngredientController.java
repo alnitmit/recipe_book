@@ -1,9 +1,12 @@
 package by.nikita.recipebook.controller;
 
+import by.nikita.recipebook.entity.dto.ErrorResponse;
 import by.nikita.recipebook.entity.dto.IngredientDTO;
 import by.nikita.recipebook.service.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,7 +47,8 @@ public class IngredientController {
         description = "Creates a single ingredient and returns the created object"
     )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Ingredient successfully created"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data")})
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<IngredientDTO> createIngredient(@Valid @RequestBody IngredientDTO ingredientDTO) {
         IngredientDTO createdIngredient = ingredientService.createIngredient(ingredientDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdIngredient);
@@ -57,7 +61,8 @@ public class IngredientController {
             + "ingredient list"
     )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Ingredients successfully created"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data")})
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<List<IngredientDTO>> createIngredientsBulk(
         @ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = IngredientDTO.class))
         @Valid @RequestBody List<@Valid IngredientDTO> ingredientDtos) {
@@ -76,7 +81,8 @@ public class IngredientController {
     @GetMapping("/{id}")
     @Operation(summary = "Get ingredient by ID", description = "Returns a single ingredient")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully retrieved"),
-        @ApiResponse(responseCode = "404", description = "Ingredient not found")})
+        @ApiResponse(responseCode = "404", description = "Ingredient not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long id) {
         IngredientDTO ingredient = ingredientService.getIngredientById(id)
             .orElseThrow(() -> new NoSuchElementException("Ingredient not found with id: " + id));
@@ -98,8 +104,10 @@ public class IngredientController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing ingredient", description = "Updates ingredient data")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated"),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "404", description = "Ingredient not found")})
+        @ApiResponse(responseCode = "400", description = "Invalid input",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Ingredient not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<IngredientDTO> updateIngredient(@PathVariable Long id,
                                                           @Valid @RequestBody IngredientDTO ingredientDTO) {
         IngredientDTO updatedIngredient = ingredientService.updateIngredient(id, ingredientDTO);
@@ -109,7 +117,8 @@ public class IngredientController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete an ingredient", description = "Deletes an ingredient by ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Successfully deleted"),
-        @ApiResponse(responseCode = "404", description = "Ingredient not found")})
+        @ApiResponse(responseCode = "404", description = "Ingredient not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
         ingredientService.deleteIngredient(id);
         return ResponseEntity.noContent().build();

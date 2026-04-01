@@ -1,8 +1,11 @@
 package by.nikita.recipebook.controller;
 
+import by.nikita.recipebook.entity.dto.ErrorResponse;
 import by.nikita.recipebook.entity.dto.UnitDTO;
 import by.nikita.recipebook.service.UnitService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +45,8 @@ public class UnitController {
     @GetMapping("/{id}")
     @Operation(summary = "Get unit by ID", description = "Returns a single unit")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully retrieved"),
-        @ApiResponse(responseCode = "404", description = "Unit not found")})
+        @ApiResponse(responseCode = "404", description = "Unit not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<UnitDTO> getUnitById(@PathVariable Long id) {
         UnitDTO unit = unitService.getUnitById(id)
             .orElseThrow(() -> new NoSuchElementException("Unit not found with id: " + id));
@@ -52,7 +56,8 @@ public class UnitController {
     @PostMapping
     @Operation(summary = "Create a new unit", description = "Creates a unit and returns the created object")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Unit successfully created"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data")})
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<UnitDTO> createUnit(@Valid @RequestBody UnitDTO unitDTO) {
         UnitDTO created = unitService.createUnit(unitDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
@@ -61,8 +66,10 @@ public class UnitController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing unit", description = "Updates unit data")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated"),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "404", description = "Unit not found")})
+        @ApiResponse(responseCode = "400", description = "Invalid input",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Unit not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<UnitDTO> updateUnit(@PathVariable Long id, @Valid @RequestBody UnitDTO unitDTO) {
         UnitDTO updated = unitService.updateUnit(id, unitDTO);
         return ResponseEntity.ok(updated);
@@ -71,7 +78,8 @@ public class UnitController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a unit", description = "Deletes a unit by ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Successfully deleted"),
-        @ApiResponse(responseCode = "404", description = "Unit not found")})
+        @ApiResponse(responseCode = "404", description = "Unit not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<Void> deleteUnit(@PathVariable Long id) {
         unitService.deleteUnit(id);
         return ResponseEntity.noContent().build();

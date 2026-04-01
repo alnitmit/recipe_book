@@ -1,8 +1,11 @@
 package by.nikita.recipebook.controller;
 
+import by.nikita.recipebook.entity.dto.ErrorResponse;
 import by.nikita.recipebook.entity.dto.UserDTO;
 import by.nikita.recipebook.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,7 +41,8 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Create a new user", description = "Creates a user and returns the created object")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "User successfully created"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data")})
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.createUser(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
@@ -54,7 +58,8 @@ public class UserController {
     @GetMapping("/{id}")
     @Operation(summary = "Get user by ID", description = "Returns a single user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully retrieved"),
-        @ApiResponse(responseCode = "404", description = "User not found")})
+        @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         UserDTO user = userService.getUserById(id)
             .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
@@ -64,8 +69,10 @@ public class UserController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing user", description = "Updates user data")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated"),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "404", description = "User not found")})
+        @ApiResponse(responseCode = "400", description = "Invalid input",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
         UserDTO updatedUser = userService.updateUser(id, userDTO);
         return ResponseEntity.ok(updatedUser);
@@ -74,8 +81,10 @@ public class UserController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a user", description = "Deletes a user by ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Successfully deleted"),
-        @ApiResponse(responseCode = "404", description = "User not found"),
-        @ApiResponse(responseCode = "409", description = "Cannot delete user with existing recipes")})
+        @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "409", description = "Cannot delete user with existing recipes",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();

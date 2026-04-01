@@ -1,8 +1,11 @@
 package by.nikita.recipebook.controller;
 
 import by.nikita.recipebook.entity.dto.CategoryDTO;
+import by.nikita.recipebook.entity.dto.ErrorResponse;
 import by.nikita.recipebook.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,7 +41,8 @@ public class CategoryController {
     @PostMapping
     @Operation(summary = "Create a new category", description = "Creates a category and returns the created object")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Category successfully created"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data")})
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
@@ -55,7 +59,8 @@ public class CategoryController {
     @GetMapping("/{id}")
     @Operation(summary = "Get category by ID", description = "Returns a single category")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully retrieved"),
-        @ApiResponse(responseCode = "404", description = "Category not found")})
+        @ApiResponse(responseCode = "404", description = "Category not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         CategoryDTO category = categoryService.getCategoryById(id)
             .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
@@ -65,8 +70,10 @@ public class CategoryController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing category", description = "Updates category data")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated"),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "404", description = "Category not found")})
+        @ApiResponse(responseCode = "400", description = "Invalid input",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Category not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id,
                                                       @Valid @RequestBody CategoryDTO categoryDTO) {
         CategoryDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
@@ -76,8 +83,10 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a category", description = "Deletes a category by ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Successfully deleted"),
-        @ApiResponse(responseCode = "404", description = "Category not found"),
-        @ApiResponse(responseCode = "409", description = "Cannot delete category with existing recipes")})
+        @ApiResponse(responseCode = "404", description = "Category not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "409", description = "Cannot delete category with existing recipes",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();

@@ -1,8 +1,11 @@
 package by.nikita.recipebook.controller;
 
+import by.nikita.recipebook.entity.dto.ErrorResponse;
 import by.nikita.recipebook.entity.dto.RecipeDTO;
 import by.nikita.recipebook.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,7 +43,8 @@ public class RecipeController {
     @Operation(summary = "Create a new recipe", description = "Creates a recipe and returns the created object")
      @ApiResponses(value = {
          @ApiResponse(responseCode = "201", description = "Recipe successfully created"),
-         @ApiResponse(responseCode = "400", description = "Invalid input data")
+         @ApiResponse(responseCode = "400", description = "Invalid input data",
+             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
      })
     public ResponseEntity<RecipeDTO> createRecipe(@Valid @RequestBody RecipeDTO recipeDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(recipeService.createRecipe(recipeDTO));
@@ -71,7 +75,8 @@ public class RecipeController {
     @Operation(summary = "Get recipe by ID", description = "Returns a single recipe")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
-        @ApiResponse(responseCode = "404", description = "Recipe not found")
+        @ApiResponse(responseCode = "404", description = "Recipe not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable Long id) {
         RecipeDTO recipe = recipeService.getRecipeById(id)
@@ -83,8 +88,10 @@ public class RecipeController {
     @Operation(summary = "Update an existing recipe", description = "Updates recipe data")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully updated"),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "404", description = "Recipe not found")
+        @ApiResponse(responseCode = "400", description = "Invalid input",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Recipe not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<RecipeDTO> updateRecipe(
         @PathVariable Long id, @Valid @RequestBody RecipeDTO recipeDTO) {
@@ -95,7 +102,8 @@ public class RecipeController {
     @Operation(summary = "Delete a recipe", description = "Deletes a recipe by ID")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Successfully deleted"),
-        @ApiResponse(responseCode = "404", description = "Recipe not found")
+        @ApiResponse(responseCode = "404", description = "Recipe not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipe(id);
