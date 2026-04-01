@@ -143,6 +143,46 @@ class ServiceCoverageSupplementTest {
     }
 
     @Test
+    void createOperationsShouldIgnoreClientProvidedIds() {
+        CategoryDTO categoryDto = new CategoryDTO(99L, "Desserts", "Sweet");
+        Category category = new Category();
+        category.setId(99L);
+        when(categoryRepository.findByName("Desserts")).thenReturn(Optional.empty());
+        when(categoryMapper.toEntity(categoryDto)).thenReturn(category);
+        when(categoryRepository.save(category)).thenReturn(category);
+        when(categoryMapper.toDto(category)).thenReturn(categoryDto);
+
+        assertThat(categoryService.createCategory(categoryDto)).isSameAs(categoryDto);
+        assertThat(category.getId()).isNull();
+
+        TagDTO tagDto = new TagDTO(88L, "quick");
+        Tag tag = new Tag();
+        tag.setId(88L);
+        when(tagRepository.findByName("quick")).thenReturn(Optional.empty());
+        when(tagMapper.toEntity(tagDto)).thenReturn(tag);
+        when(tagRepository.save(tag)).thenReturn(tag);
+        when(tagMapper.toDto(tag)).thenReturn(tagDto);
+
+        assertThat(tagService.createTag(tagDto)).isSameAs(tagDto);
+        assertThat(tag.getId()).isNull();
+
+        RecipeDTO recipeDto = new RecipeDTO();
+        recipeDto.setId(77L);
+        recipeDto.setTitle("Soup");
+        recipeDto.setDescription("Warm");
+        recipeDto.setInstructions("Boil");
+        Recipe recipe = new Recipe();
+        recipe.setId(77L);
+        recipe.setTags(new HashSet<>());
+        when(recipeMapper.toEntity(recipeDto)).thenReturn(recipe);
+        when(recipeRepository.save(recipe)).thenReturn(recipe);
+        when(recipeMapper.toDto(recipe)).thenReturn(recipeDto);
+
+        assertThat(recipeService.createRecipe(recipeDto)).isSameAs(recipeDto);
+        assertThat(recipe.getId()).isNull();
+    }
+
+    @Test
     void userServiceShouldCoverSuccessReadUpdateAndDeleteFlows() {
         UserDTO dto = new UserDTO(1L, "chef", "chef@example.com", null);
         User user = new User();

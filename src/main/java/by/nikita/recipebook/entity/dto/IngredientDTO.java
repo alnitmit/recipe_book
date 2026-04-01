@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Ingredient data transfer object")
 public class IngredientDTO {
 
-    @Schema(description = "Ingredient identifier", example = "10")
+    @Schema(description = "Ingredient identifier", example = "10", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @NotBlank(message = "Ingredient name is required")
@@ -32,7 +32,7 @@ public class IngredientDTO {
     @Schema(description = "Related unit id", example = "3")
     private Long unitId;
 
-    @Schema(description = "Related unit name", example = "teaspoon")
+    @Schema(description = "Related unit name", example = "teaspoon", accessMode = Schema.AccessMode.READ_ONLY)
     private String unitName;
 
     @NotNull(message = "Recipe ID is required")

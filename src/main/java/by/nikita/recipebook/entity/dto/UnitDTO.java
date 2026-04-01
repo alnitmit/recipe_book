@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Measurement unit data transfer object")
 public class UnitDTO {
 
-    @Schema(description = "Unit identifier", example = "3")
+    @Schema(description = "Unit identifier", example = "3", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @NotBlank(message = "Unit name is required")

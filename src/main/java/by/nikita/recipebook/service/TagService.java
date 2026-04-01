@@ -28,6 +28,7 @@ public class TagService {
             });
 
         Tag tag = tagMapper.toEntity(tagDTO);
+        tag.setId(null);
         Tag savedTag = tagRepository.save(tag);
         return tagMapper.toDto(savedTag);
     }

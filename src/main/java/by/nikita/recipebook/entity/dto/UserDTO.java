@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Schema(description = "User data transfer object")
 public class UserDTO {
 
-    @Schema(description = "User identifier", example = "1")
+    @Schema(description = "User identifier", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @NotBlank(message = "Username is required")
@@ -30,6 +30,10 @@ public class UserDTO {
     @Schema(description = "User email", example = "chef@example.com")
     private String email;
 
-    @Schema(description = "Timestamp when user was created", example = "2026-03-24T21:45:00")
+    @Schema(
+        description = "Timestamp when user was created",
+        example = "2026-03-24T21:45:00",
+        accessMode = Schema.AccessMode.READ_ONLY
+    )
     private LocalDateTime createdAt;
 }

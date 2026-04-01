@@ -32,6 +32,7 @@ public class CategoryService {
             });
 
         Category category = categoryMapper.toEntity(categoryDTO);
+        category.setId(null);
         Category savedCategory = categoryRepository.save(category);
         return categoryMapper.toDto(savedCategory);
     }

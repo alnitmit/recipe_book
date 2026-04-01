@@ -38,6 +38,8 @@ public class UserService {
             });
 
         User user = userMapper.toEntity(userDTO);
+        user.setId(null);
+        user.setCreatedAt(null);
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }

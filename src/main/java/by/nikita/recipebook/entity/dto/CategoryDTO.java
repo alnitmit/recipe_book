@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Category data transfer object")
 public class CategoryDTO {
 
-    @Schema(description = "Category identifier", example = "1")
+    @Schema(description = "Category identifier", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @NotBlank(message = "Category name is required")

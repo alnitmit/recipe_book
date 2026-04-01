@@ -14,7 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +45,26 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.createUser(userDto))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("User with username 'chef' already exists");
+    }
+
+    @Test
+    void createUserShouldIgnoreClientProvidedIdAndCreatedAt() {
+        UserDTO userDto = new UserDTO(1L, "chef", "chef@example.com", java.time.LocalDateTime.now());
+        User user = new User();
+        user.setId(1L);
+        user.setCreatedAt(userDto.getCreatedAt());
+
+        when(userRepository.findByUsername("chef")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("chef@example.com")).thenReturn(Optional.empty());
+        when(userMapper.toEntity(userDto)).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userMapper.toDto(any(User.class))).thenReturn(userDto);
+
+        userService.createUser(userDto);
+
+        assertThat(user.getId()).isNull();
+        assertThat(user.getCreatedAt()).isNull();
+        verify(userRepository).save(user);
     }
 
     @Test

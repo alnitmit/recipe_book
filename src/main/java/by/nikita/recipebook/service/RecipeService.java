@@ -49,6 +49,7 @@ public class RecipeService {
     @Transactional
     public RecipeDTO createRecipe(RecipeDTO recipeDTO) {
         Recipe recipe = recipeMapper.toEntity(recipeDTO);
+        recipe.setId(null);
         if (recipeDTO.getCategoryId() != null) {
             recipe.setCategory(getCategoryById(recipeDTO.getCategoryId()));
         }

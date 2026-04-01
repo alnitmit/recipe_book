@@ -18,7 +18,7 @@ import java.util.List;
 @Schema(description = "Recipe data transfer object")
 public class RecipeDTO {
 
-    @Schema(description = "Recipe identifier", example = "1")
+    @Schema(description = "Recipe identifier", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @NotBlank(message = "Recipe title is required")
@@ -38,14 +38,14 @@ public class RecipeDTO {
     @Schema(description = "Related category id", example = "2")
     private Long categoryId;
 
-    @Schema(description = "Related category name", example = "Soups")
+    @Schema(description = "Related category name", example = "Soups", accessMode = Schema.AccessMode.READ_ONLY)
     private String categoryName;
 
     @Positive(message = "Author ID must be positive")
     @Schema(description = "Recipe author id", example = "5")
     private Long authorId;
 
-    @Schema(description = "Recipe author username", example = "nikita")
+    @Schema(description = "Recipe author username", example = "nikita", accessMode = Schema.AccessMode.READ_ONLY)
     private String authorUsername;
 
     @ArraySchema(schema = @Schema(implementation = TagDTO.class))
