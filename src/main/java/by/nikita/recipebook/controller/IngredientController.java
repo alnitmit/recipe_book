@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -67,7 +68,8 @@ public class IngredientController {
     @GetMapping
     @Operation(summary = "Get all ingredients", description = "Returns a paginated list of ingredients")
     @ApiResponse(responseCode = "200", description = "Successful operation")
-    public ResponseEntity<Page<IngredientDTO>> getAllIngredients(@PageableDefault(size = 20) Pageable pageable) {
+    public ResponseEntity<Page<IngredientDTO>> getAllIngredients(
+        @ParameterObject @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(ingredientService.getAllIngredients(pageable));
     }
 
@@ -89,7 +91,7 @@ public class IngredientController {
     @ApiResponse(responseCode = "200", description = "Successful operation")
     public ResponseEntity<Page<IngredientDTO>> getIngredientsByRecipe(
         @RequestParam Long recipeId,
-        @PageableDefault(size = 20) Pageable pageable) {
+        @ParameterObject @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(ingredientService.getIngredientsByRecipe(recipeId, pageable));
     }
 

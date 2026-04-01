@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -34,7 +35,7 @@ public class UnitController {
     @GetMapping
     @Operation(summary = "Get all units", description = "Returns a paginated list of units")
     @ApiResponse(responseCode = "200", description = "Successful operation")
-    public ResponseEntity<Page<UnitDTO>> getAllUnits(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<Page<UnitDTO>> getAllUnits(@ParameterObject @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(unitService.getAllUnits(pageable));
     }
 

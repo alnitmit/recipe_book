@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -46,7 +47,7 @@ public class TagController {
     @GetMapping
     @Operation(summary = "Get all tags", description = "Returns a paginated list of tags")
     @ApiResponse(responseCode = "200", description = "Successful operation")
-    public ResponseEntity<Page<TagDTO>> getAllTags(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<Page<TagDTO>> getAllTags(@ParameterObject @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(tagService.getAllTags(pageable));
     }
 

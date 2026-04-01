@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -46,7 +47,8 @@ public class CategoryController {
     @GetMapping
     @Operation(summary = "Get all categories", description = "Returns a paginated list of categories")
     @ApiResponse(responseCode = "200", description = "Successful operation")
-    public ResponseEntity<Page<CategoryDTO>> getAllCategories(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<Page<CategoryDTO>> getAllCategories(
+        @ParameterObject @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(categoryService.getAllCategories(pageable));
     }
 

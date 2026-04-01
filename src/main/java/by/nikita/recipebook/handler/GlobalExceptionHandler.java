@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,6 +102,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
+        if (isInvalidSortException(ex)) {
+            log.warn("Invalid sort parameter: {}", ex.getMessage());
+            Map<String, String> errors = Map.of(
+                "sort",
+                "Use sort=field,asc or sort=field,desc. Example: sort=username,asc"
+            );
+            return buildResponse(HttpStatus.BAD_REQUEST, "Invalid sort parameter", request.getRequestURI(), errors);
+        }
+
         log.error("Unexpected error occurred", ex);
         return buildResponse(
             HttpStatus.INTERNAL_SERVER_ERROR,
@@ -108,6 +118,19 @@ public class GlobalExceptionHandler {
             request.getRequestURI(),
             null
         );
+    }
+
+    private boolean isInvalidSortException(Throwable ex) {
+        Throwable current = ex;
+        while (current != null) {
+            String className = current.getClass().getName();
+            if ("org.springframework.data.mapping.PropertyReferenceException".equals(className)
+                || current instanceof InvalidDataAccessApiUsageException) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message, String path,

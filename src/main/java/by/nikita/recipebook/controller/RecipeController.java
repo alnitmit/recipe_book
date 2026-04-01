@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -49,7 +50,7 @@ public class RecipeController {
     @Operation(summary = "Get all recipes", description = "Returns a paginated list of recipes")
     @ApiResponse(responseCode = "200", description = "Successful operation")
     public ResponseEntity<Page<RecipeDTO>> getAllRecipes(
-        @PageableDefault(size = 10) Pageable pageable) {
+        @ParameterObject @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(recipeService.getAllRecipes(pageable));
     }
 
@@ -62,7 +63,7 @@ public class RecipeController {
     public ResponseEntity<Page<RecipeDTO>> filterRecipesJPQL(
         @RequestParam(required = false) String category,
         @RequestParam(required = false) Long minIngredients,
-        @PageableDefault(size = 10) Pageable pageable) {
+        @ParameterObject @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(recipeService.searchRecipesJPQL(category, minIngredients, pageable));
     }
 
