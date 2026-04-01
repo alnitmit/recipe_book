@@ -79,6 +79,31 @@ public class IngredientService {
             .toList();
     }
 
+    public List<IngredientDTO> createIngredientsBulkWithoutTransaction(List<IngredientDTO> ingredientDtos) {
+        if (ingredientDtos == null || ingredientDtos.isEmpty()) {
+            throw new IllegalArgumentException("Ingredient list must not be empty");
+        }
+
+        Map<Long, Recipe> recipesById = new HashMap<>();
+        Map<Long, Unit> unitsById = new HashMap<>();
+        List<IngredientDTO> createdIngredients = new ArrayList<>();
+
+        for (IngredientDTO ingredientDto : ingredientDtos) {
+            Recipe recipe = recipesById.computeIfAbsent(ingredientDto.getRecipeId(), this::getRecipeById);
+
+            Unit unit = null;
+            if (ingredientDto.getUnitId() != null) {
+                unit = unitsById.computeIfAbsent(ingredientDto.getUnitId(), this::getUnitById);
+            }
+
+            Ingredient ingredient = ingredientMapper.toEntity(ingredientDto, recipe, unit);
+            Ingredient savedIngredient = ingredientRepository.save(ingredient);
+            createdIngredients.add(ingredientMapper.toDto(savedIngredient));
+        }
+
+        return createdIngredients;
+    }
+
     @Transactional(readOnly = true)
     public Page<IngredientDTO> getAllIngredients(Pageable pageable) {
         return ingredientRepository.findAll(pageable).map(ingredientMapper::toDto);

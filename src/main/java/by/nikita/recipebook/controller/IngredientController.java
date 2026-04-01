@@ -70,6 +70,23 @@ public class IngredientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdIngredients);
     }
 
+    @PostMapping("/bulk/no-transaction")
+    @Operation(
+        summary = "Create multiple ingredients without a shared transaction",
+        description = "Creates ingredients one by one without wrapping the whole bulk operation in a single "
+            + "transaction. If an error happens in the middle, previously saved ingredients remain in the database."
+    )
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Ingredients successfully created"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    public ResponseEntity<List<IngredientDTO>> createIngredientsBulkWithoutTransaction(
+        @ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = IngredientDTO.class))
+        @Valid @RequestBody List<@Valid IngredientDTO> ingredientDtos) {
+        List<IngredientDTO> createdIngredients = ingredientService
+            .createIngredientsBulkWithoutTransaction(ingredientDtos);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdIngredients);
+    }
+
     @GetMapping
     @Operation(summary = "Get all ingredients", description = "Returns a paginated list of ingredients")
     @ApiResponse(responseCode = "200", description = "Successful operation")
