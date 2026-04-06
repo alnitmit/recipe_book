@@ -69,7 +69,7 @@ public class AsyncRecipeController {
     @GetMapping("/metrics")
     @Operation(
         summary = "Get async recipe metrics",
-        description = "Returns thread-safe and unsafe counters for asynchronous recipe processing"
+        description = "Returns metrics for asynchronous recipe processing"
     )
     @ApiResponse(responseCode = "200", description = "Metrics returned")
     public ResponseEntity<MetricsDTO> getMetrics() {
