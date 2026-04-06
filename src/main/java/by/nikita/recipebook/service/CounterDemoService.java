@@ -42,10 +42,12 @@ public class CounterDemoService {
         return atomicCounter.get();
     }
 
-    public synchronized RaceConditionDemoDTO demonstrateRaceCondition(int threads,
-                                                                      int incrementsPerThread)
+    public RaceConditionDemoDTO demonstrateRaceCondition(int threads,
+                                                         int incrementsPerThread)
         throws InterruptedException {
-        resetCounters();
+        synchronized (this) {
+            resetCounters();
+        }
 
         ExecutorService executorService = Executors.newFixedThreadPool(threads);
         CountDownLatch readyLatch = new CountDownLatch(threads);
