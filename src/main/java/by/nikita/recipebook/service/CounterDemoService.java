@@ -18,7 +18,6 @@ public class CounterDemoService {
 
     public void incrementUnsafe() {
         long currentValue = unsafeCounter;
-        Thread.yield();
         unsafeCounter = currentValue + 1;
     }
 
