@@ -26,11 +26,15 @@ public class RecipeAsyncService {
         metricsService.incrementActiveTasks();
         try {
             taskStatusService.updateStatus(taskId, "PROCESSING");
+            Thread.sleep(10000);
             recipeService.createRecipe(recipeDTO);
             metricsService.addProcessed(1);
             taskStatusService.updateStatus(taskId, "COMPLETED");
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            taskStatusService.updateStatus(taskId, "FAILED: interrupted");
         } catch (Exception ex) {
-            taskStatusService.updateStatus(taskId, "FAILED " + ex.getMessage());
+            taskStatusService.updateStatus(taskId, "FAILED: " + ex.getMessage());
         } finally {
             metricsService.decrementActiveTasks();
         }
