@@ -7,7 +7,7 @@ Recipe Book is organized as a fullstack-ready repository with separate backend a
 ```text
 recipebook/
 |- backend/   Spring Boot REST API
-|- frontend/  future frontend app
+|- frontend/  React + Vite frontend app
 ```
 
 The backend already contains the working Spring Boot service for managing recipes, ingredients, categories, tags, units, and users.
@@ -62,7 +62,7 @@ Common variables:
 - `DB_USERNAME` (default: `postgres`)
 - `DB_PASSWORD` (default: empty)
 
-You can provide them through your shell environment or a local `.env` file if your setup loads it.
+For local backend runs, set these values in your shell environment before starting the app.
 
 Example for Windows PowerShell:
 
@@ -89,6 +89,46 @@ Windows (PowerShell):
 cd .\backend
 .\mvnw.cmd spring-boot:run
 ```
+
+## Docker
+
+The repository includes container setup for:
+
+- `postgres` database
+- `backend` Spring Boot API
+- `frontend` Vite app served by `nginx`
+
+Docker Compose reads configuration from a root `.env` file. Create it from the example before the first run:
+
+```bash
+cp .env.example .env
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Start the full stack from the repository root:
+
+```bash
+docker compose up --build
+```
+
+URLs after startup:
+
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8080`
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+
+Stop the stack:
+
+```bash
+docker compose down
+```
+
+For Docker-based startup, the backend receives its `DB_*` variables from `compose.yaml`, and `compose.yaml` itself reads values from the root `.env`.
 
 ## URLs
 
@@ -148,5 +188,5 @@ Rolling log files are also created in the same directory.
 
 ## Notes
 
-- `frontend/` is prepared as a separate folder for the future UI.
+- `frontend/` runs as a separate client application and can be started locally or via Docker.
 - Swagger UI is the easiest way to explore and test the API locally.
