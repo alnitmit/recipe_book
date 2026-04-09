@@ -7,9 +7,9 @@ import type { RecipePayload } from '@/entities/recipe/model/types.ts';
 import { RecipeForm } from '@/features/recipe-upsert/RecipeForm.tsx';
 import { getErrorMessage, getFieldErrors } from '@/shared/lib/error.ts';
 import pageStyles from '@/shared/ui/page-layout/PageLayout.module.css';
-import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarProvider.tsx';
+import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarContext.ts';
 
-export function RecipeCreatePage() {
+export const RecipeCreatePage = () => {
   const navigate = useNavigate();
   const { showSnackbar } = useAppSnackbar();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -40,4 +40,4 @@ export function RecipeCreatePage() {
       />
     </div>
   );
-}
+};

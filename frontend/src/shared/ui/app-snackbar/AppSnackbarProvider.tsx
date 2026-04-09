@@ -1,21 +1,9 @@
 import { Alert, Snackbar } from '@mui/material';
-import { createContext, useCallback, useContext, useMemo, useState, type PropsWithChildren } from 'react';
+import { useCallback, useMemo, useState, type PropsWithChildren } from 'react';
 
-type SnackbarSeverity = 'success' | 'error' | 'info' | 'warning';
+import { AppSnackbarContext, type SnackbarSeverity, type SnackbarState } from './AppSnackbarContext.ts';
 
-interface SnackbarState {
-  open: boolean;
-  message: string;
-  severity: SnackbarSeverity;
-}
-
-interface SnackbarContextValue {
-  showSnackbar: (message: string, severity?: SnackbarSeverity) => void;
-}
-
-const AppSnackbarContext = createContext<SnackbarContextValue | null>(null);
-
-export function AppSnackbarProvider({ children }: PropsWithChildren) {
+export const AppSnackbarProvider = ({ children }: PropsWithChildren) => {
   const [state, setState] = useState<SnackbarState>({
     open: false,
     message: '',
@@ -56,14 +44,4 @@ export function AppSnackbarProvider({ children }: PropsWithChildren) {
       </Snackbar>
     </AppSnackbarContext.Provider>
   );
-}
-
-export function useAppSnackbar() {
-  const context = useContext(AppSnackbarContext);
-
-  if (!context) {
-    throw new Error('useAppSnackbar must be used within AppSnackbarProvider');
-  }
-
-  return context;
-}
+};

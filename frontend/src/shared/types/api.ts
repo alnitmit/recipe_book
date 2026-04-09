@@ -1,4 +1,4 @@
-export interface PageResponse<T> {
+export type PageResponse<T> = {
   content: T[];
   number: number;
   size: number;
@@ -7,21 +7,21 @@ export interface PageResponse<T> {
   first: boolean;
   last: boolean;
   empty: boolean;
-}
+};
 
-export interface ErrorResponse {
+export type ErrorResponse = {
   timestamp: string;
   status: number;
   error: string;
   message: string;
   path: string;
   details?: Record<string, string>;
-}
+};
 
 export type SortDirection = 'asc' | 'desc';
 
-export interface PageableQuery {
+export type PageableQuery = {
   page?: number;
   size?: number;
   sort?: string;
-}
+};

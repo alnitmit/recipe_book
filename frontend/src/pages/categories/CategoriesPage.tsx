@@ -17,12 +17,12 @@ import { ConfirmDialog } from '@/shared/ui/confirm-dialog/ConfirmDialog.tsx';
 import { EmptyState } from '@/shared/ui/empty-state/EmptyState.tsx';
 import pageStyles from '@/shared/ui/page-layout/PageLayout.module.css';
 import { PageSkeleton } from '@/shared/ui/page-skeleton/PageSkeleton.tsx';
-import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarProvider.tsx';
+import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarContext.ts';
 import { EntityTable, type EntityTableColumn } from '@/widgets/entity-table/EntityTable.tsx';
 
 const emptyCategory: CategoryPayload = { name: '', description: '' };
 
-export function CategoriesPage() {
+export const CategoriesPage = () => {
   const { showSnackbar } = useAppSnackbar();
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
@@ -170,4 +170,4 @@ export function CategoriesPage() {
       />
     </div>
   );
-}
+};

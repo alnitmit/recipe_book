@@ -9,9 +9,9 @@ import { getErrorMessage, getFieldErrors } from '@/shared/lib/error.ts';
 import { EmptyState } from '@/shared/ui/empty-state/EmptyState.tsx';
 import pageStyles from '@/shared/ui/page-layout/PageLayout.module.css';
 import { PageSkeleton } from '@/shared/ui/page-skeleton/PageSkeleton.tsx';
-import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarProvider.tsx';
+import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarContext.ts';
 
-export function RecipeEditPage() {
+export const RecipeEditPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const recipeId = Number(id);
@@ -56,4 +56,4 @@ export function RecipeEditPage() {
       />
     </div>
   );
-}
+};

@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 
 import type { RecipeFilterParams } from '@/entities/recipe/model/types.ts';
 
-interface RecipeFilterBarProps {
+type RecipeFilterBarProps = {
   value: RecipeFilterParams;
   onApply: (nextValue: RecipeFilterParams) => void;
   onReset: () => void;
-}
+};
 
-export function RecipeFilterBar({ value, onApply, onReset }: RecipeFilterBarProps) {
+export const RecipeFilterBar = ({ value, onApply, onReset }: RecipeFilterBarProps) => {
   const [filters, setFilters] = useState(value);
 
   useEffect(() => {
@@ -70,4 +70,4 @@ export function RecipeFilterBar({ value, onApply, onReset }: RecipeFilterBarProp
       </Stack>
     </Paper>
   );
-}
+};

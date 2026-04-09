@@ -3,12 +3,12 @@ import { Paper, Typography } from '@mui/material';
 
 import styles from '@/shared/ui/empty-state/EmptyState.module.css';
 
-interface EmptyStateProps {
+type EmptyStateProps = {
   title: string;
   description: string;
-}
+};
 
-export function EmptyState({ title, description }: EmptyStateProps) {
+export const EmptyState = ({ title, description }: EmptyStateProps) => {
   return (
     <Paper className={styles.state}>
       <InfoOutlinedIcon color="disabled" fontSize="large" />
@@ -16,4 +16,4 @@ export function EmptyState({ title, description }: EmptyStateProps) {
       <Typography color="textSecondary">{description}</Typography>
     </Paper>
   );
-}
+};

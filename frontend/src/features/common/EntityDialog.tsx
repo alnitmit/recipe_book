@@ -1,14 +1,14 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type Primitive = string | number | null | undefined;
 
-interface SelectOption {
+type SelectOption = {
   label: string;
   value: number | string;
-}
+};
 
-interface FieldConfig<T extends object> {
+type FieldConfig<T extends object> = {
   name: keyof T;
   label: string;
   type?: 'text' | 'email' | 'number' | 'multiline' | 'select';
@@ -16,42 +16,38 @@ interface FieldConfig<T extends object> {
   required?: boolean;
   disabled?: boolean;
   options?: SelectOption[];
-}
+};
 
-interface EntityDialogProps<T extends object> {
+type EntityDialogProps<T extends object> = {
   open: boolean;
   title: string;
   submitLabel?: string;
+  resetKey?: string | number;
   initialValues: T;
   fields: Array<FieldConfig<T>>;
   loading?: boolean;
   fieldErrors?: Record<string, string>;
   onSubmit: (values: T) => void;
   onClose: () => void;
-}
+};
 
-export function EntityDialog<T extends object>({
-  open,
-  title,
-  submitLabel = 'Сохранить',
+type EntityDialogFormProps<T extends object> = Omit<EntityDialogProps<T>, 'open' | 'title' | 'resetKey'> & {
+  submitLabel: string;
+};
+
+const EntityDialogForm = <T extends object,>({
   initialValues,
   fields,
   loading = false,
   fieldErrors = {},
   onSubmit,
   onClose,
-}: EntityDialogProps<T>) {
+  submitLabel,
+}: EntityDialogFormProps<T>) => {
   const [values, setValues] = useState(initialValues);
 
-  useEffect(() => {
-    if (open) {
-      setValues(initialValues);
-    }
-  }, [initialValues, open]);
-
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
-      <DialogTitle>{title}</DialogTitle>
+    <>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
           {fields.map((field) => {
@@ -98,12 +94,43 @@ export function EntityDialog<T extends object>({
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 3 }}>
         <Button disabled={loading} onClick={onClose}>
-          Отмена
+          РћС‚РјРµРЅР°
         </Button>
-        <Button disabled={loading} variant="contained" onClick={() => onSubmit(values)}>
+        <Button disabled={loading} onClick={() => onSubmit(values)} variant="contained">
           {submitLabel}
         </Button>
       </DialogActions>
+    </>
+  );
+};
+
+export const EntityDialog = <T extends object,>({
+  open,
+  title,
+  submitLabel = 'РЎРѕС…СЂР°РЅРёС‚СЊ',
+  resetKey,
+  initialValues,
+  fields,
+  loading = false,
+  fieldErrors = {},
+  onSubmit,
+  onClose,
+}: EntityDialogProps<T>) => {
+  return (
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
+      <DialogTitle>{title}</DialogTitle>
+      {open ? (
+        <EntityDialogForm
+          key={resetKey}
+          initialValues={initialValues}
+          fields={fields}
+          loading={loading}
+          fieldErrors={fieldErrors}
+          onSubmit={onSubmit}
+          onClose={onClose}
+          submitLabel={submitLabel}
+        />
+      ) : null}
     </Dialog>
   );
-}
+};

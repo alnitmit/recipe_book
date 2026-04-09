@@ -1,6 +1,6 @@
 import type { PageableQuery } from '@/shared/types/api.ts';
 
-export function buildQueryString(params: Record<string, string | number | undefined | null>) {
+export const buildQueryString = (params: Record<string, string | number | undefined | null>) => {
   const searchParams = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
@@ -10,12 +10,12 @@ export function buildQueryString(params: Record<string, string | number | undefi
   });
 
   return searchParams.toString();
-}
+};
 
-export function toPageableQuery({ page = 0, size = 10, sort }: PageableQuery) {
+export const toPageableQuery = ({ page = 0, size = 10, sort }: PageableQuery) => {
   return {
     page,
     size,
     sort,
   };
-}
+};

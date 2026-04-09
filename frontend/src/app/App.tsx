@@ -1,5 +1,5 @@
 import { AppProviders } from '@/app/providers/AppProviders.tsx';
 
-export function App() {
+export const App = () => {
   return <AppProviders />;
-}
+};

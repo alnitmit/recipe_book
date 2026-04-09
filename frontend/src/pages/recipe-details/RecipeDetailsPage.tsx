@@ -18,10 +18,10 @@ import { ConfirmDialog } from '@/shared/ui/confirm-dialog/ConfirmDialog.tsx';
 import { EmptyState } from '@/shared/ui/empty-state/EmptyState.tsx';
 import pageStyles from '@/shared/ui/page-layout/PageLayout.module.css';
 import { PageSkeleton } from '@/shared/ui/page-skeleton/PageSkeleton.tsx';
-import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarProvider.tsx';
+import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarContext.ts';
 import { RecipeRelationsPanel } from '@/widgets/recipe-relations-panel/RecipeRelationsPanel.tsx';
 
-export function RecipeDetailsPage() {
+export const RecipeDetailsPage = () => {
   const { id } = useParams();
   const recipeId = Number(id);
   const navigate = useNavigate();
@@ -192,4 +192,4 @@ export function RecipeDetailsPage() {
       />
     </div>
   );
-}
+};

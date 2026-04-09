@@ -1,6 +1,6 @@
 import { Paper, Skeleton, Stack } from '@mui/material';
 
-export function PageSkeleton() {
+export const PageSkeleton = () => {
   return (
     <Stack spacing={2}>
       <Skeleton variant="text" width="32%" height={56} />
@@ -20,4 +20,4 @@ export function PageSkeleton() {
       </Paper>
     </Stack>
   );
-}
+};

@@ -3,15 +3,15 @@ import type { SerializedError } from '@reduxjs/toolkit';
 
 import type { ErrorResponse } from '@/shared/types/api.ts';
 
-function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryError {
+const isFetchBaseQueryError = (error: unknown): error is FetchBaseQueryError => {
   return typeof error === 'object' && error !== null && 'status' in error;
-}
+};
 
-function isSerializedError(error: unknown): error is SerializedError {
+const isSerializedError = (error: unknown): error is SerializedError => {
   return typeof error === 'object' && error !== null && 'message' in error;
-}
+};
 
-export function getErrorResponse(error: unknown): ErrorResponse | null {
+export const getErrorResponse = (error: unknown): ErrorResponse | null => {
   if (!isFetchBaseQueryError(error)) {
     return null;
   }
@@ -21,9 +21,9 @@ export function getErrorResponse(error: unknown): ErrorResponse | null {
   }
 
   return null;
-}
+};
 
-export function getErrorMessage(error: unknown) {
+export const getErrorMessage = (error: unknown) => {
   const response = getErrorResponse(error);
 
   if (response?.message) {
@@ -39,8 +39,8 @@ export function getErrorMessage(error: unknown) {
   }
 
   return 'Произошла непредвиденная ошибка';
-}
+};
 
-export function getFieldErrors(error: unknown) {
+export const getFieldErrors = (error: unknown) => {
   return getErrorResponse(error)?.details ?? {};
-}
+};

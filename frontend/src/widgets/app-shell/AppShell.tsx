@@ -4,7 +4,7 @@ import { AppHeader } from '@/widgets/app-header/AppHeader.tsx';
 import { Sidebar } from '@/widgets/sidebar/Sidebar.tsx';
 import styles from '@/widgets/app-shell/AppShell.module.css';
 
-export function AppShell({ children }: PropsWithChildren) {
+export const AppShell = ({ children }: PropsWithChildren) => {
   return (
     <div className={styles.shell}>
       <Sidebar />
@@ -14,4 +14,4 @@ export function AppShell({ children }: PropsWithChildren) {
       </div>
     </div>
   );
-}
+};

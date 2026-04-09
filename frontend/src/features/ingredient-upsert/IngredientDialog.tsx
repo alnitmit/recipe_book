@@ -5,7 +5,7 @@ import { useGetUnitsQuery } from '@/entities/unit/api/unitApi.ts';
 import type { IngredientPayload } from '@/entities/ingredient/model/types.ts';
 import { EntityDialog } from '@/features/common/EntityDialog.tsx';
 
-interface IngredientDialogProps {
+type IngredientDialogProps = {
   open: boolean;
   title: string;
   initialValue?: Partial<IngredientPayload & { id: number }>;
@@ -14,25 +14,25 @@ interface IngredientDialogProps {
   fixedRecipeId?: number;
   onSubmit: (payload: IngredientPayload) => void;
   onClose: () => void;
-}
+};
 
-interface IngredientFormValues {
+type IngredientFormValues = {
   name: string;
   quantity: string;
   unitId: number | null;
   recipeId: number | null;
-}
+};
 
-function toInitialValues(initialValue?: Partial<IngredientPayload>): IngredientFormValues {
+const toInitialValues = (initialValue?: Partial<IngredientPayload>): IngredientFormValues => {
   return {
     name: initialValue?.name ?? '',
     quantity: initialValue?.quantity ?? '',
     unitId: initialValue?.unitId ?? null,
     recipeId: initialValue?.recipeId ?? null,
   };
-}
+};
 
-export function IngredientDialog({
+export const IngredientDialog = ({
   open,
   title,
   initialValue,
@@ -41,7 +41,7 @@ export function IngredientDialog({
   fixedRecipeId,
   onSubmit,
   onClose,
-}: IngredientDialogProps) {
+}: IngredientDialogProps) => {
   const { data: unitsPage } = useGetUnitsQuery({ page: 0, size: 100, sort: 'name,asc' });
   const { data: recipesPage } = useGetRecipesQuery({ page: 0, size: 100, sort: 'title,asc' });
 
@@ -90,4 +90,4 @@ export function IngredientDialog({
       onClose={onClose}
     />
   );
-}
+};

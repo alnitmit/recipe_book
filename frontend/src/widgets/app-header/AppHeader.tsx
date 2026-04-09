@@ -12,7 +12,7 @@ const titles: Record<string, string> = {
   '/users': 'Пользователи',
 };
 
-export function AppHeader() {
+export const AppHeader = () => {
   const location = useLocation();
   const pageTitle = Object.entries(titles).find(([key]) => location.pathname.startsWith(key))?.[1] ?? 'Recipe Book';
 
@@ -21,4 +21,4 @@ export function AppHeader() {
       <Typography variant="h4">{pageTitle}</Typography>
     </header>
   );
-}
+};

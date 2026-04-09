@@ -1,1 +1,2 @@
-export { AppSnackbarProvider, useAppSnackbar } from './AppSnackbarProvider.tsx';
+export { AppSnackbarProvider } from './AppSnackbarProvider.tsx';
+export { useAppSnackbar } from './AppSnackbarContext.ts';

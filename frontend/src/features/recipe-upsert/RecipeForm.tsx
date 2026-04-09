@@ -1,5 +1,5 @@
 import { Alert, Autocomplete, Button, Paper, Stack, TextField, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { useGetCategoriesQuery } from '@/entities/category/api/categoryApi.ts';
 import type { Category } from '@/entities/category/model/types.ts';
@@ -10,25 +10,33 @@ import type { User } from '@/entities/user/model/types.ts';
 import { useGetUsersQuery } from '@/entities/user/api/userApi.ts';
 import styles from '@/features/recipe-upsert/RecipeForm.module.css';
 
-interface RecipeFormProps {
+type RecipeFormProps = {
   initialValue?: Recipe;
   loading?: boolean;
   fieldErrors?: Record<string, string>;
   submitLabel?: string;
   onSubmit: (payload: RecipePayload) => void;
   onCancel: () => void;
-}
+};
 
-interface RecipeFormState {
+type RecipeFormState = {
   title: string;
   description: string;
   instructions: string;
   categoryId: number | null;
   authorId: number | null;
   tags: Tag[];
-}
+};
 
-function toFormState(recipe?: Recipe): RecipeFormState {
+type RecipeFormContentProps = RecipeFormProps & {
+  initialState: RecipeFormState;
+};
+
+const EMPTY_CATEGORIES: Category[] = [];
+const EMPTY_USERS: User[] = [];
+const EMPTY_TAGS: Tag[] = [];
+
+const toFormState = (recipe?: Recipe): RecipeFormState => {
   return {
     title: recipe?.title ?? '',
     description: recipe?.description ?? '',
@@ -37,37 +45,28 @@ function toFormState(recipe?: Recipe): RecipeFormState {
     authorId: recipe?.authorId ?? null,
     tags: recipe?.tags ?? [],
   };
-}
+};
 
-export function RecipeForm({
+const RecipeFormContent = ({
   initialValue,
+  initialState,
   loading = false,
   fieldErrors = {},
-  submitLabel = 'Сохранить',
+  submitLabel = 'РЎРѕС…СЂР°РЅРёС‚СЊ',
   onSubmit,
   onCancel,
-}: RecipeFormProps) {
-  const [values, setValues] = useState<RecipeFormState>(() => toFormState(initialValue));
+}: RecipeFormContentProps) => {
+  const [values, setValues] = useState(initialState);
   const { data: categoriesPage } = useGetCategoriesQuery({ page: 0, size: 100, sort: 'name,asc' });
   const { data: usersPage } = useGetUsersQuery({ page: 0, size: 100, sort: 'username,asc' });
   const { data: tagsPage } = useGetTagsQuery({ page: 0, size: 100, sort: 'name,asc' });
 
-  useEffect(() => {
-    setValues(toFormState(initialValue));
-  }, [initialValue]);
+  const categories = categoriesPage?.content ?? EMPTY_CATEGORIES;
+  const users = usersPage?.content ?? EMPTY_USERS;
+  const tags = tagsPage?.content ?? EMPTY_TAGS;
 
-  const categories = categoriesPage?.content ?? [];
-  const users = usersPage?.content ?? [];
-  const tags = tagsPage?.content ?? [];
-
-  const selectedCategory = useMemo(
-    () => categories.find((category) => category.id === values.categoryId) ?? null,
-    [categories, values.categoryId],
-  );
-  const selectedAuthor = useMemo(
-    () => users.find((user) => user.id === values.authorId) ?? null,
-    [users, values.authorId],
-  );
+  const selectedCategory = categories.find((category) => category.id === values.categoryId) ?? null;
+  const selectedAuthor = users.find((user) => user.id === values.authorId) ?? null;
 
   const submit = () => {
     onSubmit({
@@ -83,16 +82,16 @@ export function RecipeForm({
   return (
     <Paper className={styles.form} sx={{ p: 3 }}>
       <Stack spacing={0.5}>
-        <Typography variant="h5">{initialValue ? 'Редактирование рецепта' : 'Новый рецепт'}</Typography>
+        <Typography variant="h5">{initialValue ? 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СЂРµС†РµРїС‚Р°' : 'РќРѕРІС‹Р№ СЂРµС†РµРїС‚'}</Typography>
         <Typography color="textSecondary">
-          Теги связываются напрямую с рецептом. Ингредиенты добавляются отдельно после создания или на странице деталей.
+          РўРµРіРё СЃРІСЏР·С‹РІР°СЋС‚СЃСЏ РЅР°РїСЂСЏРјСѓСЋ СЃ СЂРµС†РµРїС‚РѕРј. РРЅРіСЂРµРґРёРµРЅС‚С‹ РґРѕР±Р°РІР»СЏСЋС‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕ РїРѕСЃР»Рµ СЃРѕР·РґР°РЅРёСЏ РёР»Рё РЅР° СЃС‚СЂР°РЅРёС†Рµ РґРµС‚Р°Р»РµР№.
         </Typography>
       </Stack>
 
       <div className={styles.grid}>
         <TextField
           required
-          label="Название"
+          label="РќР°Р·РІР°РЅРёРµ"
           value={values.title}
           error={Boolean(fieldErrors.title)}
           helperText={fieldErrors.title}
@@ -106,7 +105,7 @@ export function RecipeForm({
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Категория"
+              label="РљР°С‚РµРіРѕСЂРёСЏ"
               error={Boolean(fieldErrors.categoryId)}
               helperText={fieldErrors.categoryId}
             />
@@ -120,7 +119,7 @@ export function RecipeForm({
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Автор"
+              label="РђРІС‚РѕСЂ"
               error={Boolean(fieldErrors.authorId)}
               helperText={fieldErrors.authorId}
             />
@@ -132,12 +131,12 @@ export function RecipeForm({
           getOptionLabel={(option) => option.name}
           value={values.tags}
           onChange={(_event, nextValue) => setValues((previous) => ({ ...previous, tags: nextValue }))}
-          renderInput={(params) => <TextField {...params} label="Теги" helperText={fieldErrors.tags} />}
+          renderInput={(params) => <TextField {...params} label="РўРµРіРё" helperText={fieldErrors.tags} />}
         />
       </div>
 
       <TextField
-        label="Описание"
+        label="РћРїРёСЃР°РЅРёРµ"
         multiline
         minRows={3}
         value={values.description}
@@ -148,7 +147,7 @@ export function RecipeForm({
 
       <TextField
         required
-        label="Инструкции"
+        label="РРЅСЃС‚СЂСѓРєС†РёРё"
         multiline
         minRows={8}
         value={values.instructions}
@@ -158,12 +157,12 @@ export function RecipeForm({
       />
 
       {!initialValue ? (
-        <Alert severity="info">После создания рецепта ингредиенты можно будет добавлять отдельно через details или раздел ингредиентов.</Alert>
+        <Alert severity="info">РџРѕСЃР»Рµ СЃРѕР·РґР°РЅРёСЏ СЂРµС†РµРїС‚Р° РёРЅРіСЂРµРґРёРµРЅС‚С‹ РјРѕР¶РЅРѕ Р±СѓРґРµС‚ РґРѕР±Р°РІР»СЏС‚СЊ РѕС‚РґРµР»СЊРЅРѕ С‡РµСЂРµР· details РёР»Рё СЂР°Р·РґРµР» РёРЅРіСЂРµРґРёРµРЅС‚РѕРІ.</Alert>
       ) : null}
 
       <div className={styles.actions}>
         <Button color="inherit" disabled={loading} onClick={onCancel}>
-          Отмена
+          РћС‚РјРµРЅР°
         </Button>
         <Button disabled={loading} variant="contained" onClick={submit}>
           {submitLabel}
@@ -171,4 +170,10 @@ export function RecipeForm({
       </div>
     </Paper>
   );
-}
+};
+
+export const RecipeForm = (props: RecipeFormProps) => {
+  const formKey = props.initialValue?.id ?? 'new-recipe';
+
+  return <RecipeFormContent key={formKey} {...props} initialState={toFormState(props.initialValue)} />;
+};

@@ -7,21 +7,21 @@ import type { Tag } from '@/entities/tag/model/types.ts';
 import { EmptyState } from '@/shared/ui/empty-state/EmptyState.tsx';
 import styles from '@/widgets/recipe-relations-panel/RecipeRelationsPanel.module.css';
 
-interface RecipeRelationsPanelProps {
+type RecipeRelationsPanelProps = {
   tags: Tag[];
   ingredients: Ingredient[];
   onAddIngredient: () => void;
   onEditIngredient: (ingredient: Ingredient) => void;
   onDeleteIngredient: (ingredient: Ingredient) => void;
-}
+};
 
-export function RecipeRelationsPanel({
+export const RecipeRelationsPanel = ({
   tags,
   ingredients,
   onAddIngredient,
   onEditIngredient,
   onDeleteIngredient,
-}: RecipeRelationsPanelProps) {
+}: RecipeRelationsPanelProps) => {
   return (
     <Stack spacing={2}>
       <Paper className={styles.panel}>
@@ -73,4 +73,4 @@ export function RecipeRelationsPanel({
       </Paper>
     </Stack>
   );
-}
+};

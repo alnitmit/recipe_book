@@ -14,7 +14,7 @@ import { ConfirmDialog } from '@/shared/ui/confirm-dialog/ConfirmDialog.tsx';
 import { EmptyState } from '@/shared/ui/empty-state/EmptyState.tsx';
 import pageStyles from '@/shared/ui/page-layout/PageLayout.module.css';
 import { PageSkeleton } from '@/shared/ui/page-skeleton/PageSkeleton.tsx';
-import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarProvider.tsx';
+import { useAppSnackbar } from '@/shared/ui/app-snackbar/AppSnackbarContext.ts';
 import { EntityTable, type EntityTableColumn } from '@/widgets/entity-table/EntityTable.tsx';
 
 const defaultFilters: RecipeFilterParams = {
@@ -23,7 +23,7 @@ const defaultFilters: RecipeFilterParams = {
   sort: 'id,desc',
 };
 
-export function RecipesListPage() {
+export const RecipesListPage = () => {
   const navigate = useNavigate();
   const { showSnackbar } = useAppSnackbar();
   const [filters, setFilters] = useState<RecipeFilterParams>(defaultFilters);
@@ -156,4 +156,4 @@ export function RecipesListPage() {
       />
     </div>
   );
-}
+};

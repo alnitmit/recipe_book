@@ -18,7 +18,7 @@ const navigation = [
   { to: '/users', label: 'Пользователи', icon: <PeopleOutlineOutlinedIcon fontSize="small" /> },
 ];
 
-export function Sidebar() {
+export const Sidebar = () => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brand}>
@@ -38,4 +38,4 @@ export function Sidebar() {
       </nav>
     </aside>
   );
-}
+};

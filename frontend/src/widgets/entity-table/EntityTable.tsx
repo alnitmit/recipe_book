@@ -3,14 +3,14 @@ import type { ReactNode } from 'react';
 
 import styles from '@/widgets/entity-table/EntityTable.module.css';
 
-export interface EntityTableColumn<T> {
+export type EntityTableColumn<T> = {
   key: string;
   label: string;
   render: (row: T) => ReactNode;
   align?: 'left' | 'right' | 'center';
-}
+};
 
-interface EntityTableProps<T> {
+type EntityTableProps<T> = {
   columns: Array<EntityTableColumn<T>>;
   rows: T[];
   getRowId: (row: T) => number | string;
@@ -21,9 +21,9 @@ interface EntityTableProps<T> {
   onPageChange: (nextPage: number) => void;
   onRowsPerPageChange: (nextSize: number) => void;
   emptyText?: string;
-}
+};
 
-export function EntityTable<T>({
+export const EntityTable = <T,>({
   columns,
   rows,
   getRowId,
@@ -34,7 +34,7 @@ export function EntityTable<T>({
   onPageChange,
   onRowsPerPageChange,
   emptyText = 'Нет данных для отображения',
-}: EntityTableProps<T>) {
+}: EntityTableProps<T>) => {
   return (
     <Paper>
       <div className={styles.tableWrap}>
@@ -83,4 +83,4 @@ export function EntityTable<T>({
       />
     </Paper>
   );
-}
+};

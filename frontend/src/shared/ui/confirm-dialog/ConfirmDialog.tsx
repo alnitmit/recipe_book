@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 
-interface ConfirmDialogProps {
+type ConfirmDialogProps = {
   open: boolean;
   title: string;
   description: string;
@@ -10,9 +10,9 @@ interface ConfirmDialogProps {
   loading?: boolean;
   onConfirm: () => void;
   onClose: () => void;
-}
+};
 
-export function ConfirmDialog({
+export const ConfirmDialog = ({
   open,
   title,
   description,
@@ -22,7 +22,7 @@ export function ConfirmDialog({
   loading = false,
   onConfirm,
   onClose,
-}: ConfirmDialogProps) {
+}: ConfirmDialogProps) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>{title}</DialogTitle>
@@ -39,4 +39,4 @@ export function ConfirmDialog({
       </DialogActions>
     </Dialog>
   );
-}
+};

@@ -7,7 +7,7 @@ import { store } from '@/app/store.ts';
 import { theme } from '@/app/theme.ts';
 import { AppSnackbarProvider } from '@/shared/ui/app-snackbar/AppSnackbarProvider.tsx';
 
-export function AppProviders() {
+export const AppProviders = () => {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
@@ -18,4 +18,4 @@ export function AppProviders() {
       </ThemeProvider>
     </Provider>
   );
-}
+};
