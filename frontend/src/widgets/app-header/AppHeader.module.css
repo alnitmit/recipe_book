@@ -1,0 +1,17 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 0;
+}
+
+.caption {
+  color: #5c6b7d;
+}
+
+@media (max-width: 960px) {
+  .header {
+    padding: 16px 16px 0;
+  }
+}

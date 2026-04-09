@@ -1,0 +1,53 @@
+.page {
+  display: grid;
+  gap: 20px;
+}
+
+.hero {
+  display: grid;
+  gap: 12px;
+}
+
+.heroNote {
+  color: #5c6b7d;
+  max-width: 720px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbarLeft,
+.toolbarRight {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.twoColumns {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+}
+
+.section {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+}
+
+@media (max-width: 1100px) {
+  .twoColumns {
+    grid-template-columns: 1fr;
+  }
+}

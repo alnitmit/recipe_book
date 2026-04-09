@@ -1,6 +1,16 @@
 # Recipe Book
 
-Recipe Book is a Spring Boot REST API for managing recipes, ingredients, categories, tags, units, and users.
+Recipe Book is organized as a fullstack-ready repository with separate backend and frontend folders.
+
+## Structure
+
+```text
+recipebook/
+|- backend/   Spring Boot REST API
+|- frontend/  future frontend app
+```
+
+The backend already contains the working Spring Boot service for managing recipes, ingredients, categories, tags, units, and users.
 
 ## Stack
 
@@ -24,13 +34,12 @@ Main entities:
 - Unit
 - User
 
-The API supports CRUD operations for all core entities, bulk ingredient creation, and asynchronous recipe creation.
+The API supports CRUD operations for all core entities and bulk ingredient creation.
 
 ## Features
 
 - Paginated REST endpoints for recipes, ingredients, categories, tags, units, and users
-- Bulk ingredient creation with transactional and non-transactional modes
-- Async recipe creation with task status and metrics endpoints
+- Bulk ingredient creation
 - Centralized exception handling with structured error responses
 - OpenAPI documentation via Swagger UI
 - File and console logging with Logback
@@ -41,7 +50,7 @@ For local development:
 
 - Java 21
 - PostgreSQL
-- Maven Wrapper (`mvnw` / `mvnw.cmd`) is already included in the repository
+- Maven Wrapper (`mvnw` / `mvnw.cmd`) is included in `backend/`
 
 ## Environment Configuration
 
@@ -65,17 +74,19 @@ $env:DB_PASSWORD="your_password"
 
 ## Run
 
-Start PostgreSQL, then run the application:
+Start PostgreSQL, then move into `backend/` and run the application:
 
 Linux/macOS:
 
 ```bash
+cd backend
 ./mvnw spring-boot:run
 ```
 
 Windows (PowerShell):
 
 ```powershell
+cd .\backend
 .\mvnw.cmd spring-boot:run
 ```
 
@@ -90,7 +101,6 @@ Windows (PowerShell):
 Main endpoint groups:
 
 - `/api/recipes`
-- `/api/recipes/async`
 - `/api/ingredients`
 - `/api/categories`
 - `/api/tags`
@@ -101,11 +111,7 @@ Examples:
 
 - `GET /api/recipes`
 - `GET /api/recipes/filter/jpql`
-- `POST /api/recipes/async`
-- `GET /api/recipes/async/status/{taskId}`
-- `GET /api/recipes/async/metrics`
 - `POST /api/ingredients/bulk`
-- `POST /api/ingredients/bulk/no-transaction`
 
 ## Database Notes
 
@@ -121,12 +127,14 @@ Run tests:
 Linux/macOS:
 
 ```bash
+cd backend
 ./mvnw test
 ```
 
 Windows (PowerShell):
 
 ```powershell
+cd .\backend
 .\mvnw.cmd test
 ```
 
@@ -140,6 +148,5 @@ Rolling log files are also created in the same directory.
 
 ## Notes
 
-- This repository currently contains a backend service only.
+- `frontend/` is prepared as a separate folder for the future UI.
 - Swagger UI is the easiest way to explore and test the API locally.
-- Performance artifacts under `performance/` are kept locally and are ignored by Git.
