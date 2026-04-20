@@ -5,20 +5,10 @@ on:
   pull_request:
 
 jobs:
-  ci:
-    if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
+  pipeline:
     uses: ./.github/workflows/pipeline.yaml
     with:
-      run_deploy: false
-      run_healthcheck: false
-      deploy_ref: ${{ github.sha }}
-    secrets: inherit
-
-  ci_cd:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/pipeline.yaml
-    with:
-      run_deploy: true
-      run_healthcheck: true
+      run_deploy: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      run_healthcheck: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       deploy_ref: ${{ github.sha }}
     secrets: inherit
