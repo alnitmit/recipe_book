@@ -52,7 +52,7 @@ export const RecipeDetailsPage = () => {
     try {
       if (ingredientToEdit) {
         await updateIngredient({ id: ingredientToEdit.id, body: payload }).unwrap();
-        showSnackbar('Ингредиент обновлён', 'success');
+        showSnackbar('Ингредиент обновлен', 'success');
       } else {
         await createIngredient(payload).unwrap();
         showSnackbar('Ингредиент создан', 'success');
@@ -74,7 +74,7 @@ export const RecipeDetailsPage = () => {
 
     try {
       await deleteIngredient({ id: ingredientToDelete.id, recipeId }).unwrap();
-      showSnackbar('Ингредиент удалён', 'success');
+      showSnackbar('Ингредиент удален', 'success');
       setIngredientToDelete(null);
     } catch (error) {
       showSnackbar(getErrorMessage(error), 'error');
@@ -88,7 +88,7 @@ export const RecipeDetailsPage = () => {
 
     try {
       await deleteRecipe(recipe.id).unwrap();
-      showSnackbar('Рецепт удалён', 'success');
+      showSnackbar('Рецепт удален', 'success');
       navigate('/recipes');
     } catch (error) {
       showSnackbar(getErrorMessage(error), 'error');
@@ -100,7 +100,7 @@ export const RecipeDetailsPage = () => {
   }
 
   if (!recipe) {
-    return <EmptyState title="Рецепт не найден" description="Возможно, он уже удалён или ссылка некорректна." />;
+    return <EmptyState title="Рецепт не найден" description="Возможно, он уже удален или ссылка некорректна." />;
   }
 
   return (
@@ -172,7 +172,7 @@ export const RecipeDetailsPage = () => {
       <ConfirmDialog
         open={Boolean(ingredientToDelete)}
         title="Удалить ингредиент?"
-        description={ingredientToDelete ? `Ингредиент "${ingredientToDelete.name}" будет удалён.` : ''}
+        description={ingredientToDelete ? `Ингредиент "${ingredientToDelete.name}" будет удален.` : ''}
         destructive
         loading={isDeletingIngredient}
         confirmLabel="Удалить"
@@ -183,7 +183,7 @@ export const RecipeDetailsPage = () => {
       <ConfirmDialog
         open={isRecipeDeleteOpen}
         title="Удалить рецепт?"
-        description={`Рецепт "${recipe.title}" будет удалён вместе со связями на клиенте.`}
+        description={`Рецепт "${recipe.title}" будет удален.`}
         destructive
         loading={isDeletingRecipe}
         confirmLabel="Удалить рецепт"

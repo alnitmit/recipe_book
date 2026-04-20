@@ -25,7 +25,7 @@ export const RecipeEditPage = () => {
   const handleSubmit = async (payload: RecipePayload) => {
     try {
       await updateRecipe({ id: recipeId, body: payload }).unwrap();
-      showSnackbar('Рецепт обновлён', 'success');
+      showSnackbar('Рецепт обновлен', 'success');
       navigate(`/recipes/${recipeId}`);
     } catch (error) {
       setFieldErrors(getFieldErrors(error));

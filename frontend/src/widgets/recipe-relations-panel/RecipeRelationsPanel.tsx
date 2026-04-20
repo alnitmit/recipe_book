@@ -25,7 +25,7 @@ export const RecipeRelationsPanel = ({
   return (
     <Stack spacing={2}>
       <Paper className={styles.panel}>
-        <Typography variant="h6">Many-to-Many: теги рецепта</Typography>
+        <Typography variant="h6">Теги</Typography>
         {tags.length > 0 ? (
           <div className={styles.tagList}>
             {tags.map((tag) => (
@@ -39,10 +39,7 @@ export const RecipeRelationsPanel = ({
 
       <Paper className={styles.panel}>
         <Stack direction="row" justifyContent="space-between" spacing={2}>
-          <div>
-            <Typography variant="h6">One-to-Many: ингредиенты</Typography>
-            <Typography color="textSecondary">Ингредиенты редактируются отдельным API, но показаны в карточке рецепта.</Typography>
-          </div>
+          <Typography variant="h6">Ингредиенты</Typography>
           <Button variant="contained" onClick={onAddIngredient}>
             Добавить ингредиент
           </Button>
@@ -68,7 +65,7 @@ export const RecipeRelationsPanel = ({
             ))}
           </Stack>
         ) : (
-          <EmptyState title="Список ингредиентов пуст" description="Создайте ингредиент для этого рецепта, чтобы связь появилась в интерфейсе." />
+          <EmptyState title="Список ингредиентов пуст" description="Добавьте первый ингредиент для этого рецепта." />
         )}
       </Paper>
     </Stack>

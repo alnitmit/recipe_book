@@ -74,7 +74,7 @@ export const IngredientsPage = () => {
     try {
       if (editingIngredient?.id) {
         await updateIngredient({ id: editingIngredient.id, body: payload }).unwrap();
-        showSnackbar('Ингредиент обновлён', 'success');
+        showSnackbar('Ингредиент обновлен', 'success');
       } else {
         await createIngredient(payload).unwrap();
         showSnackbar('Ингредиент создан', 'success');
@@ -94,7 +94,7 @@ export const IngredientsPage = () => {
 
     try {
       await deleteIngredient({ id: ingredientToDelete.id, recipeId: ingredientToDelete.recipeId }).unwrap();
-      showSnackbar('Ингредиент удалён', 'success');
+      showSnackbar('Ингредиент удален', 'success');
       setIngredientToDelete(null);
     } catch (error) {
       showSnackbar(getErrorMessage(error), 'error');
@@ -167,7 +167,7 @@ export const IngredientsPage = () => {
       <ConfirmDialog
         open={Boolean(ingredientToDelete)}
         title="Удалить ингредиент?"
-        description={ingredientToDelete ? `Ингредиент "${ingredientToDelete.name}" будет удалён.` : ''}
+        description={ingredientToDelete ? `Ингредиент "${ingredientToDelete.name}" будет удален.` : ''}
         destructive
         loading={isDeleting}
         confirmLabel="Удалить"

@@ -86,7 +86,7 @@ export const RecipesListPage = () => {
 
     try {
       await deleteRecipe(recipeToDelete.id).unwrap();
-      showSnackbar(`Рецепт "${recipeToDelete.title}" удалён`, 'success');
+      showSnackbar(`Рецепт "${recipeToDelete.title}" удален`, 'success');
       setRecipeToDelete(null);
     } catch (error) {
       showSnackbar(getErrorMessage(error), 'error');
@@ -145,9 +145,7 @@ export const RecipesListPage = () => {
       <ConfirmDialog
         open={Boolean(recipeToDelete)}
         title="Удалить рецепт?"
-        description={
-          recipeToDelete ? `Рецепт "${recipeToDelete.title}" будет удалён без возможности восстановления.` : ''
-        }
+        description={recipeToDelete ? `Рецепт "${recipeToDelete.title}" будет удален без возможности восстановления.` : ''}
         destructive
         loading={isDeleting}
         confirmLabel="Удалить"

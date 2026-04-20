@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { useGetCategoriesQuery } from '@/entities/category/api/categoryApi.ts';
 import type { Category } from '@/entities/category/model/types.ts';
 import type { Recipe, RecipePayload } from '@/entities/recipe/model/types.ts';
-import type { Tag } from '@/entities/tag/model/types.ts';
 import { useGetTagsQuery } from '@/entities/tag/api/tagApi.ts';
-import type { User } from '@/entities/user/model/types.ts';
+import type { Tag } from '@/entities/tag/model/types.ts';
 import { useGetUsersQuery } from '@/entities/user/api/userApi.ts';
+import type { User } from '@/entities/user/model/types.ts';
 import styles from '@/features/recipe-upsert/RecipeForm.module.css';
 
 type RecipeFormProps = {
@@ -36,16 +36,14 @@ const EMPTY_CATEGORIES: Category[] = [];
 const EMPTY_USERS: User[] = [];
 const EMPTY_TAGS: Tag[] = [];
 
-const toFormState = (recipe?: Recipe): RecipeFormState => {
-  return {
-    title: recipe?.title ?? '',
-    description: recipe?.description ?? '',
-    instructions: recipe?.instructions ?? '',
-    categoryId: recipe?.categoryId ?? null,
-    authorId: recipe?.authorId ?? null,
-    tags: recipe?.tags ?? [],
-  };
-};
+const toFormState = (recipe?: Recipe): RecipeFormState => ({
+  title: recipe?.title ?? '',
+  description: recipe?.description ?? '',
+  instructions: recipe?.instructions ?? '',
+  categoryId: recipe?.categoryId ?? null,
+  authorId: recipe?.authorId ?? null,
+  tags: recipe?.tags ?? [],
+});
 
 const RecipeFormContent = ({
   initialValue,
@@ -83,9 +81,6 @@ const RecipeFormContent = ({
     <Paper className={styles.form} sx={{ p: 3 }}>
       <Stack spacing={0.5}>
         <Typography variant="h5">{initialValue ? 'Редактирование рецепта' : 'Новый рецепт'}</Typography>
-        <Typography color="textSecondary">
-          Теги связываются напрямую с рецептом. Ингредиенты добавляются отдельно после создания или на странице деталей.
-        </Typography>
       </Stack>
 
       <div className={styles.grid}>
@@ -156,9 +151,7 @@ const RecipeFormContent = ({
         onChange={(event) => setValues((previous) => ({ ...previous, instructions: event.target.value }))}
       />
 
-      {!initialValue ? (
-        <Alert severity="info">После создания рецепта ингредиенты можно будет добавлять отдельно через details или раздел ингредиентов.</Alert>
-      ) : null}
+      {!initialValue ? <Alert severity="info">Ингредиенты можно будет добавить после создания рецепта.</Alert> : null}
 
       <div className={styles.actions}>
         <Button color="inherit" disabled={loading} onClick={onCancel}>

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
+import type { IngredientPayload } from '@/entities/ingredient/model/types.ts';
 import { useGetRecipesQuery } from '@/entities/recipe/api/recipeApi.ts';
 import { useGetUnitsQuery } from '@/entities/unit/api/unitApi.ts';
-import type { IngredientPayload } from '@/entities/ingredient/model/types.ts';
 import { EntityDialog } from '@/features/common/EntityDialog.tsx';
 
 type IngredientDialogProps = {
