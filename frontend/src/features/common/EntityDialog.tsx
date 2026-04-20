@@ -8,7 +8,7 @@ type SelectOption = {
   value: number | string;
 };
 
-type FieldConfig<T extends object> = {
+export type FieldConfig<T extends object> = {
   name: keyof T;
   label: string;
   type?: 'text' | 'email' | 'number' | 'multiline' | 'select';
@@ -94,7 +94,7 @@ const EntityDialogForm = <T extends object,>({
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 3 }}>
         <Button disabled={loading} onClick={onClose}>
-          РћС‚РјРµРЅР°
+          Отмена
         </Button>
         <Button disabled={loading} onClick={() => onSubmit(values)} variant="contained">
           {submitLabel}
@@ -107,7 +107,7 @@ const EntityDialogForm = <T extends object,>({
 export const EntityDialog = <T extends object,>({
   open,
   title,
-  submitLabel = 'РЎРѕС…СЂР°РЅРёС‚СЊ',
+  submitLabel = 'Сохранить',
   resetKey,
   initialValues,
   fields,

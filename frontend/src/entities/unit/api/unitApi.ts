@@ -1,5 +1,5 @@
 import type { Unit, UnitPayload } from '@/entities/unit/model/types.ts';
-import { baseApi } from '@/shared/api/baseApi.ts';
+import { baseApi } from '@/app/baseApi.ts';
 import { buildQueryString, toPageableQuery } from '@/shared/lib/query.ts';
 import type { PageResponse, PageableQuery } from '@/shared/types/api.ts';
 

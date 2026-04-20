@@ -1,15 +1,16 @@
 import { Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
+import { Path } from '@/common/routing/index.ts';
 import styles from '@/widgets/app-header/AppHeader.module.css';
 
 const titles: Record<string, string> = {
-  '/recipes': 'Рецепты',
-  '/ingredients': 'Ингредиенты',
-  '/categories': 'Категории',
-  '/tags': 'Теги',
-  '/units': 'Единицы измерения',
-  '/users': 'Пользователи',
+  [Path.Recipes]: 'Рецепты',
+  [Path.Ingredients]: 'Ингредиенты',
+  [Path.Categories]: 'Категории',
+  [Path.Tags]: 'Теги',
+  [Path.Units]: 'Единицы измерения',
+  [Path.Users]: 'Пользователи',
 };
 
 export const AppHeader = () => {

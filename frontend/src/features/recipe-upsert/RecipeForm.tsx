@@ -52,7 +52,7 @@ const RecipeFormContent = ({
   initialState,
   loading = false,
   fieldErrors = {},
-  submitLabel = 'РЎРѕС…СЂР°РЅРёС‚СЊ',
+  submitLabel = 'Сохранить',
   onSubmit,
   onCancel,
 }: RecipeFormContentProps) => {
@@ -82,16 +82,16 @@ const RecipeFormContent = ({
   return (
     <Paper className={styles.form} sx={{ p: 3 }}>
       <Stack spacing={0.5}>
-        <Typography variant="h5">{initialValue ? 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СЂРµС†РµРїС‚Р°' : 'РќРѕРІС‹Р№ СЂРµС†РµРїС‚'}</Typography>
+        <Typography variant="h5">{initialValue ? 'Редактирование рецепта' : 'Новый рецепт'}</Typography>
         <Typography color="textSecondary">
-          РўРµРіРё СЃРІСЏР·С‹РІР°СЋС‚СЃСЏ РЅР°РїСЂСЏРјСѓСЋ СЃ СЂРµС†РµРїС‚РѕРј. РРЅРіСЂРµРґРёРµРЅС‚С‹ РґРѕР±Р°РІР»СЏСЋС‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕ РїРѕСЃР»Рµ СЃРѕР·РґР°РЅРёСЏ РёР»Рё РЅР° СЃС‚СЂР°РЅРёС†Рµ РґРµС‚Р°Р»РµР№.
+          Теги связываются напрямую с рецептом. Ингредиенты добавляются отдельно после создания или на странице деталей.
         </Typography>
       </Stack>
 
       <div className={styles.grid}>
         <TextField
           required
-          label="РќР°Р·РІР°РЅРёРµ"
+          label="Название"
           value={values.title}
           error={Boolean(fieldErrors.title)}
           helperText={fieldErrors.title}
@@ -105,7 +105,7 @@ const RecipeFormContent = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              label="РљР°С‚РµРіРѕСЂРёСЏ"
+              label="Категория"
               error={Boolean(fieldErrors.categoryId)}
               helperText={fieldErrors.categoryId}
             />
@@ -119,7 +119,7 @@ const RecipeFormContent = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              label="РђРІС‚РѕСЂ"
+              label="Автор"
               error={Boolean(fieldErrors.authorId)}
               helperText={fieldErrors.authorId}
             />
@@ -131,12 +131,12 @@ const RecipeFormContent = ({
           getOptionLabel={(option) => option.name}
           value={values.tags}
           onChange={(_event, nextValue) => setValues((previous) => ({ ...previous, tags: nextValue }))}
-          renderInput={(params) => <TextField {...params} label="РўРµРіРё" helperText={fieldErrors.tags} />}
+          renderInput={(params) => <TextField {...params} label="Теги" helperText={fieldErrors.tags} />}
         />
       </div>
 
       <TextField
-        label="РћРїРёСЃР°РЅРёРµ"
+        label="Описание"
         multiline
         minRows={3}
         value={values.description}
@@ -147,7 +147,7 @@ const RecipeFormContent = ({
 
       <TextField
         required
-        label="РРЅСЃС‚СЂСѓРєС†РёРё"
+        label="Инструкции"
         multiline
         minRows={8}
         value={values.instructions}
@@ -157,12 +157,12 @@ const RecipeFormContent = ({
       />
 
       {!initialValue ? (
-        <Alert severity="info">РџРѕСЃР»Рµ СЃРѕР·РґР°РЅРёСЏ СЂРµС†РµРїС‚Р° РёРЅРіСЂРµРґРёРµРЅС‚С‹ РјРѕР¶РЅРѕ Р±СѓРґРµС‚ РґРѕР±Р°РІР»СЏС‚СЊ РѕС‚РґРµР»СЊРЅРѕ С‡РµСЂРµР· details РёР»Рё СЂР°Р·РґРµР» РёРЅРіСЂРµРґРёРµРЅС‚РѕРІ.</Alert>
+        <Alert severity="info">После создания рецепта ингредиенты можно будет добавлять отдельно через details или раздел ингредиентов.</Alert>
       ) : null}
 
       <div className={styles.actions}>
         <Button color="inherit" disabled={loading} onClick={onCancel}>
-          РћС‚РјРµРЅР°
+          Отмена
         </Button>
         <Button disabled={loading} variant="contained" onClick={submit}>
           {submitLabel}

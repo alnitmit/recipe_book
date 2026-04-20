@@ -7,15 +7,16 @@ import StraightenOutlinedIcon from '@mui/icons-material/StraightenOutlined';
 import { Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 
+import { Path } from '@/common/routing/index.ts';
 import styles from '@/widgets/sidebar/Sidebar.module.css';
 
 const navigation = [
-  { to: '/recipes', label: 'Рецепты', icon: <MenuBookOutlinedIcon fontSize="small" /> },
-  { to: '/ingredients', label: 'Ингредиенты', icon: <RestaurantOutlinedIcon fontSize="small" /> },
-  { to: '/categories', label: 'Категории', icon: <CategoryOutlinedIcon fontSize="small" /> },
-  { to: '/tags', label: 'Теги', icon: <LocalOfferOutlinedIcon fontSize="small" /> },
-  { to: '/units', label: 'Единицы', icon: <StraightenOutlinedIcon fontSize="small" /> },
-  { to: '/users', label: 'Пользователи', icon: <PeopleOutlineOutlinedIcon fontSize="small" /> },
+  { to: Path.Recipes, label: 'Рецепты', icon: <MenuBookOutlinedIcon fontSize="small" /> },
+  { to: Path.Ingredients, label: 'Ингредиенты', icon: <RestaurantOutlinedIcon fontSize="small" /> },
+  { to: Path.Categories, label: 'Категории', icon: <CategoryOutlinedIcon fontSize="small" /> },
+  { to: Path.Tags, label: 'Теги', icon: <LocalOfferOutlinedIcon fontSize="small" /> },
+  { to: Path.Units, label: 'Единицы', icon: <StraightenOutlinedIcon fontSize="small" /> },
+  { to: Path.Users, label: 'Пользователи', icon: <PeopleOutlineOutlinedIcon fontSize="small" /> },
 ];
 
 export const Sidebar = () => {

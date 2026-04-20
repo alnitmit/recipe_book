@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: recipebook-backend
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: DB_URL
+        fromDatabase:
+          name: recipebook-db
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: recipebook-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: recipebook-db
+          property: password
+
+  - type: web
+    name: recipebook-frontend
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    healthCheckPath: /
+    envVars:
+      - key: BACKEND_ORIGIN
+        fromService:
+          type: web
+          name: recipebook-backend
+          property: hostport
+
+databases:
+  - name: recipebook-db
+    plan: free
+    region: frankfurt
+    databaseName: recipebook
+    postgresMajorVersion: "17"
