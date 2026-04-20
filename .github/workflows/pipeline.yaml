@@ -1,0 +1,65 @@
+name: Pipeline
+
+on:
+  workflow_call:
+    inputs:
+      run_deploy:
+        description: Run deploy stage
+        required: false
+        type: boolean
+        default: false
+      run_healthcheck:
+        description: Run healthcheck stage
+        required: false
+        type: boolean
+        default: false
+      deploy_ref:
+        description: Commit SHA for deploy hook
+        required: false
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      run_deploy:
+        description: Run deploy stage
+        required: false
+        type: boolean
+        default: false
+      run_healthcheck:
+        description: Run healthcheck stage
+        required: false
+        type: boolean
+        default: false
+      deploy_ref:
+        description: Commit SHA for deploy hook
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yaml
+
+  test:
+    uses: ./.github/workflows/test.yaml
+
+  build:
+    needs:
+      - lint
+      - test
+    uses: ./.github/workflows/build.yaml
+
+  deploy:
+    needs: build
+    if: inputs.run_deploy
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      ref: ${{ inputs.deploy_ref }}
+      deploy_backend: true
+      deploy_frontend: true
+    secrets: inherit
+
+  health:
+    needs: deploy
+    if: inputs.run_deploy && inputs.run_healthcheck
+    uses: ./.github/workflows/health.yaml
