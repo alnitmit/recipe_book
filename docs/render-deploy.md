@@ -28,7 +28,7 @@
 
 - backend берет порт из переменной `PORT`, что нужно для PaaS
 - backend умеет принимать Render Postgres URL в формате `postgresql://...` и сам преобразует его в JDBC
-- frontend проксирует `/api` на backend через `BACKEND_ORIGIN`, где хранится `host:port`
+- frontend проксирует `/api` на backend через `BACKEND_URL`
 - healthcheck backend: `/api/health`
 - healthcheck frontend: `/`
 
@@ -36,6 +36,17 @@
 
 - бесплатные инстансы на Render подходят для учебного проекта, но могут "засыпать"
 - при первом открытии после сна приложение может стартовать несколько секунд
+- на бесплатном плане Render web services не подходят для приема private network трафика, поэтому frontend должен использовать публичный URL backend
+
+## Что указать для frontend
+
+После создания сервисов зайди в `recipebook-frontend -> Environment` и задай:
+
+- `BACKEND_URL=https://твое-имя-backend.onrender.com`
+
+Для твоего текущего деплоя это выглядит так:
+
+- `BACKEND_URL=https://recipebook-backend-8jr5.onrender.com`
 
 ## Официальные источники
 

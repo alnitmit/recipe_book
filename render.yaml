@@ -32,11 +32,8 @@ services:
     dockerContext: ./frontend
     healthCheckPath: /
     envVars:
-      - key: BACKEND_ORIGIN
-        fromService:
-          type: web
-          name: recipebook-backend
-          property: hostport
+      - key: BACKEND_URL
+        sync: false
 
 databases:
   - name: recipebook-db
