@@ -21,11 +21,10 @@ RUN apt-get update \
 
 COPY --from=build /app/target/*.jar /app/app.jar
 
-ENV SERVER_PORT=8080
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=5 \
-    CMD sh -c 'curl --fail --silent "http://127.0.0.1:${PORT:-${SERVER_PORT:-8080}}/api/health" || exit 1'
+    CMD sh -c 'curl --fail --silent "http://127.0.0.1:${PORT:-8080}/api/health" || exit 1'
 
 USER spring
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
