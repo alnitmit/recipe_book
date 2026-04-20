@@ -204,8 +204,8 @@ Important notes for Render:
 
 - backend uses the `PORT` variable provided by Render
 - backend database settings come from the managed PostgreSQL service
-- frontend should use `BACKEND_URL` pointing to the deployed backend
-- on the free plan, using the public backend URL for the frontend is the safest option
+- frontend proxy settings are wired automatically through `render.yaml`
+- frontend reaches the backend over Render private networking using `BACKEND_HOST` and `BACKEND_PORT`
 
 ## GitHub Actions CI/CD
 

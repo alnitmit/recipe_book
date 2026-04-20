@@ -26,6 +26,10 @@ public class RecipebookApplication {
             return;
         }
 
+        if (dbUrl.startsWith("postgres://")) {
+            dbUrl = "postgresql://" + dbUrl.substring("postgres://".length());
+        }
+
         if (!dbUrl.startsWith("postgresql://")) {
             return;
         }
@@ -51,6 +55,9 @@ public class RecipebookApplication {
                 jdbcUrl += ":" + uri.getPort();
             }
             jdbcUrl += uri.getPath();
+            if (uri.getRawQuery() != null && !uri.getRawQuery().isBlank()) {
+                jdbcUrl += "?" + uri.getRawQuery();
+            }
 
             System.setProperty("spring.datasource.url", jdbcUrl);
 
