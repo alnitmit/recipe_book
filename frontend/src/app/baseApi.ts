@@ -8,7 +8,21 @@ const rawBaseQuery = fetchBaseQuery({
   baseUrl: API_URL,
 });
 
+const isParsingError = (
+  error: FetchBaseQueryError,
+): error is FetchBaseQueryError & { status: 'PARSING_ERROR'; data?: string } => {
+  return error.status === 'PARSING_ERROR';
+};
+
+const isHtmlResponse = (value: unknown) => {
+  return typeof value === 'string' && /^\s*</.test(value);
+};
+
 const getBaseQueryErrorMessage = (error: FetchBaseQueryError) => {
+  if (isParsingError(error) && isHtmlResponse(error.data)) {
+    return 'Сервер вернул некорректный ответ. Обнови страницу или попробуй снова через несколько секунд.';
+  }
+
   if (typeof error.data === 'object' && error.data !== null && 'message' in error.data) {
     const message = error.data.message;
 
@@ -24,6 +38,14 @@ const getBaseQueryErrorMessage = (error: FetchBaseQueryError) => {
   return 'Не удалось загрузить данные с сервера';
 };
 
+const shouldShowGlobalError = (error: FetchBaseQueryError) => {
+  if (isParsingError(error) && isHtmlResponse(error.data)) {
+    return false;
+  }
+
+  return true;
+};
+
 const baseQueryWithAppHandling: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
@@ -37,9 +59,7 @@ const baseQueryWithAppHandling: BaseQueryFn<string | FetchArgs, unknown, FetchBa
   if (result.error) {
     api.dispatch(setAppStatusAC({ status: 'failed' }));
 
-    // Показываем глобальную ошибку только для запросов чтения, чтобы не дублировать
-    // локальные сообщения на мутациях CRUD-форм.
-    if (method === 'GET') {
+    if (method === 'GET' && shouldShowGlobalError(result.error)) {
       api.dispatch(setAppErrorAC({ error: getBaseQueryErrorMessage(result.error) }));
     }
 

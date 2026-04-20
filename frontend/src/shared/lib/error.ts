@@ -7,6 +7,16 @@ const isFetchBaseQueryError = (error: unknown): error is FetchBaseQueryError => 
   return typeof error === 'object' && error !== null && 'status' in error;
 };
 
+const isParsingError = (
+  error: FetchBaseQueryError,
+): error is FetchBaseQueryError & { status: 'PARSING_ERROR'; data?: string } => {
+  return error.status === 'PARSING_ERROR';
+};
+
+const isHtmlResponse = (value: unknown) => {
+  return typeof value === 'string' && /^\s*</.test(value);
+};
+
 const isSerializedError = (error: unknown): error is SerializedError => {
   return typeof error === 'object' && error !== null && 'message' in error;
 };
@@ -28,6 +38,10 @@ export const getErrorMessage = (error: unknown) => {
 
   if (response?.message) {
     return response.message;
+  }
+
+  if (isFetchBaseQueryError(error) && isParsingError(error) && isHtmlResponse(error.data)) {
+    return 'Сервер вернул некорректный ответ. Попробуй обновить страницу.';
   }
 
   if (isSerializedError(error) && error.message) {
