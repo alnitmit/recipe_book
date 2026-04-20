@@ -1,144 +1,62 @@
 # Recipe Book
 
-Recipe Book is organized as a fullstack-ready repository with separate backend and frontend folders.
+Fullstack application for managing recipes and related entities. The project includes a Spring Boot backend, a React frontend, PostgreSQL, Docker-based local run, Render deployment, and GitHub Actions CI/CD.
 
-## Structure
+## What The Project Does
 
-```text
-recipebook/
-|- backend/   Spring Boot REST API
-|- frontend/  React + Vite frontend app
-```
+- manages recipes
+- manages ingredients
+- manages categories
+- manages tags
+- manages units
+- manages users
+- supports recipe filtering
+- exposes REST API with Swagger UI
+- provides healthcheck for deployment monitoring
 
-The backend already contains the working Spring Boot service for managing recipes, ingredients, categories, tags, units, and users.
+## Tech Stack
 
-## Stack
+### Backend
 
 - Java 21
 - Spring Boot 4
 - Spring Web
-- Spring Data JPA (Hibernate)
+- Spring Data JPA
 - PostgreSQL
 - Bean Validation
-- OpenAPI / Swagger UI (`springdoc-openapi`)
-- Maven
+- springdoc OpenAPI
+- Maven Wrapper
 
-## Domain Model
+### Frontend
 
-Main entities:
+- React 19
+- TypeScript
+- Vite
+- Material UI
+- Redux Toolkit
+- RTK Query
+- React Router
 
-- Recipe
-- Ingredient
-- Category
-- Tag
-- Unit
-- User
+### DevOps
 
-The API supports CRUD operations for all core entities and bulk ingredient creation.
+- Docker
+- Docker Compose
+- Render
+- GitHub Actions
 
-## Features
+## Project Structure
 
-- Paginated REST endpoints for recipes, ingredients, categories, tags, units, and users
-- Bulk ingredient creation
-- Centralized exception handling with structured error responses
-- OpenAPI documentation via Swagger UI
-- File and console logging with Logback
-
-## Prerequisites
-
-For local development:
-
-- Java 21
-- PostgreSQL
-- Maven Wrapper (`mvnw` / `mvnw.cmd`) is included in `backend/`
-
-## Environment Configuration
-
-The application reads database settings from environment variables.
-
-Common variables:
-
-- `DB_URL` (default: `jdbc:postgresql://localhost:5432/recipebook`)
-- `DB_USERNAME` (default: `postgres`)
-- `DB_PASSWORD` (default: empty)
-
-For local backend runs, set these values in your shell environment before starting the app.
-
-Example for Windows PowerShell:
-
-```powershell
-$env:DB_URL="jdbc:postgresql://localhost:5432/recipebook"
-$env:DB_USERNAME="postgres"
-$env:DB_PASSWORD="your_password"
+```text
+recipebook/
+|-- backend/
+|-- frontend/
+|-- .github/workflows/
+|-- compose.yaml
+|-- render.yaml
+`-- .env.example
 ```
 
-## Run
-
-Start PostgreSQL, then move into `backend/` and run the application:
-
-Linux/macOS:
-
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-
-Windows (PowerShell):
-
-```powershell
-cd .\backend
-.\mvnw.cmd spring-boot:run
-```
-
-## Docker
-
-The repository includes container setup for:
-
-- `postgres` database
-- `backend` Spring Boot API
-- `frontend` Vite app served by `nginx`
-
-Docker Compose reads configuration from a root `.env` file. Create it from the example before the first run:
-
-```bash
-cp .env.example .env
-```
-
-Windows PowerShell:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Start the full stack from the repository root:
-
-```bash
-docker compose up --build
-```
-
-URLs after startup:
-
-- Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:8080`
-- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
-
-Stop the stack:
-
-```bash
-docker compose down
-```
-
-For Docker-based startup, the backend receives its `DB_*` variables from `compose.yaml`, and `compose.yaml` itself reads values from the root `.env`.
-
-## URLs
-
-- API base: `http://localhost:8080`
-- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
-- OpenAPI docs: `http://localhost:8080/v3/api-docs`
-
-## API Overview
-
-Main endpoint groups:
+## Main API Routes
 
 - `/api/recipes`
 - `/api/ingredients`
@@ -146,47 +64,252 @@ Main endpoint groups:
 - `/api/tags`
 - `/api/units`
 - `/api/users`
+- `/api/health`
 
 Examples:
 
 - `GET /api/recipes`
 - `GET /api/recipes/filter/jpql`
+- `POST /api/recipes`
 - `POST /api/ingredients/bulk`
+- `GET /api/health`
 
-## Database Notes
+## Environment Variables
 
-- Database engine: PostgreSQL
-- Hibernate schema mode: `update`
-- SQL logging is enabled
-- Default server port: `8080`
+Create a local `.env` file from the example:
 
-## Quality Checks
+### PowerShell
 
-Run tests:
+```powershell
+Copy-Item .env.example .env
+```
 
-Linux/macOS:
+### Bash
+
+```bash
+cp .env.example .env
+```
+
+Example values:
+
+```env
+POSTGRES_DB=recipebook
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+
+POSTGRES_PORT=5432
+BACKEND_PORT=8080
+FRONTEND_PORT=3000
+
+VITE_API_URL=/api
+```
+
+## Run Locally With Docker
+
+From the project root:
+
+```bash
+docker compose up -d --build
+```
+
+Stop containers:
+
+```bash
+docker compose down
+```
+
+Useful local URLs:
+
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8080`
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- Healthcheck: `http://localhost:8080/api/health`
+
+If you need to rebuild only the frontend without Docker cache:
+
+```bash
+docker compose build --no-cache frontend
+docker compose up -d frontend
+```
+
+## Run Locally Without Docker
+
+### Backend
+
+Start PostgreSQL first, then run:
+
+#### PowerShell
+
+```powershell
+cd .\backend
+.\mvnw.cmd spring-boot:run
+```
+
+#### Bash
 
 ```bash
 cd backend
-./mvnw test
+./mvnw spring-boot:run
 ```
 
-Windows (PowerShell):
+### Frontend
+
+#### PowerShell
+
+```powershell
+cd .\frontend
+yarn install
+yarn dev
+```
+
+#### Bash
+
+```bash
+cd frontend
+yarn install
+yarn dev
+```
+
+Frontend dev URL:
+
+- `http://localhost:5173`
+
+## Docker Services
+
+`compose.yaml` starts three services:
+
+- `postgres`
+- `backend`
+- `frontend`
+
+The backend waits for PostgreSQL healthcheck.
+The frontend communicates with the backend through nginx proxying `/api`.
+
+## Deployment On Render
+
+The repository contains a ready-to-use [render.yaml](render.yaml) for Render Blueprint deployment.
+
+It creates:
+
+- `recipebook-db`
+- `recipebook-backend`
+- `recipebook-frontend`
+
+Healthcheck endpoints:
+
+- backend: `/api/health`
+- frontend: `/`
+
+Important notes for Render:
+
+- backend uses the `PORT` variable provided by Render
+- backend database settings come from the managed PostgreSQL service
+- frontend should use `BACKEND_URL` pointing to the deployed backend
+- on the free plan, using the public backend URL for the frontend is the safest option
+
+## GitHub Actions CI/CD
+
+Workflows are stored in `.github/workflows/`:
+
+- `build.yaml`
+- `deploy.yaml`
+- `health.yaml`
+- `lint.yaml`
+- `pipeline.yaml`
+- `push.yaml`
+- `test.yaml`
+
+Pipeline behavior:
+
+- `pull_request` and push outside `main`: lint, test, build
+- push to `main`: lint, test, build, deploy, healthcheck
+
+Deployment is configured for Render Deploy Hooks.
+
+### Required GitHub Secrets
+
+- `RENDER_BACKEND_DEPLOY_HOOK_URL`
+- `RENDER_FRONTEND_DEPLOY_HOOK_URL`
+
+### Required GitHub Variables
+
+- `RENDER_BACKEND_URL`
+- `RENDER_FRONTEND_URL`
+
+If GitHub Actions performs deployment, it is better to disable automatic deploys from Git inside Render to avoid duplicate deployments.
+
+## Quality Checks
+
+### Backend Tests
 
 ```powershell
 cd .\backend
 .\mvnw.cmd test
 ```
 
-## Logs
+### Frontend Lint
 
-Application logs are written to:
+```powershell
+cd .\frontend
+yarn install
+yarn lint
+```
 
-- `logs/recipebook.log`
+### Frontend Production Build
 
-Rolling log files are also created in the same directory.
+```powershell
+cd .\frontend
+yarn install
+yarn build
+```
 
-## Notes
+## Health Check
 
-- `frontend/` runs as a separate client application and can be started locally or via Docker.
-- Swagger UI is the easiest way to explore and test the API locally.
+The backend exposes:
+
+- `GET /api/health`
+
+This endpoint is used by:
+
+- Docker and Render health monitoring
+- GitHub Actions post-deploy validation
+
+## Useful Notes
+
+- Hibernate schema mode is `update`
+- backend runs on `8080` locally
+- backend runs on Render port from `PORT`
+- frontend is served by `nginx` in Docker and Render
+- frontend talks to the backend through `/api`
+
+## Troubleshooting
+
+### Docker does not pick up frontend changes
+
+Rebuild the frontend image without cache:
+
+```bash
+docker compose build --no-cache frontend
+docker compose up -d frontend
+```
+
+### Frontend dependencies are missing locally
+
+If TypeScript or Vite types cannot be found, reinstall frontend dependencies:
+
+```bash
+cd frontend
+yarn install
+```
+
+### Render deploy succeeds but frontend cannot reach backend
+
+Check:
+
+- `BACKEND_URL` in the frontend Render service
+- backend health endpoint availability
+- GitHub Actions variables and deploy hook secrets
+
+## License
+
+This project is intended for educational use.
