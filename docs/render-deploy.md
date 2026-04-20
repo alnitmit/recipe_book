@@ -27,7 +27,7 @@
 ## Почему это будет работать
 
 - backend берет порт из переменной `PORT`, что нужно для PaaS
-- backend получает `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` прямо из Render Postgres
+- backend умеет принимать Render Postgres URL в формате `postgresql://...` и сам преобразует его в JDBC
 - frontend проксирует `/api` на backend через `BACKEND_ORIGIN`
 - healthcheck backend: `/api/health`
 - healthcheck frontend: `/`
