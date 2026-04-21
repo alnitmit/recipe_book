@@ -130,7 +130,6 @@ export const RecipeDetailsPage = () => {
           <Stack direction="row" flexWrap="wrap" gap={1}>
             <Chip label={`Категория: ${recipe.categoryName || 'не указана'}`} />
             <Chip label={`Автор: ${recipe.authorUsername || 'не назначен'}`} />
-            <Chip label={`ID: ${recipe.id}`} variant="outlined" />
           </Stack>
           <Typography variant="subtitle1" fontWeight={700}>
             Инструкции
