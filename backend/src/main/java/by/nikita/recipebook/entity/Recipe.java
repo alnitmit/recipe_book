@@ -74,7 +74,7 @@ public class Recipe {
     @JoinColumn(name = "author_id")
     private User author;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "recipe_tags",
         joinColumns = @JoinColumn(name = "recipe_id"),
