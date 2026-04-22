@@ -84,7 +84,7 @@ export const UnitsPage = () => {
   return (
     <CrudEntityPage<Unit, UnitPayload>
       addLabel="Добавить единицу"
-      searchLabel="Поиск по текущей странице"
+      searchLabel="Поиск"
       emptyTitle="Единиц измерения пока нет"
       emptyDescription="Создай базовые единицы, чтобы формы ингредиентов были удобнее."
       dialogCreateTitle="Новая единица"

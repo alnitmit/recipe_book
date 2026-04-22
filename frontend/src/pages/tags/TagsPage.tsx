@@ -77,7 +77,7 @@ export const TagsPage = () => {
   return (
     <CrudEntityPage<Tag, TagPayload>
       addLabel="Добавить тег"
-      searchLabel="Поиск по текущей странице"
+      searchLabel="Поиск"
       emptyTitle="Тегов пока нет"
       emptyDescription="Создай теги, чтобы размечать рецепты по признакам и темам."
       dialogCreateTitle="Новый тег"

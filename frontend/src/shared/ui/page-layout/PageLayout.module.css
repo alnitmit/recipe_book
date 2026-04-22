@@ -21,11 +21,6 @@
   justify-content: space-between;
 }
 
-.toolbarSearch {
-  flex: 1 1 320px;
-  min-width: min(100%, 320px);
-}
-
 .toolbarLeft,
 .toolbarRight {
   display: flex;
@@ -55,12 +50,5 @@
 @media (max-width: 1100px) {
   .twoColumns {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .toolbarSearch {
-    flex-basis: 100%;
-    min-width: 100%;
   }
 }

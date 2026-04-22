@@ -87,7 +87,7 @@ export const CategoriesPage = () => {
   return (
     <CrudEntityPage<Category, CategoryPayload>
       addLabel="Добавить категорию"
-      searchLabel="Поиск по текущей странице"
+      searchLabel="Поиск"
       emptyTitle="Категорий пока нет"
       emptyDescription="Создай первую категорию для удобной группировки рецептов."
       dialogCreateTitle="Новая категория"

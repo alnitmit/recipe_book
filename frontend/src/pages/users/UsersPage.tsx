@@ -86,7 +86,7 @@ export const UsersPage = () => {
   return (
     <CrudEntityPage<User, UserPayload>
       addLabel="Добавить пользователя"
-      searchLabel="Поиск по текущей странице"
+      searchLabel="Поиск"
       emptyTitle="Пользователей пока нет"
       emptyDescription="Создай автора, чтобы потом назначать его рецептам."
       dialogCreateTitle="Новый пользователь"
