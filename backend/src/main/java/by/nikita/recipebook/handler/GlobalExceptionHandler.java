@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         log.error("Data integrity violation", ex);
         return buildResponse(
             HttpStatus.CONFLICT,
-            "Data integrity violation, possibly duplicate entry.",
+            "Нарушение целостности данных. Возможно, запись уже существует.",
             request.getRequestURI(),
             null
         );
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors()
             .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", request.getRequestURI(), errors);
+        return buildResponse(HttpStatus.BAD_REQUEST, "Ошибка валидации", request.getRequestURI(), errors);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -80,14 +80,14 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         ex.getConstraintViolations().forEach(violation ->
             errors.put(violation.getPropertyPath().toString(), violation.getMessage()));
-        return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", request.getRequestURI(), errors);
+        return buildResponse(HttpStatus.BAD_REQUEST, "Ошибка валидации", request.getRequestURI(), errors);
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ErrorResponse> handleHandlerMethodValidation(HandlerMethodValidationException ex,
                                                                        HttpServletRequest request) {
         log.warn("Handler method validation error: {}", ex.getMessage());
-        return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", request.getRequestURI(), null);
+        return buildResponse(HttpStatus.BAD_REQUEST, "Ошибка валидации", request.getRequestURI(), null);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -96,24 +96,24 @@ public class GlobalExceptionHandler {
         log.warn("Argument type mismatch: {}", ex.getMessage());
         Map<String, String> errors = Map.of(
             ex.getName(),
-            "Invalid value '" + ex.getValue() + "' for parameter '" + ex.getName() + "'"
+            "Некорректное значение '" + ex.getValue() + "' для параметра '" + ex.getName() + "'"
         );
-        return buildResponse(HttpStatus.BAD_REQUEST, "Invalid request parameter", request.getRequestURI(), errors);
+        return buildResponse(HttpStatus.BAD_REQUEST, "Некорректный параметр запроса", request.getRequestURI(), errors);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingParameter(MissingServletRequestParameterException ex,
                                                                 HttpServletRequest request) {
         log.warn("Missing request parameter: {}", ex.getMessage());
-        Map<String, String> errors = Map.of(ex.getParameterName(), "Request parameter is required");
-        return buildResponse(HttpStatus.BAD_REQUEST, "Missing request parameter", request.getRequestURI(), errors);
+        Map<String, String> errors = Map.of(ex.getParameterName(), "Параметр запроса обязателен");
+        return buildResponse(HttpStatus.BAD_REQUEST, "Отсутствует обязательный параметр запроса", request.getRequestURI(), errors);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleNotReadable(HttpMessageNotReadableException ex,
                                                            HttpServletRequest request) {
         log.warn("Malformed request body: {}", ex.getMessage());
-        return buildResponse(HttpStatus.BAD_REQUEST, "Malformed JSON request", request.getRequestURI(), null);
+        return buildResponse(HttpStatus.BAD_REQUEST, "Некорректный JSON в запросе", request.getRequestURI(), null);
     }
 
     @ExceptionHandler(Exception.class)
@@ -122,15 +122,15 @@ public class GlobalExceptionHandler {
             log.warn("Invalid sort parameter: {}", ex.getMessage());
             Map<String, String> errors = Map.of(
                 "sort",
-                "Use sort=field,asc or sort=field,desc. Example: sort=username,asc"
+                "Используйте sort=поле,asc или sort=поле,desc. Пример: sort=username,asc"
             );
-            return buildResponse(HttpStatus.BAD_REQUEST, "Invalid sort parameter", request.getRequestURI(), errors);
+            return buildResponse(HttpStatus.BAD_REQUEST, "Некорректный параметр сортировки", request.getRequestURI(), errors);
         }
 
         log.error("Unexpected error occurred", ex);
         return buildResponse(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            "An unexpected error occurred",
+            "Произошла непредвиденная ошибка",
             request.getRequestURI(),
             null
         );

@@ -26,7 +26,7 @@ public class TagService {
     public TagDTO createTag(TagDTO tagDTO) {
         tagRepository.findByName(tagDTO.getName())
             .ifPresent(tag -> {
-                throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
+                throw new IllegalArgumentException("Тег с названием '" + tagDTO.getName() + "' уже существует");
             });
 
         Tag tag = tagMapper.toEntity(tagDTO);
@@ -48,13 +48,13 @@ public class TagService {
     @Transactional
     public TagDTO updateTag(Long id, TagDTO tagDTO) {
         Tag tag = tagRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
+            .orElseThrow(() -> new NoSuchElementException("Тег не найден, id: " + id));
 
         Optional.ofNullable(tagDTO.getName())
             .filter(name -> !name.equals(tag.getName()))
             .flatMap(tagRepository::findByName)
             .ifPresent(existingTag -> {
-                throw new IllegalArgumentException("Tag with name '" + tagDTO.getName() + "' already exists");
+                throw new IllegalArgumentException("Тег с названием '" + tagDTO.getName() + "' уже существует");
             });
 
         tag.setName(tagDTO.getName());
@@ -66,11 +66,11 @@ public class TagService {
     @Transactional
     public void deleteTag(Long id) {
         if (!tagRepository.existsById(id)) {
-            throw new NoSuchElementException("Tag not found with id: " + id);
+            throw new NoSuchElementException("Тег не найден, id: " + id);
         }
 
         if (recipeRepository.existsByTagsId(id)) {
-            throw new IllegalStateException("Cannot delete tag with existing recipes");
+            throw new IllegalStateException("Нельзя удалить тег, который используется в рецептах");
         }
 
         tagRepository.deleteById(id);

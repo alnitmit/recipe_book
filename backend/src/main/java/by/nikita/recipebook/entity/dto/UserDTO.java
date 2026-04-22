@@ -19,14 +19,14 @@ public class UserDTO {
     @Schema(description = "User identifier", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @NotBlank(message = "Username is required")
-    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    @NotBlank(message = "Имя пользователя обязательно")
+    @Size(min = 3, max = 50, message = "Имя пользователя должно быть длиной от 3 до 50 символов")
     @Schema(description = "Unique username", example = "chef_nikita")
     private String username;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
-    @Size(max = 100, message = "Email must not exceed 100 characters")
+    @NotBlank(message = "Email обязателен")
+    @Email(message = "Введите корректный email")
+    @Size(max = 100, message = "Email не должен превышать 100 символов")
     @Schema(description = "User email", example = "chef@example.com")
     private String email;
 

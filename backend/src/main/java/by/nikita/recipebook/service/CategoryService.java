@@ -27,7 +27,7 @@ public class CategoryService {
         categoryRepository.findByName(categoryDTO.getName())
             .ifPresent(category -> {
                 throw new IllegalArgumentException(
-                    "Category with name '" + categoryDTO.getName() + "' already exists"
+                    "Категория с названием '" + categoryDTO.getName() + "' уже существует"
                 );
             });
 
@@ -50,14 +50,14 @@ public class CategoryService {
     @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category category = categoryRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
+            .orElseThrow(() -> new NoSuchElementException("Категория не найдена, id: " + id));
 
         Optional.ofNullable(categoryDTO.getName())
             .filter(name -> !name.equals(category.getName()))
             .flatMap(categoryRepository::findByName)
             .ifPresent(existingCategory -> {
                 throw new IllegalArgumentException(
-                    "Category with name '" + categoryDTO.getName() + "' already exists"
+                    "Категория с названием '" + categoryDTO.getName() + "' уже существует"
                 );
             });
 
@@ -71,11 +71,11 @@ public class CategoryService {
     @Transactional
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new NoSuchElementException("Category not found with id: " + id);
+            throw new NoSuchElementException("Категория не найдена, id: " + id);
         }
 
         if (recipeRepository.existsByCategoryId(id)) {
-            throw new IllegalStateException("Cannot delete category with existing recipes");
+            throw new IllegalStateException("Нельзя удалить категорию, которая используется в рецептах");
         }
 
         categoryRepository.deleteById(id);

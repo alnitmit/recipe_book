@@ -64,7 +64,7 @@ class RecipeServiceTest {
 
         assertThatThrownBy(() -> recipeService.createRecipe(recipeDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Category not found with id: 99");
+            .hasMessage("Категория не найдена, id: 99");
     }
 
     @Test
@@ -119,7 +119,7 @@ class RecipeServiceTest {
 
         assertThatThrownBy(() -> recipeService.updateRecipe(10L, recipeDto))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Each tag must contain an id");
+            .hasMessage("Каждый тег должен содержать id");
     }
 
     @Test

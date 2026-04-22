@@ -44,7 +44,7 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.createUser(userDto))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("User with username 'chef' already exists");
+            .hasMessage("Пользователь с именем 'chef' уже существует");
     }
 
     @Test
@@ -74,7 +74,7 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.deleteUser(1L))
             .isInstanceOf(IllegalStateException.class)
-            .hasMessage("Cannot delete user with existing recipes");
+            .hasMessage("Нельзя удалить пользователя, который указан автором рецептов");
     }
 
     @Test
@@ -83,6 +83,6 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.deleteUser(4L))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("User not found with id: 4");
+            .hasMessage("Пользователь не найден, id: 4");
     }
 }

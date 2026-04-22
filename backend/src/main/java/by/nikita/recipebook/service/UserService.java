@@ -27,14 +27,14 @@ public class UserService {
         userRepository.findByUsername(userDTO.getUsername())
             .ifPresent(user -> {
                 throw new IllegalArgumentException(
-                    "User with username '" + userDTO.getUsername() + "' already exists"
+                    "Пользователь с именем '" + userDTO.getUsername() + "' уже существует"
                 );
             });
 
         Optional.ofNullable(userDTO.getEmail())
             .flatMap(userRepository::findByEmail)
             .ifPresent(user -> {
-                throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
+                throw new IllegalArgumentException("Пользователь с email '" + userDTO.getEmail() + "' уже существует");
             });
 
         User user = userMapper.toEntity(userDTO);
@@ -57,14 +57,14 @@ public class UserService {
     @Transactional
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
+            .orElseThrow(() -> new NoSuchElementException("Пользователь не найден, id: " + id));
 
         Optional.ofNullable(userDTO.getUsername())
             .filter(username -> !username.equals(user.getUsername()))
             .flatMap(userRepository::findByUsername)
             .ifPresent(existingUser -> {
                 throw new IllegalArgumentException(
-                    "User with username '" + userDTO.getUsername() + "' already exists"
+                    "Пользователь с именем '" + userDTO.getUsername() + "' уже существует"
                 );
             });
 
@@ -72,7 +72,7 @@ public class UserService {
             .filter(email -> !email.equals(user.getEmail()))
             .flatMap(userRepository::findByEmail)
             .ifPresent(existingUser -> {
-                throw new IllegalArgumentException("User with email '" + userDTO.getEmail() + "' already exists");
+                throw new IllegalArgumentException("Пользователь с email '" + userDTO.getEmail() + "' уже существует");
             });
 
         user.setUsername(userDTO.getUsername());
@@ -85,11 +85,11 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new NoSuchElementException("User not found with id: " + id);
+            throw new NoSuchElementException("Пользователь не найден, id: " + id);
         }
 
         if (recipeRepository.existsByAuthorId(id)) {
-            throw new IllegalStateException("Cannot delete user with existing recipes");
+            throw new IllegalStateException("Нельзя удалить пользователя, который указан автором рецептов");
         }
 
         userRepository.deleteById(id);

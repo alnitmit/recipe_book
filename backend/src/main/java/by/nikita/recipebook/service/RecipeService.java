@@ -77,7 +77,7 @@ public class RecipeService {
     @Transactional
     public RecipeDTO updateRecipe(Long id, RecipeDTO recipeDTO) {
         Recipe recipe = recipeRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Recipe not found with id: " + id));
+            .orElseThrow(() -> new NoSuchElementException("Рецепт не найден, id: " + id));
         recipe.setTitle(recipeDTO.getTitle());
         recipe.setDescription(recipeDTO.getDescription());
         recipe.setInstructions(recipeDTO.getInstructions());
@@ -99,7 +99,7 @@ public class RecipeService {
     @Transactional
     public void deleteRecipe(Long id) {
         if (!recipeRepository.existsById(id)) {
-            throw new NoSuchElementException("Recipe not found with id: " + id);
+            throw new NoSuchElementException("Рецепт не найден, id: " + id);
         }
         recipeRepository.deleteById(id);
         clearCache();
@@ -134,21 +134,21 @@ public class RecipeService {
 
     private Category getCategoryById(Long categoryId) {
         return categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + categoryId));
+            .orElseThrow(() -> new NoSuchElementException("Категория не найдена, id: " + categoryId));
     }
 
     private User getAuthorById(Long authorId) {
         return userRepository.findById(authorId)
-            .orElseThrow(() -> new NoSuchElementException("User not found with id: " + authorId));
+            .orElseThrow(() -> new NoSuchElementException("Пользователь не найден, id: " + authorId));
     }
 
     private Set<Tag> getTagsByIds(List<TagDTO> tagDtos) {
         return tagDtos.stream()
             .map(tagDto -> Optional.ofNullable(tagDto)
                 .map(TagDTO::getId)
-                .orElseThrow(() -> new IllegalArgumentException("Each tag must contain an id")))
+                .orElseThrow(() -> new IllegalArgumentException("Каждый тег должен содержать id")))
             .map(tagId -> tagRepository.findById(tagId)
-                .orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + tagId)))
+                .orElseThrow(() -> new NoSuchElementException("Тег не найден, id: " + tagId)))
             .collect(java.util.stream.Collectors.toSet());
     }
 

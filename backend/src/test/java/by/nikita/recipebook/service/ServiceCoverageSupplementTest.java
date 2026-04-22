@@ -110,7 +110,7 @@ class ServiceCoverageSupplementTest {
         assertThat(categoryService.getCategoryById(1L)).contains(dto);
         assertThatThrownBy(() -> categoryService.deleteCategory(99L))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Category not found with id: 99");
+            .hasMessage("Категория не найдена, id: 99");
     }
 
     @Test
@@ -125,7 +125,7 @@ class ServiceCoverageSupplementTest {
 
         assertThatThrownBy(() -> categoryService.updateCategory(1L, duplicateNameUpdate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Category with name 'New' already exists");
+            .hasMessage("Категория с названием 'New' уже существует");
     }
 
     @Test
@@ -225,21 +225,21 @@ class ServiceCoverageSupplementTest {
 
         assertThatThrownBy(() -> userService.updateUser(1L, duplicateUsernameUpdate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("User with username 'taken' already exists");
+            .hasMessage("Пользователь с именем 'taken' уже существует");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(userRepository.findByEmail("taken@example.com")).thenReturn(Optional.of(new User()));
         UserDTO duplicateEmailUpdate = new UserDTO(1L, "old", "taken@example.com", null);
         assertThatThrownBy(() -> userService.updateUser(1L, duplicateEmailUpdate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("User with email 'taken@example.com' already exists");
+            .hasMessage("Пользователь с email 'taken@example.com' уже существует");
 
         when(userRepository.findByUsername("chef")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("chef@example.com")).thenReturn(Optional.of(new User()));
         UserDTO duplicateCreate = new UserDTO(1L, "chef", "chef@example.com", null);
         assertThatThrownBy(() -> userService.createUser(duplicateCreate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("User with email 'chef@example.com' already exists");
+            .hasMessage("Пользователь с email 'chef@example.com' уже существует");
     }
 
     @Test
@@ -259,7 +259,7 @@ class ServiceCoverageSupplementTest {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> userService.updateUser(99L, dto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("User not found with id: 99");
+            .hasMessage("Пользователь не найден, id: 99");
     }
 
     @Test
@@ -288,12 +288,12 @@ class ServiceCoverageSupplementTest {
         TagDTO duplicateTagUpdate = new TagDTO(1L, "new");
         assertThatThrownBy(() -> tagService.updateTag(1L, duplicateTagUpdate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Tag with name 'new' already exists");
+            .hasMessage("Тег с названием 'new' уже существует");
 
         when(tagRepository.existsById(7L)).thenReturn(false);
         assertThatThrownBy(() -> tagService.deleteTag(7L))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Tag not found with id: 7");
+            .hasMessage("Тег не найден, id: 7");
     }
 
     @Test
@@ -303,7 +303,7 @@ class ServiceCoverageSupplementTest {
 
         assertThatThrownBy(() -> tagService.updateTag(99L, missingTag))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Tag not found with id: 99");
+            .hasMessage("Тег не найден, id: 99");
     }
 
     @Test
@@ -330,12 +330,12 @@ class ServiceCoverageSupplementTest {
         UnitDTO duplicateUnitUpdate = new UnitDTO(1L, "new", "n", "desc");
         assertThatThrownBy(() -> unitService.updateUnit(1L, duplicateUnitUpdate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Unit with name 'new' already exists");
+            .hasMessage("Единица измерения с названием 'new' уже существует");
 
         when(unitRepository.existsById(3L)).thenReturn(false);
         assertThatThrownBy(() -> unitService.deleteUnit(3L))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Unit not found");
+            .hasMessage("Единица измерения не найдена");
     }
 
     @Test
@@ -385,7 +385,7 @@ class ServiceCoverageSupplementTest {
         when(ingredientRepository.existsById(8L)).thenReturn(false);
         assertThatThrownBy(() -> ingredientService.deleteIngredient(8L))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Ingredient not found");
+            .hasMessage("Ингредиент не найден");
 
         IngredientDTO bulkMissingUnit = new IngredientDTO(null, "Salt", "1 tsp", 99L, null, 1L);
         List<IngredientDTO> missingUnitBulk = List.of(bulkMissingUnit);
@@ -393,21 +393,21 @@ class ServiceCoverageSupplementTest {
         when(unitRepository.findById(99L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> ingredientService.createIngredientsBulk(missingUnitBulk))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Unit not found with id: 99");
+            .hasMessage("Единица измерения не найдена, id: 99");
 
         IngredientDTO createMissingUnit = new IngredientDTO(null, "Sugar", "1 tsp", 88L, null, 1L);
         when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
         when(unitRepository.findById(88L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> ingredientService.createIngredient(createMissingUnit))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Unit not found with id: 88");
+            .hasMessage("Единица измерения не найдена, id: 88");
 
         IngredientDTO bulkMissingRecipe = new IngredientDTO(null, "Salt", "1 tsp", null, null, 123L);
         List<IngredientDTO> missingRecipeBulk = List.of(bulkMissingRecipe);
         when(recipeRepository.findById(123L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> ingredientService.createIngredientsBulk(missingRecipeBulk))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Recipe not found with id: 123");
+            .hasMessage("Рецепт не найден, id: 123");
     }
 
     @Test
@@ -433,10 +433,10 @@ class ServiceCoverageSupplementTest {
         List<IngredientDTO> emptyBulk = List.of();
         assertThatThrownBy(() -> ingredientService.createIngredientsBulk(null))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Ingredient list must not be empty");
+            .hasMessage("Список ингредиентов не должен быть пустым");
         assertThatThrownBy(() -> ingredientService.createIngredientsBulk(emptyBulk))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Ingredient list must not be empty");
+            .hasMessage("Список ингредиентов не должен быть пустым");
     }
 
     @Test
@@ -462,7 +462,7 @@ class ServiceCoverageSupplementTest {
             .containsExactly(withUnitDto, withoutUnitDto);
         assertThatThrownBy(() -> ingredientService.updateIngredient(999L, withUnitDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Ingredient not found");
+            .hasMessage("Ингредиент не найден");
     }
 
     @Test
@@ -541,38 +541,38 @@ class ServiceCoverageSupplementTest {
         missingTagId.setTags(List.of(new TagDTO(null, "broken")));
         assertThatThrownBy(() -> recipeService.updateRecipe(2L, missingTagId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Each tag must contain an id");
+            .hasMessage("Каждый тег должен содержать id");
 
         when(recipeRepository.existsById(99L)).thenReturn(false);
         assertThatThrownBy(() -> recipeService.deleteRecipe(99L))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Recipe not found with id: 99");
+            .hasMessage("Рецепт не найден, id: 99");
 
         when(recipeMapper.toEntity(relatedDto)).thenReturn(recipe);
         when(categoryRepository.findById(10L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> recipeService.createRecipe(relatedDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Category not found with id: 10");
+            .hasMessage("Категория не найдена, id: 10");
 
         when(recipeRepository.findById(404L)).thenReturn(Optional.empty());
         RecipeDTO recipeDto = new RecipeDTO();
         assertThatThrownBy(() -> recipeService.updateRecipe(404L, recipeDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Recipe not found with id: 404");
+            .hasMessage("Рецепт не найден, id: 404");
 
         when(recipeMapper.toEntity(relatedDto)).thenReturn(recipe);
         when(categoryRepository.findById(10L)).thenReturn(Optional.of(category));
         when(userRepository.findById(20L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> recipeService.createRecipe(relatedDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("User not found with id: 20");
+            .hasMessage("Пользователь не найден, id: 20");
 
         when(recipeMapper.toEntity(relatedDto)).thenReturn(recipe);
         when(userRepository.findById(20L)).thenReturn(Optional.of(author));
         when(tagRepository.findById(30L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> recipeService.createRecipe(relatedDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Tag not found with id: 30");
+            .hasMessage("Тег не найден, id: 30");
     }
 
     @Test

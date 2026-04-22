@@ -51,7 +51,7 @@ class IngredientServiceTest {
 
         assertThatThrownBy(() -> ingredientService.createIngredient(ingredientDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Recipe not found with id: 77");
+            .hasMessage("Рецепт не найден, id: 77");
     }
 
     @Test
@@ -72,7 +72,7 @@ class IngredientServiceTest {
 
         assertThatThrownBy(() -> ingredientService.updateIngredient(5L, ingredientDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Unit not found with id: 45");
+            .hasMessage("Единица измерения не найдена, id: 45");
     }
 
     @Test
@@ -96,7 +96,7 @@ class IngredientServiceTest {
 
         assertThatThrownBy(() -> ingredientService.updateIngredient(5L, ingredientDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Recipe not found with id: 99");
+            .hasMessage("Рецепт не найден, id: 99");
     }
 
     @Test
@@ -139,6 +139,6 @@ class IngredientServiceTest {
 
         assertThatThrownBy(() -> ingredientService.createIngredientsBulk(ingredientDtos))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Ingredient list must not be empty");
+            .hasMessage("Список ингредиентов не должен быть пустым");
     }
 }

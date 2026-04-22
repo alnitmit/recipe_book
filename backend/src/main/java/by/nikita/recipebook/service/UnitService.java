@@ -25,7 +25,7 @@ public class UnitService {
     public UnitDTO createUnit(UnitDTO unitDTO) {
         unitRepository.findByName(unitDTO.getName())
             .ifPresent(unit -> {
-                throw new IllegalArgumentException("Unit with name '" + unitDTO.getName() + "' already exists");
+                throw new IllegalArgumentException("Единица измерения с названием '" + unitDTO.getName() + "' уже существует");
             });
         Unit unit = unitMapper.toEntity(unitDTO);
         Unit savedUnit = unitRepository.save(unit);
@@ -44,13 +44,13 @@ public class UnitService {
 
     @Transactional
     public UnitDTO updateUnit(Long id, UnitDTO unitDTO) {
-        Unit unit = unitRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Unit not found"));
+        Unit unit = unitRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Единица измерения не найдена"));
 
         Optional.ofNullable(unitDTO.getName())
             .filter(name -> !name.equals(unit.getName()))
             .flatMap(unitRepository::findByName)
             .ifPresent(existingUnit -> {
-                throw new IllegalArgumentException("Unit with name '" + unitDTO.getName() + "' already exists");
+                throw new IllegalArgumentException("Единица измерения с названием '" + unitDTO.getName() + "' уже существует");
             });
 
         unit.setName(unitDTO.getName());
@@ -64,11 +64,11 @@ public class UnitService {
     @Transactional
     public void deleteUnit(Long id) {
         if (!unitRepository.existsById(id)) {
-            throw new NoSuchElementException("Unit not found");
+            throw new NoSuchElementException("Единица измерения не найдена");
         }
 
         if (ingredientRepository.existsByUnitId(id)) {
-            throw new IllegalStateException("Cannot delete unit with existing recipe ingredients");
+            throw new IllegalStateException("Нельзя удалить единицу измерения, которая используется в ингредиентах рецептов");
         }
 
         unitRepository.deleteById(id);

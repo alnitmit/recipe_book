@@ -16,12 +16,12 @@ public class CategoryDTO {
     @Schema(description = "Category identifier", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @NotBlank(message = "Category name is required")
-    @Size(max = 100, message = "Category name must not exceed 100 characters")
+    @NotBlank(message = "Название категории обязательно")
+    @Size(max = 100, message = "Название категории не должно превышать 100 символов")
     @Schema(description = "Category name", example = "Desserts")
     private String name;
 
-    @Size(max = 500, message = "Description must not exceed 500 characters")
+    @Size(max = 500, message = "Описание не должно превышать 500 символов")
     @Schema(description = "Category description", example = "Sweet dishes and baked treats")
     private String description;
 }

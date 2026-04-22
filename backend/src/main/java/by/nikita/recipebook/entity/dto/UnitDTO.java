@@ -16,16 +16,16 @@ public class UnitDTO {
     @Schema(description = "Unit identifier", example = "3", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @NotBlank(message = "Unit name is required")
-    @Size(max = 50, message = "Unit name must not exceed 50 characters")
+    @NotBlank(message = "Название единицы измерения обязательно")
+    @Size(max = 50, message = "Название единицы измерения не должно превышать 50 символов")
     @Schema(description = "Unit name", example = "gram")
     private String name;
 
-    @Size(max = 10, message = "Abbreviation must not exceed 10 characters")
+    @Size(max = 10, message = "Сокращение не должно превышать 10 символов")
     @Schema(description = "Short unit abbreviation", example = "g")
     private String abbreviation;
 
-    @Size(max = 200, message = "Description must not exceed 200 characters")
+    @Size(max = 200, message = "Описание не должно превышать 200 символов")
     @Schema(description = "Unit description", example = "Metric unit for mass")
     private String description;
 }

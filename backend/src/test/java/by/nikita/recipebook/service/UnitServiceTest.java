@@ -43,7 +43,7 @@ class UnitServiceTest {
 
         assertThatThrownBy(() -> unitService.createUnit(unitDto))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Unit with name 'gram' already exists");
+            .hasMessage("Единица измерения с названием 'gram' уже существует");
     }
 
     @Test
@@ -76,7 +76,7 @@ class UnitServiceTest {
 
         assertThatThrownBy(() -> unitService.updateUnit(8L, unitDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Unit not found");
+            .hasMessage("Единица измерения не найдена");
     }
 
     @Test
@@ -96,6 +96,6 @@ class UnitServiceTest {
 
         assertThatThrownBy(() -> unitService.deleteUnit(8L))
             .isInstanceOf(IllegalStateException.class)
-            .hasMessage("Cannot delete unit with existing recipe ingredients");
+            .hasMessage("Нельзя удалить единицу измерения, которая используется в ингредиентах рецептов");
     }
 }

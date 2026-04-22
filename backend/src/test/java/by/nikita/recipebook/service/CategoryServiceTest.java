@@ -43,7 +43,7 @@ class CategoryServiceTest {
 
         assertThatThrownBy(() -> categoryService.createCategory(categoryDto))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Category with name 'Desserts' already exists");
+            .hasMessage("Категория с названием 'Desserts' уже существует");
     }
 
     @Test
@@ -75,7 +75,7 @@ class CategoryServiceTest {
 
         assertThatThrownBy(() -> categoryService.deleteCategory(5L))
             .isInstanceOf(IllegalStateException.class)
-            .hasMessage("Cannot delete category with existing recipes");
+            .hasMessage("Нельзя удалить категорию, которая используется в рецептах");
     }
 
     @Test
@@ -95,6 +95,6 @@ class CategoryServiceTest {
 
         assertThatThrownBy(() -> categoryService.updateCategory(99L, categoryDto))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Category not found with id: 99");
+            .hasMessage("Категория не найдена, id: 99");
     }
 }

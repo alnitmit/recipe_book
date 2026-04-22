@@ -43,7 +43,7 @@ class TagServiceTest {
 
         assertThatThrownBy(() -> tagService.createTag(tagDto))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Tag with name 'quick' already exists");
+            .hasMessage("Тег с названием 'quick' уже существует");
     }
 
     @Test
@@ -73,7 +73,7 @@ class TagServiceTest {
 
         assertThatThrownBy(() -> tagService.deleteTag(4L))
             .isInstanceOf(NoSuchElementException.class)
-            .hasMessage("Tag not found with id: 4");
+            .hasMessage("Тег не найден, id: 4");
     }
 
     @Test
@@ -93,6 +93,6 @@ class TagServiceTest {
 
         assertThatThrownBy(() -> tagService.deleteTag(4L))
             .isInstanceOf(IllegalStateException.class)
-            .hasMessage("Cannot delete tag with existing recipes");
+            .hasMessage("Нельзя удалить тег, который используется в рецептах");
     }
 }

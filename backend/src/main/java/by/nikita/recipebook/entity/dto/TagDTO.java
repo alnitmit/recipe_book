@@ -16,8 +16,8 @@ public class TagDTO {
     @Schema(description = "Tag identifier", example = "4")
     private Long id;
 
-    @NotBlank(message = "Tag name is required")
-    @Size(max = 50, message = "Tag name must not exceed 50 characters")
+    @NotBlank(message = "Название тега обязательно")
+    @Size(max = 50, message = "Название тега не должно превышать 50 символов")
     @Schema(description = "Tag name", example = "quick")
     private String name;
 }

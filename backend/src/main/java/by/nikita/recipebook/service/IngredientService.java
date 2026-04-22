@@ -24,8 +24,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class IngredientService {
-    private static final String RECIPE_NOT_FOUND_BY_ID = "Recipe not found with id: ";
-    private static final String UNIT_NOT_FOUND_BY_ID = "Unit not found with id: ";
+    private static final String RECIPE_NOT_FOUND_BY_ID = "Рецепт не найден, id: ";
+    private static final String UNIT_NOT_FOUND_BY_ID = "Единица измерения не найдена, id: ";
 
     private final IngredientRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
@@ -53,7 +53,7 @@ public class IngredientService {
     @Transactional
     public List<IngredientDTO> createIngredientsBulk(List<IngredientDTO> ingredientDtos) {
         if (ingredientDtos == null || ingredientDtos.isEmpty()) {
-            throw new IllegalArgumentException("Ingredient list must not be empty");
+            throw new IllegalArgumentException("Список ингредиентов не должен быть пустым");
         }
 
         Map<Long, Recipe> recipesById = new HashMap<>();
@@ -97,7 +97,7 @@ public class IngredientService {
     @Transactional
     public IngredientDTO updateIngredient(Long id, IngredientDTO ingredientDTO) {
         Ingredient ingredient = ingredientRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Ingredient not found"));
+            .orElseThrow(() -> new NoSuchElementException("Ингредиент не найден"));
 
         ingredient.setName(ingredientDTO.getName());
         ingredient.setQuantity(ingredientDTO.getQuantity());
@@ -124,7 +124,7 @@ public class IngredientService {
     @Transactional
     public void deleteIngredient(Long id) {
         if (!ingredientRepository.existsById(id)) {
-            throw new NoSuchElementException("Ingredient not found");
+            throw new NoSuchElementException("Ингредиент не найден");
         }
         ingredientRepository.deleteById(id);
     }
