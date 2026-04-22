@@ -2,6 +2,7 @@ package by.nikita.recipebook.service;
 
 import by.nikita.recipebook.entity.Tag;
 import by.nikita.recipebook.entity.dto.TagDTO;
+import by.nikita.recipebook.repository.RecipeRepository;
 import by.nikita.recipebook.repository.TagRepository;
 import by.nikita.recipebook.utils.TagMapper;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ class TagServiceTest {
 
     @Mock
     private TagRepository tagRepository;
+
+    @Mock
+    private RecipeRepository recipeRepository;
 
     @Mock
     private TagMapper tagMapper;
@@ -75,9 +79,20 @@ class TagServiceTest {
     @Test
     void deleteTagShouldDeleteExistingTag() {
         when(tagRepository.existsById(4L)).thenReturn(true);
+        when(recipeRepository.existsByTagsId(4L)).thenReturn(false);
 
         tagService.deleteTag(4L);
 
         verify(tagRepository).deleteById(4L);
+    }
+
+    @Test
+    void deleteTagShouldFailWhenTagHasRecipes() {
+        when(tagRepository.existsById(4L)).thenReturn(true);
+        when(recipeRepository.existsByTagsId(4L)).thenReturn(true);
+
+        assertThatThrownBy(() -> tagService.deleteTag(4L))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("Cannot delete tag with existing recipes");
     }
 }

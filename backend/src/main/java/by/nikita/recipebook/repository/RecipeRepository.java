@@ -31,6 +31,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     boolean existsByCategoryId(Long categoryId);
 
+    boolean existsByTagsId(Long tagId);
+
     @Query(
         value = "SELECT DISTINCT r.id " +
         "FROM Recipe r " +

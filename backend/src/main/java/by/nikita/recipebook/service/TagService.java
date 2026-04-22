@@ -2,6 +2,7 @@ package by.nikita.recipebook.service;
 
 import by.nikita.recipebook.entity.Tag;
 import by.nikita.recipebook.entity.dto.TagDTO;
+import by.nikita.recipebook.repository.RecipeRepository;
 import by.nikita.recipebook.repository.TagRepository;
 import by.nikita.recipebook.utils.TagMapper;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class TagService {
 
     private final TagRepository tagRepository;
+    private final RecipeRepository recipeRepository;
     private final TagMapper tagMapper;
 
     @Transactional
@@ -66,6 +68,11 @@ public class TagService {
         if (!tagRepository.existsById(id)) {
             throw new NoSuchElementException("Tag not found with id: " + id);
         }
+
+        if (recipeRepository.existsByTagsId(id)) {
+            throw new IllegalStateException("Cannot delete tag with existing recipes");
+        }
+
         tagRepository.deleteById(id);
     }
 }

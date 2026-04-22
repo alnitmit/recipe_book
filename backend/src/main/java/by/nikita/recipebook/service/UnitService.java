@@ -2,6 +2,7 @@ package by.nikita.recipebook.service;
 
 import by.nikita.recipebook.entity.Unit;
 import by.nikita.recipebook.entity.dto.UnitDTO;
+import by.nikita.recipebook.repository.IngredientRepository;
 import by.nikita.recipebook.repository.UnitRepository;
 import by.nikita.recipebook.utils.UnitMapper;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UnitService {
     private final UnitRepository unitRepository;
+    private final IngredientRepository ingredientRepository;
     private final UnitMapper unitMapper;
 
     @Transactional
@@ -64,6 +66,11 @@ public class UnitService {
         if (!unitRepository.existsById(id)) {
             throw new NoSuchElementException("Unit not found");
         }
+
+        if (ingredientRepository.existsByUnitId(id)) {
+            throw new IllegalStateException("Cannot delete unit with existing recipe ingredients");
+        }
+
         unitRepository.deleteById(id);
     }
 }

@@ -2,6 +2,7 @@ package by.nikita.recipebook.service;
 
 import by.nikita.recipebook.entity.Unit;
 import by.nikita.recipebook.entity.dto.UnitDTO;
+import by.nikita.recipebook.repository.IngredientRepository;
 import by.nikita.recipebook.repository.UnitRepository;
 import by.nikita.recipebook.utils.UnitMapper;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ class UnitServiceTest {
 
     @Mock
     private UnitRepository unitRepository;
+
+    @Mock
+    private IngredientRepository ingredientRepository;
 
     @Mock
     private UnitMapper unitMapper;
@@ -78,9 +82,20 @@ class UnitServiceTest {
     @Test
     void deleteUnitShouldDeleteExistingUnit() {
         when(unitRepository.existsById(8L)).thenReturn(true);
+        when(ingredientRepository.existsByUnitId(8L)).thenReturn(false);
 
         unitService.deleteUnit(8L);
 
         verify(unitRepository).deleteById(8L);
+    }
+
+    @Test
+    void deleteUnitShouldFailWhenUnitUsedInRecipeIngredients() {
+        when(unitRepository.existsById(8L)).thenReturn(true);
+        when(ingredientRepository.existsByUnitId(8L)).thenReturn(true);
+
+        assertThatThrownBy(() -> unitService.deleteUnit(8L))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("Cannot delete unit with existing recipe ingredients");
     }
 }

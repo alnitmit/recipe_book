@@ -22,4 +22,6 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
     @EntityGraph(value = "Ingredient.withDetails", type = EntityGraph.EntityGraphType.FETCH)
     Page<Ingredient> findByRecipeId(Long recipeId, Pageable pageable);
+
+    boolean existsByUnitId(Long unitId);
 }
