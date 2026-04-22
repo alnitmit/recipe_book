@@ -78,6 +78,7 @@ export const EntityTable = <T,>({
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 20, 50]}
         labelRowsPerPage="Строк на странице"
+        labelDisplayedRows={({ from, to, count }) => `${from}-${to} из ${count}`}
         onPageChange={(_event, nextPage) => onPageChange(nextPage)}
         onRowsPerPageChange={(event) => onRowsPerPageChange(Number(event.target.value))}
       />

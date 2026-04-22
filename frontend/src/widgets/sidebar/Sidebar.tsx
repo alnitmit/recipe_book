@@ -23,7 +23,7 @@ export const Sidebar = () => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brand}>
-        <Typography variant="h5">Recipe Book</Typography>
+        <Typography variant="h5">Книга рецептов</Typography>
       </div>
       <nav className={styles.nav}>
         {navigation.map((item) => (

@@ -15,7 +15,7 @@ const titles: Record<string, string> = {
 
 export const AppHeader = () => {
   const location = useLocation();
-  const pageTitle = Object.entries(titles).find(([key]) => location.pathname.startsWith(key))?.[1] ?? 'Recipe Book';
+  const pageTitle = Object.entries(titles).find(([key]) => location.pathname.startsWith(key))?.[1] ?? 'Книга рецептов';
 
   return (
     <header className={styles.header}>
