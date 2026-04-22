@@ -87,7 +87,13 @@ export const CrudEntityPage = <TEntity, TPayload extends object>({
         <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={onCreateClick}>
           {addLabel}
         </Button>
-        <TextField label={searchLabel} value={search} onChange={(event) => onSearchChange(event.target.value)} />
+        <TextField
+          className={pageStyles.toolbarSearch}
+          fullWidth
+          label={searchLabel}
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+        />
       </div>
 
       {loading && !data ? (

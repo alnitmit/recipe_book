@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import { AppLayout } from '@/app/layout/AppLayout.tsx';
 import { CategoriesPage } from '@/pages/categories/CategoriesPage.tsx';
-import { IngredientsPage } from '@/pages/ingredients/IngredientsPage.tsx';
 import { RecipeCreatePage } from '@/pages/recipe-create/RecipeCreatePage.tsx';
 import { RecipeDetailsPage } from '@/pages/recipe-details/RecipeDetailsPage.tsx';
 import { RecipeEditPage } from '@/pages/recipe-edit/RecipeEditPage.tsx';
@@ -38,7 +37,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'ingredients',
-        element: <IngredientsPage />,
+        element: <Navigate replace to="/recipes" />,
       },
       {
         path: 'categories',

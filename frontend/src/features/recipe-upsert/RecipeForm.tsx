@@ -1,4 +1,4 @@
-import { Alert, Autocomplete, Button, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, Paper, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { useGetCategoriesQuery } from '@/entities/category/api/categoryApi.ts';
@@ -150,8 +150,6 @@ const RecipeFormContent = ({
         helperText={fieldErrors.instructions}
         onChange={(event) => setValues((previous) => ({ ...previous, instructions: event.target.value }))}
       />
-
-      {!initialValue ? <Alert severity="info">Ингредиенты можно будет добавить после создания рецепта.</Alert> : null}
 
       <div className={styles.actions}>
         <Button color="inherit" disabled={loading} onClick={onCancel}>

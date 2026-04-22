@@ -6,7 +6,6 @@ import styles from '@/widgets/app-header/AppHeader.module.css';
 
 const titles: Record<string, string> = {
   [Path.Recipes]: 'Рецепты',
-  [Path.Ingredients]: 'Ингредиенты',
   [Path.Categories]: 'Категории',
   [Path.Tags]: 'Теги',
   [Path.Units]: 'Единицы измерения',
