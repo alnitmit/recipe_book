@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY package.json yarn.lock ./
@@ -12,12 +12,10 @@ ENV VITE_API_URL=${VITE_API_URL}
 RUN yarn build
 
 FROM nginx:1.27-alpine
-WORKDIR /usr/share/nginx/html
-
 ENV BACKEND_URL=http://backend:8080
 
 COPY nginx.conf /etc/nginx/templates/default.conf.template
-COPY --from=build /app/dist ./
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
